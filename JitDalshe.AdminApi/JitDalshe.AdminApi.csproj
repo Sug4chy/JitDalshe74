@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Application\JitDalshe.Application.Api\JitDalshe.Application.Api.csproj" />
+      <ProjectReference Include="..\Application\JitDalshe.Application.AdminApi\JitDalshe.Application.AdminApi.csproj" />
       <ProjectReference Include="..\Infrastructure\JitDalshe.Infrastructure.Persistence\JitDalshe.Infrastructure.Persistence.csproj" />
     </ItemGroup>
 
