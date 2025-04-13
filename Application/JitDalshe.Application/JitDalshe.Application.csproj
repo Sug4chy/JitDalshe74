@@ -10,4 +10,8 @@
       <ProjectReference Include="..\..\Domain\JitDalse.Domain\JitDalse.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Autofac" Version="8.2.1" />
+    </ItemGroup>
+
 </Project>
