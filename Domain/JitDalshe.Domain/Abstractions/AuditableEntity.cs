@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace JitDalse.Domain.Abstractions;
+namespace JitDalshe.Domain.Abstractions;
 
 public abstract class AuditableEntity<TId> : Entity<TId>, IAuditableEntity
     where TId : IComparable<TId>

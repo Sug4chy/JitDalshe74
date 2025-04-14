@@ -1,4 +1,4 @@
-using JitDalse.Domain.Entities;
+using JitDalshe.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace JitDalshe.Infrastructure.Persistence.Context;

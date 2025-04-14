@@ -1,5 +1,5 @@
 using CSharpFunctionalExtensions;
-using JitDalse.Domain.ValueObjects;
+using JitDalshe.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JitDalshe.Infrastructure.Persistence.Extensions;

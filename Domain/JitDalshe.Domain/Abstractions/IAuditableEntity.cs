@@ -1,4 +1,4 @@
-namespace JitDalse.Domain.Abstractions;
+namespace JitDalshe.Domain.Abstractions;
 
 public interface IAuditableEntity
 {

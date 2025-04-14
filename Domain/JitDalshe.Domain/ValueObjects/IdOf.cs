@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace JitDalse.Domain.ValueObjects;
+namespace JitDalshe.Domain.ValueObjects;
 
 public readonly record struct IdOf<TEntity> : IComparable<IdOf<TEntity>> 
     where TEntity : Entity<IdOf<TEntity>>

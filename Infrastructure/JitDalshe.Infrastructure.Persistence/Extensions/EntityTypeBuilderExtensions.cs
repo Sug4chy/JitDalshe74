@@ -1,4 +1,4 @@
-using JitDalse.Domain.Abstractions;
+using JitDalshe.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

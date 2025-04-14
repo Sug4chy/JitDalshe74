@@ -1,6 +1,6 @@
-using JitDalse.Domain.ValueObjects;
+using JitDalshe.Domain.ValueObjects;
 
-namespace JitDalse.Domain.Entities;
+namespace JitDalshe.Domain.Entities;
 
 public sealed class NewsPrimaryPhoto
 {

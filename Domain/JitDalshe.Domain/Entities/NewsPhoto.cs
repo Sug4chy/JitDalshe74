@@ -1,7 +1,7 @@
-using JitDalse.Domain.Abstractions;
-using JitDalse.Domain.ValueObjects;
+using JitDalshe.Domain.Abstractions;
+using JitDalshe.Domain.ValueObjects;
 
-namespace JitDalse.Domain.Entities;
+namespace JitDalshe.Domain.Entities;
 
 public sealed class NewsPhoto : AuditableEntity<IdOf<NewsPhoto>>
 {

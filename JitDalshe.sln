@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# 
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalse.Api", "JitDalse.Api\JitDalse.Api.csproj", "{EE3FDFAB-7F51-40AA-93A6-78373DD42D5E}"
+#
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Api", "JitDalshe.Api\JitDalshe.Api.csproj", "{EE3FDFAB-7F51-40AA-93A6-78373DD42D5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalse.Domain", "Domain\JitDalse.Domain\JitDalse.Domain.csproj", "{C6BA5D87-D53F-40F2-8FA4-D84B6AEC2045}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Domain", "Domain\JitDalshe.Domain\JitDalshe.Domain.csproj", "{C6BA5D87-D53F-40F2-8FA4-D84B6AEC2045}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Domain", "1. Domain", "{BE24047B-D681-4DFE-83A1-1E70E0A43F9F}"
 EndProject

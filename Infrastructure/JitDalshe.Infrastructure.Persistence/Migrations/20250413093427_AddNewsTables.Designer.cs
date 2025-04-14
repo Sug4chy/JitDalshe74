@@ -25,7 +25,7 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("JitDalse.Domain.Entities.News", b =>
+            modelBuilder.Entity("JitDalshe.Domain.Entities.News", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -62,7 +62,7 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
                     b.ToTable("news", (string)null);
                 });
 
-            modelBuilder.Entity("JitDalse.Domain.Entities.NewsPhoto", b =>
+            modelBuilder.Entity("JitDalshe.Domain.Entities.NewsPhoto", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -100,7 +100,7 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
                     b.ToTable("news_photo", (string)null);
                 });
 
-            modelBuilder.Entity("JitDalse.Domain.Entities.NewsPrimaryPhoto", b =>
+            modelBuilder.Entity("JitDalshe.Domain.Entities.NewsPrimaryPhoto", b =>
                 {
                     b.Property<Guid>("NewsId")
                         .HasColumnType("uuid")
@@ -121,9 +121,9 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
                     b.ToTable("news_primary_photo", (string)null);
                 });
 
-            modelBuilder.Entity("JitDalse.Domain.Entities.NewsPhoto", b =>
+            modelBuilder.Entity("JitDalshe.Domain.Entities.NewsPhoto", b =>
                 {
-                    b.HasOne("JitDalse.Domain.Entities.News", "News")
+                    b.HasOne("JitDalshe.Domain.Entities.News", "News")
                         .WithMany("Photos")
                         .HasForeignKey("NewsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -132,17 +132,17 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
                     b.Navigation("News");
                 });
 
-            modelBuilder.Entity("JitDalse.Domain.Entities.NewsPrimaryPhoto", b =>
+            modelBuilder.Entity("JitDalshe.Domain.Entities.NewsPrimaryPhoto", b =>
                 {
-                    b.HasOne("JitDalse.Domain.Entities.News", "News")
+                    b.HasOne("JitDalshe.Domain.Entities.News", "News")
                         .WithOne("PrimaryPhoto")
-                        .HasForeignKey("JitDalse.Domain.Entities.NewsPrimaryPhoto", "NewsId")
+                        .HasForeignKey("JitDalshe.Domain.Entities.NewsPrimaryPhoto", "NewsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JitDalse.Domain.Entities.NewsPhoto", "NewsPhoto")
+                    b.HasOne("JitDalshe.Domain.Entities.NewsPhoto", "NewsPhoto")
                         .WithOne("PrimaryPhoto")
-                        .HasForeignKey("JitDalse.Domain.Entities.NewsPrimaryPhoto", "NewsPhotoId")
+                        .HasForeignKey("JitDalshe.Domain.Entities.NewsPrimaryPhoto", "NewsPhotoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -151,14 +151,14 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
                     b.Navigation("NewsPhoto");
                 });
 
-            modelBuilder.Entity("JitDalse.Domain.Entities.News", b =>
+            modelBuilder.Entity("JitDalshe.Domain.Entities.News", b =>
                 {
                     b.Navigation("Photos");
 
                     b.Navigation("PrimaryPhoto");
                 });
 
-            modelBuilder.Entity("JitDalse.Domain.Entities.NewsPhoto", b =>
+            modelBuilder.Entity("JitDalshe.Domain.Entities.NewsPhoto", b =>
                 {
                     b.Navigation("PrimaryPhoto");
                 });

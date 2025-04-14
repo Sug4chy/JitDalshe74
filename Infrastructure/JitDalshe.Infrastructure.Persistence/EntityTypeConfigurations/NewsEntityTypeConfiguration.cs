@@ -1,4 +1,4 @@
-using JitDalse.Domain.Entities;
+using JitDalshe.Domain.Entities;
 using JitDalshe.Infrastructure.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
