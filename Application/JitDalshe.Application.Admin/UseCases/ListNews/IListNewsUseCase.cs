@@ -1,8 +1,8 @@
 using CSharpFunctionalExtensions;
-using JitDalshe.Application.AdminApi.Dto;
+using JitDalshe.Application.Admin.Dto;
 using JitDalshe.Application.Errors;
 
-namespace JitDalshe.Application.AdminApi.UseCases.ListNews;
+namespace JitDalshe.Application.Admin.UseCases.ListNews;
 
 public interface IListNewsUseCase
 {

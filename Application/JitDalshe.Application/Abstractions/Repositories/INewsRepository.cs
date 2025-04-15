@@ -1,4 +1,6 @@
+using CSharpFunctionalExtensions;
 using JitDalshe.Domain.Entities;
+using JitDalshe.Domain.ValueObjects;
 
 namespace JitDalshe.Application.Abstractions.Repositories;
 
@@ -8,4 +10,8 @@ public interface INewsRepository
         int? pageNumber = null,
         int? pageSize = null, 
         CancellationToken ct = default);
+
+    Task<Maybe<News>> GetNewsByIdAsync(IdOf<News> id, CancellationToken ct = default);
+
+    Task EditAsync(News news, CancellationToken ct = default);
 }

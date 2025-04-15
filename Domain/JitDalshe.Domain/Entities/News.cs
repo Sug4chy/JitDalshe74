@@ -6,10 +6,10 @@ namespace JitDalshe.Domain.Entities;
 public sealed class News : AuditableEntity<IdOf<News>>
 {
     public long ExtId { get; }
-    public string Text { get; }
+    public string Text { get; set; }
     public DateOnly PublicationDate { get; }
 
     public ICollection<NewsPhoto> Photos { get; }
 
-    public NewsPrimaryPhoto? PrimaryPhoto { get; }
+    public NewsPrimaryPhoto? PrimaryPhoto { get; set; }
 }

@@ -4,9 +4,9 @@ namespace JitDalshe.Domain.Entities;
 
 public sealed class NewsPrimaryPhoto
 {
-    public IdOf<News> NewsId { get; }
-    public News? News { get; }
+    public IdOf<News> NewsId { get; init; }
+    public News? News { get; init; }
 
-    public IdOf<NewsPhoto> NewsPhotoId { get; }
-    public NewsPhoto? NewsPhoto { get; }
+    public IdOf<NewsPhoto> NewsPhotoId { get; init; }
+    public NewsPhoto? NewsPhoto { get; init; }
 }

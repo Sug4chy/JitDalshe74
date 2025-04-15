@@ -1,4 +1,4 @@
-namespace JitDalshe.Application.AdminApi.Dto;
+namespace JitDalshe.Application.Admin.Dto;
 
 public readonly record struct NewsDto(
     Guid Id,

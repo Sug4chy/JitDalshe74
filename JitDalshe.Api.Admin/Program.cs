@@ -2,7 +2,7 @@ using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
-using JitDalshe.Application.AdminApi;
+using JitDalshe.Application.Admin;
 using JitDalshe.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);

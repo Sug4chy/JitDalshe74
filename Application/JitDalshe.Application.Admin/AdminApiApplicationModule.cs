@@ -1,7 +1,7 @@
 using Autofac;
 using JitDalshe.Application.Attributes;
 
-namespace JitDalshe.Application.AdminApi;
+namespace JitDalshe.Application.Admin;
 
 public sealed class AdminApiApplicationModule : Module
 {

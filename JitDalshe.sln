@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Infrastructure", "3. Inf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Infrastructure.Persistence", "Infrastructure\JitDalshe.Infrastructure.Persistence\JitDalshe.Infrastructure.Persistence.csproj", "{C6D245E6-0ED3-4A74-A7F2-FB2E93ADDBAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Application.AdminApi", "Application\JitDalshe.Application.AdminApi\JitDalshe.Application.AdminApi.csproj", "{84B8C82C-FC58-4D3D-92FC-DB1CFF204577}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Application.Admin", "Application\JitDalshe.Application.Admin\JitDalshe.Application.Admin.csproj", "{84B8C82C-FC58-4D3D-92FC-DB1CFF204577}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Api.Admin", "JitDalshe.Api.Admin\JitDalshe.Api.Admin.csproj", "{126307A2-D2E2-4DD7-830B-55C9EFD996A3}"
 EndProject
