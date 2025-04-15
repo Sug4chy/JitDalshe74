@@ -1,10 +1,11 @@
 using System.Reflection;
 using FluentValidation;
-using JitDalshe.Api.Site.Attributes;
+using JitDalshe.Api.Attributes;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace JitDalshe.Api.Site.ActionFilters;
+namespace JitDalshe.Api.ActionFilters;
 
 public sealed class ValidateRequestActionFilter : IAsyncActionFilter
 {
@@ -45,13 +46,13 @@ public sealed class ValidateRequestActionFilter : IAsyncActionFilter
                 return;
             }
 
-            
+
             var validationResult = await validator.ValidateAsync(new ValidationContext<object>(argument.Value));
             if (validationResult.IsValid)
             {
                 continue;
             }
-            
+
             context.Result = new BadRequestObjectResult(
                 new ValidationProblemDetails(validationResult.ToDictionary())
             );

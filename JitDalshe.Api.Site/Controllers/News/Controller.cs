@@ -1,5 +1,6 @@
-using JitDalshe.Api.Site.Attributes;
-using JitDalshe.Api.Site.Controllers.Base;
+using JitDalshe.Api.Attributes;
+using JitDalshe.Api.Controllers.Base;
+using JitDalshe.Api.Site.Controllers.News.Requests;
 using JitDalshe.Application.Api.UseCases.ListNews;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,7 @@ public sealed class Controller : AbstractController
     [HttpGet]
     [ValidateRequest]
     public async Task<IActionResult> ListNews(
-        [FromQuery] Requests.ListNewsRequest request,
+        [FromQuery] ListNewsRequest request,
         [FromServices] IListNewsUseCase useCase,
         CancellationToken ct = default
     )

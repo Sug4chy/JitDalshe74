@@ -1,5 +1,5 @@
 using FluentValidation;
-using JitDalshe.Api.Site.Attributes;
+using JitDalshe.Api.Attributes;
 
 namespace JitDalshe.Api.Site.Controllers.News.Requests;
 
