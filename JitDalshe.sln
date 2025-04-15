@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Application", "2. Applic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Application", "Application\JitDalshe.Application\JitDalshe.Application.csproj", "{15722C54-4B29-4150-A0D5-993D4E61B897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Application.Api", "Application\JitDalshe.Application.Api\JitDalshe.Application.Api.csproj", "{998FBEEB-C8C3-487E-A5EC-A9D24AEEA0E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Application.Site", "Application\JitDalshe.Application.Site\JitDalshe.Application.Site.csproj", "{998FBEEB-C8C3-487E-A5EC-A9D24AEEA0E7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Infrastructure", "3. Infrastructure", "{5CA6597C-D611-4989-911F-BED2C7B43019}"
 EndProject

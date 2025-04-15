@@ -1,7 +1,7 @@
-using JitDalshe.Application.Api.Dto;
+using JitDalshe.Application.Site.Dto;
 using JitDalshe.Domain.Entities;
 
-namespace JitDalshe.Application.Api.Extensions;
+namespace JitDalshe.Application.Site.Extensions;
 
 public static class DomainToDtoMappingExtensions
 {

@@ -1,4 +1,4 @@
-namespace JitDalshe.Application.Api.Dto;
+namespace JitDalshe.Application.Site.Dto;
 
 public readonly record struct NewsDto(
     string Text,

@@ -1,11 +1,11 @@
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
-using JitDalshe.Application.Api.Attributes;
-using JitDalshe.Application.Api.Dto;
-using JitDalshe.Application.Api.Extensions;
+using JitDalshe.Application.AdminApi.Dto;
+using JitDalshe.Application.AdminApi.Extensions;
+using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Errors;
 
-namespace JitDalshe.Application.Api.UseCases.ListNews;
+namespace JitDalshe.Application.AdminApi.UseCases.ListNews;
 
 [UseCase]
 internal sealed class ListNewsUseCase : IListNewsUseCase
@@ -17,13 +17,17 @@ internal sealed class ListNewsUseCase : IListNewsUseCase
         _newsRepository = newsRepository;
     }
 
-    public async Task<Result<NewsDto[], Error>> ListAsync(int pageNumber, int pageSize, CancellationToken ct = default)
+    public async Task<Result<NewsDto[], Error>> ListAsync(CancellationToken ct = default)
     {
         try
         {
-            var news = await _newsRepository.ListNewsAsync(pageNumber, pageSize, ct);
+            var news = await _newsRepository.ListNewsAsync(ct: ct);
 
-            return Result.Success<NewsDto[], Error>(news.Select(x => x.ToDto()).ToArray());
+            return Result.Success<NewsDto[], Error>(
+                news
+                    .Select(x => x.ToDto())
+                    .ToArray()
+            );
         }
         catch (Exception e)
         {

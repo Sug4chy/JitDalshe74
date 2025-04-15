@@ -1,4 +1,4 @@
-namespace JitDalshe.Application.Api.Attributes;
+namespace JitDalshe.Application.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class UseCaseAttribute : Attribute;

@@ -1,7 +1,7 @@
 using Autofac;
-using JitDalshe.Application.Api.Attributes;
+using JitDalshe.Application.Attributes;
 
-namespace JitDalshe.Application.Api;
+namespace JitDalshe.Application.Site;
 
 public sealed class ApiApplicationModule : Module
 {

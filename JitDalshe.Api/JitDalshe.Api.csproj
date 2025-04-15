@@ -7,19 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
+        <Folder Include="Controllers\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Application\JitDalshe.Application\JitDalshe.Application.csproj" />
+        <ProjectReference Include="..\Application\JitDalshe.Application\JitDalshe.Application.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentValidation" Version="11.11.0" />
-      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
+        <PackageReference Include="FluentValidation" Version="11.11.0"/>
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0"/>
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.1"/>
     </ItemGroup>
 
 </Project>

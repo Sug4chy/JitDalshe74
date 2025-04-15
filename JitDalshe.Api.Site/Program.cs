@@ -2,7 +2,7 @@ using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
-using JitDalshe.Application.Api;
+using JitDalshe.Application.Site;
 using JitDalshe.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +13,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
         containerBuilder.RegisterModule<ApiApplicationModule>();
         containerBuilder.RegisterModule(new PersistenceInfrastructureModule
         {
-            ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection"),
+            ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         });
     });
 
