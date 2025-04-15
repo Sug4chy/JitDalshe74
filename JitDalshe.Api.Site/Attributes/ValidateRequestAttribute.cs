@@ -1,7 +1,7 @@
-using JitDalshe.Api.ActionFilters;
+using JitDalshe.Api.Site.ActionFilters;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace JitDalshe.Api.Attributes;
+namespace JitDalshe.Api.Site.Attributes;
 
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class ValidateRequestAttribute : Attribute, IFilterFactory

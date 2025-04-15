@@ -1,10 +1,10 @@
 using System.Reflection;
 using FluentValidation;
-using JitDalshe.Api.Attributes;
+using JitDalshe.Api.Site.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace JitDalshe.Api.ActionFilters;
+namespace JitDalshe.Api.Site.ActionFilters;
 
 public sealed class ValidateRequestActionFilter : IAsyncActionFilter
 {

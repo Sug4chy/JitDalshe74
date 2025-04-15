@@ -1,9 +1,9 @@
-using JitDalshe.Api.Attributes;
-using JitDalshe.Api.Controllers.Base;
+using JitDalshe.Api.Site.Attributes;
+using JitDalshe.Api.Site.Controllers.Base;
 using JitDalshe.Application.Api.UseCases.ListNews;
 using Microsoft.AspNetCore.Mvc;
 
-namespace JitDalshe.Api.Controllers.News;
+namespace JitDalshe.Api.Site.Controllers.News;
 
 [ApiController]
 [Route("/api/v1/news")]

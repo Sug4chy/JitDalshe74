@@ -1,4 +1,4 @@
-using JitDalshe.AdminUi.Components;
+using JitDalshe.Ui.Admin.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,7 +1,7 @@
 using JitDalshe.Application.Errors;
 using Microsoft.AspNetCore.Mvc;
 
-namespace JitDalshe.Api.Controllers.Base;
+namespace JitDalshe.Api.Site.Controllers.Base;
 
 public abstract class AbstractController : ControllerBase
 {

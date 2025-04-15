@@ -1,7 +1,7 @@
 using FluentValidation;
-using JitDalshe.Api.Attributes;
+using JitDalshe.Api.Site.Attributes;
 
-namespace JitDalshe.Api.Controllers.News.Requests;
+namespace JitDalshe.Api.Site.Controllers.News.Requests;
 
 [Validator<ListNewsRequestValidator>]
 public sealed record ListNewsRequest(int PageNumber, int PageSize);
