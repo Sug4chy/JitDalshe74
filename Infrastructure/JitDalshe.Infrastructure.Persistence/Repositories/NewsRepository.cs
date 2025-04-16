@@ -55,4 +55,10 @@ public sealed class NewsRepository : INewsRepository
         _dbContext.News.Update(news);
         await _dbContext.SaveChangesAsync(ct);
     }
+
+    public async Task DeleteAsync(News news, CancellationToken ct = default)
+    {
+        _dbContext.News.Remove(news);
+        await _dbContext.SaveChangesAsync(ct);
+    }
 }
