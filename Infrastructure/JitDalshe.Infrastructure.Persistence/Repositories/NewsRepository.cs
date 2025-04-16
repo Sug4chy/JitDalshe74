@@ -27,7 +27,7 @@ public sealed class NewsRepository : INewsRepository
             .Include(x => x.Photos)
             .Include(x => x.PrimaryPhoto)
             .ThenInclude(x => x!.NewsPhoto)
-            .AsNoTracking();
+            .AsQueryable();
 
         if (pageNumber is not null && pageSize is not null)
         {
@@ -45,7 +45,6 @@ public sealed class NewsRepository : INewsRepository
             .Include(x => x.Photos)
             .Include(x => x.PrimaryPhoto)
             .ThenInclude(x => x!.NewsPhoto)
-            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, ct);
 
         return Maybe<News>.From(news);

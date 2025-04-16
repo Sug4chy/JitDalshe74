@@ -8,5 +8,6 @@ public static class DbContextOptionsFactory
         where TDbContext : DbContext
         => new DbContextOptionsBuilder<TDbContext>()
             .UseNpgsql(connectionString)
+            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
             .Options;
 }
