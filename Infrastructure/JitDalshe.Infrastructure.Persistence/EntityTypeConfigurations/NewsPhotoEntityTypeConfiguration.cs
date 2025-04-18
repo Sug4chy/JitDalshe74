@@ -30,6 +30,11 @@ public sealed class NewsPhotoEntityTypeConfiguration : IEntityTypeConfiguration<
                 x => new Uri(x))
             .HasColumnName(nameof(NewsPhoto.Uri).ToSnakeCase());
 
+        builder.Property(x => x.NewsId)
+            .IsRequired()
+            .HasGuidConversion()
+            .HasColumnName(nameof(NewsPhoto.NewsId).ToSnakeCase());
+
         builder.HasAudits();
 
         builder.HasOne(x => x.News)
