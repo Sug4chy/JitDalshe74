@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace JitDalshe.Api.Admin.Controllers.News;
 
 [ApiController]
-[Route("/admin-api/v1/[controller]")]
+[Route("/admin-api/v1/news")]
 public sealed class Controller : AbstractController
 {
     [HttpGet]

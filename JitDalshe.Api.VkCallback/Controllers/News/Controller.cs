@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace JitDalshe.Api.VkCallback.Controllers.News;
 
 [ApiController]
-[Route("/vk-callback-api/v1/[controller]")]
+[Route("/vk-callback-api/v1/news")]
 public sealed class Controller : AbstractController
 {
     [HttpPost]

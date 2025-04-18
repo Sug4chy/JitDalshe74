@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Api.VkCallback", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Application.VkCallback", "Application\JitDalshe.Application.VkCallback\JitDalshe.Application.VkCallback.csproj", "{364F4159-B72A-47A4-AEB1-71BEE6253B67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Migrator", "JitDalshe.Migrator\JitDalshe.Migrator.csproj", "{742B49DC-56B6-4896-84B6-902EB8BFCE17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{364F4159-B72A-47A4-AEB1-71BEE6253B67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{364F4159-B72A-47A4-AEB1-71BEE6253B67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{364F4159-B72A-47A4-AEB1-71BEE6253B67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{742B49DC-56B6-4896-84B6-902EB8BFCE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{742B49DC-56B6-4896-84B6-902EB8BFCE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{742B49DC-56B6-4896-84B6-902EB8BFCE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{742B49DC-56B6-4896-84B6-902EB8BFCE17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C6BA5D87-D53F-40F2-8FA4-D84B6AEC2045} = {BE24047B-D681-4DFE-83A1-1E70E0A43F9F}

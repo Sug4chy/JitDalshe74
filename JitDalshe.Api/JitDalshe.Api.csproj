@@ -21,6 +21,10 @@
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0"/>
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.1"/>
         <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.1"/>
     </ItemGroup>
