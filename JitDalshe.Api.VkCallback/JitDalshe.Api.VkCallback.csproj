@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Application\JitDalshe.Application.VkCallback\JitDalshe.Application.VkCallback.csproj" />
+      <ProjectReference Include="..\Infrastructure\JitDalshe.Infrastructure.Persistence\JitDalshe.Infrastructure.Persistence.csproj" />
+      <ProjectReference Include="..\JitDalshe.Api\JitDalshe.Api.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\Requests\" />
+    </ItemGroup>
+
+</Project>

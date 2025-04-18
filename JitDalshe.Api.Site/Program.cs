@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
     .ConfigureContainer<ContainerBuilder>(containerBuilder =>
     {
-        containerBuilder.RegisterModule<ApiApplicationModule>();
+        containerBuilder.RegisterModule<SiteApplicationModule>();
         containerBuilder.RegisterModule(new PersistenceInfrastructureModule
         {
             ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")

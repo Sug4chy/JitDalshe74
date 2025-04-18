@@ -1,9 +1,9 @@
 using Autofac;
 using JitDalshe.Application.Attributes;
 
-namespace JitDalshe.Application.Admin;
+namespace JitDalshe.Application.Site;
 
-public sealed class AdminApiApplicationModule : Module
+public sealed class SiteApplicationModule : Module
 {
     protected override void Load(ContainerBuilder builder)
     {

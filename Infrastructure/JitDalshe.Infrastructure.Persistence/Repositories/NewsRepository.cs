@@ -50,6 +50,12 @@ public sealed class NewsRepository : INewsRepository
         return Maybe<News>.From(news);
     }
 
+    public async Task AddAsync(News news, CancellationToken ct = default)
+    {
+        _dbContext.News.Add(news);
+        await _dbContext.SaveChangesAsync(ct);
+    }
+
     public async Task EditAsync(News news, CancellationToken ct = default)
     {
         _dbContext.News.Update(news);

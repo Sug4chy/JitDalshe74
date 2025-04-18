@@ -12,6 +12,7 @@ public interface INewsRepository
         CancellationToken ct = default);
 
     Task<Maybe<News>> GetNewsByIdAsync(IdOf<News> id, CancellationToken ct = default);
+    Task AddAsync(News news, CancellationToken ct = default);
     Task EditAsync(News news, CancellationToken ct = default);
     Task DeleteAsync(News news, CancellationToken ct = default);
 }
