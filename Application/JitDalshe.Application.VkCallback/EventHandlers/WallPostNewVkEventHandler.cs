@@ -4,6 +4,7 @@ using JitDalshe.Application.Errors;
 using JitDalshe.Application.VkCallback.Abstractions;
 using JitDalshe.Application.VkCallback.Events;
 using JitDalshe.Domain.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace JitDalshe.Application.VkCallback.EventHandlers;
 
@@ -12,10 +13,12 @@ public sealed class WallPostNewVkEventHandler : IVkEventHandler<WallPostNewVkEve
     private static readonly List<string> SizeTypesSorted = ["s", "m", "x", "o", "p", "q", "r", "y", "z", "w"];
 
     private readonly INewsRepository _newsRepository;
+    private readonly ILogger<WallPostNewVkEventHandler> _logger;
 
-    public WallPostNewVkEventHandler(INewsRepository newsRepository)
+    public WallPostNewVkEventHandler(INewsRepository newsRepository, ILogger<WallPostNewVkEventHandler> logger)
     {
         _newsRepository = newsRepository;
+        _logger = logger;
     }
 
     public async Task<UnitResult<Error>> HandleAsync(WallPostNewVkEvent @event, CancellationToken ct)
@@ -26,7 +29,7 @@ public sealed class WallPostNewVkEventHandler : IVkEventHandler<WallPostNewVkEve
             var newsPhotos = photoAttachments
                 .Select(x => new NewsPhoto
                 {
-                    ExtId = x.Photo.Id,
+                    ExtId = x.Photo!.Id,
                     Uri = new Uri(
                         x.Photo.Sizes.MaxBy(s => SizeTypesSorted.IndexOf(s.Type))!.Url)
                 })
@@ -37,7 +40,7 @@ public sealed class WallPostNewVkEventHandler : IVkEventHandler<WallPostNewVkEve
                 ExtId = @event.Object.Id,
                 Text = @event.Object.Text,
                 PublicationDate = DateOnly.FromDateTime(
-                    DateTimeOffset.FromUnixTimeMilliseconds(@event.Object.Date).Date),
+                    DateTimeOffset.FromUnixTimeSeconds(@event.Object.Date).Date),
                 Photos = newsPhotos,
             };
             if (news.Photos.Count is not 0)
@@ -55,6 +58,7 @@ public sealed class WallPostNewVkEventHandler : IVkEventHandler<WallPostNewVkEve
         }
         catch (Exception e)
         {
+            _logger.LogError(exception: e, message: "An error occured while adding new post");
             return UnitResult.Failure(Error.Of(e.Message));
         }
     }

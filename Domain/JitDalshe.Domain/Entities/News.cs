@@ -16,5 +16,6 @@ public sealed class News : AuditableEntity<IdOf<News>>
     public News()
     {
         Id = IdOf<News>.New();
+        CreatedAt = DateTime.UtcNow;
     }
 }

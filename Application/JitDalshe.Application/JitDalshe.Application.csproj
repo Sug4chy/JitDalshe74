@@ -7,11 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Domain\JitDalshe.Domain\JitDalshe.Domain.csproj" />
+        <ProjectReference Include="..\..\Domain\JitDalshe.Domain\JitDalshe.Domain.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Autofac" Version="8.2.1" />
+        <PackageReference Include="Autofac" Version="8.2.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4"/>
     </ItemGroup>
 
 </Project>

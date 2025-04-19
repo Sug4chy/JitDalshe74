@@ -19,7 +19,7 @@ public sealed record NewsCreatedEventPayload(
 
 public sealed record Attachment(
     string Type,
-    Photo Photo
+    Photo? Photo = null
 );
 
 public sealed record Photo(
