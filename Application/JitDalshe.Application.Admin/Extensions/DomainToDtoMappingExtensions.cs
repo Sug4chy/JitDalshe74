@@ -10,7 +10,7 @@ public static class DomainToDtoMappingExtensions
             Id: news.Id,
             Text: news.Text,
             Photos: news.Photos
-                .Select(x => x.ToDto(x.PrimaryPhoto is not null))
+                .Select(x => x.ToDto(news.PrimaryPhoto is not null && x.Id == news.PrimaryPhoto.NewsPhotoId))
                 .ToArray());
 
     public static NewsPhotoDto ToDto(this NewsPhoto newsPhoto, bool isPrimary)
