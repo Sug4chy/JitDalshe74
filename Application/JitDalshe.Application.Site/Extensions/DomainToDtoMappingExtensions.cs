@@ -6,5 +6,5 @@ namespace JitDalshe.Application.Site.Extensions;
 public static class DomainToDtoMappingExtensions
 {
     public static NewsDto ToDto(this News news)
-        => new(news.Text, news.PrimaryPhoto!.NewsPhoto!.Uri.ToString());
+        => new(news.Text, news.PrimaryPhoto?.NewsPhoto!.Uri.ToString() ?? string.Empty);
 }
