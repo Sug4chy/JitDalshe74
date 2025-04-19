@@ -25,17 +25,18 @@ public sealed class Controller : AbstractController
             : Error(result.Error);
     }
 
-    [HttpPut("{Id:guid}")]
+    [HttpPut("{id:guid}")]
     [ValidateRequest]
     public async Task<IActionResult> EditNews(
+        [FromRoute] Guid id,
         [FromBody] EditNewsRequest request,
         [FromServices] IEditNewsUseCase editNews,
         CancellationToken ct = default)
     {
         var result = await editNews.EditAsync(
-            newsId: IdOf<Domain.Entities.News>.From(request.Id),
+            newsId: IdOf<Domain.Entities.News>.From(id),
             text: request.Text,
-            primaryPhotoId: IdOf<Domain.Entities.NewsPhoto>.From(request.Id),
+            primaryPhotoId: IdOf<Domain.Entities.NewsPhoto>.From(request.PrimaryPhotoId),
             ct: ct);
 
         return result.IsSuccess

@@ -58,7 +58,11 @@ public sealed class NewsRepository : INewsRepository
 
     public async Task EditAsync(News news, CancellationToken ct = default)
     {
+        await _dbContext.NewsPrimaryPhotos
+            .Where(x => x.NewsId == news.Id)
+            .ExecuteDeleteAsync(ct);
         _dbContext.News.Update(news);
+        _dbContext.NewsPrimaryPhotos.Entry(news.PrimaryPhoto!).State = EntityState.Added;
         await _dbContext.SaveChangesAsync(ct);
     }
 
