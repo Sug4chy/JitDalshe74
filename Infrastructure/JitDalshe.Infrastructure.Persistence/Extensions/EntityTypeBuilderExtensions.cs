@@ -10,11 +10,11 @@ public static class EntityTypeBuilderExtensions
         where TEntity : class, IAuditableEntity
     {
         builder.Property(x => x.CreatedAt)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedNever()
             .HasColumnName(nameof(IAuditableEntity.CreatedAt).ToSnakeCase());
 
         builder.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedNever()
             .HasColumnName(nameof(IAuditableEntity.UpdatedAt).ToSnakeCase());
 
         return builder;

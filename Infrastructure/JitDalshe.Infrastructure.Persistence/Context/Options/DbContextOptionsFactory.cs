@@ -1,3 +1,4 @@
+using JitDalshe.Infrastructure.Persistence.Context.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -11,5 +12,6 @@ public static class DbContextOptionsFactory
             .UseNpgsql(connectionString)
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
             .UseLoggerFactory(LoggerFactory.Create(x => x.AddConsole()))
+            .AddInterceptors(new UpdateAuditsSaveChangesInterceptor())
             .Options;
 }
