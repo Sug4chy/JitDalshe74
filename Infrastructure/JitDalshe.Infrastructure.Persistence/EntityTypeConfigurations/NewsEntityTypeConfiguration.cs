@@ -36,11 +36,13 @@ public sealed class NewsEntityTypeConfiguration : IEntityTypeConfiguration<News>
 
         builder.HasMany(x => x.Photos)
             .WithOne(x => x.News)
-            .HasForeignKey(x => x.NewsId);
+            .HasForeignKey(x => x.NewsId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.PrimaryPhoto)
             .WithOne(x => x.News)
-            .HasForeignKey<NewsPrimaryPhoto>(x => x.NewsId);
+            .HasForeignKey<NewsPrimaryPhoto>(x => x.NewsId)
+            .OnDelete(DeleteBehavior.Cascade);
 
     }
 }

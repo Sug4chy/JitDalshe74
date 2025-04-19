@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace JitDalshe.Infrastructure.Persistence.Context.Options;
 
@@ -9,5 +10,6 @@ public static class DbContextOptionsFactory
         => new DbContextOptionsBuilder<TDbContext>()
             .UseNpgsql(connectionString)
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+            .UseLoggerFactory(LoggerFactory.Create(x => x.AddConsole()))
             .Options;
 }

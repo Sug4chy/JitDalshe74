@@ -16,6 +16,5 @@ public sealed class NewsPhoto : AuditableEntity<IdOf<NewsPhoto>>
     public NewsPhoto()
     {
         Id = IdOf<NewsPhoto>.New();
-        CreatedAt = DateTime.UtcNow;
     }
 }

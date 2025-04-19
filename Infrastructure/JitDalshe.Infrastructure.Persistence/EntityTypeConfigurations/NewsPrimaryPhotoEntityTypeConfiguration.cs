@@ -27,10 +27,12 @@ public sealed class NewsPrimaryPhotoEntityTypeConfiguration : IEntityTypeConfigu
 
         builder.HasOne(x => x.News)
             .WithOne(x => x.PrimaryPhoto)
-            .HasForeignKey<NewsPrimaryPhoto>(x => x.NewsId);
+            .HasForeignKey<NewsPrimaryPhoto>(x => x.NewsId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(x => x.NewsPhoto)
             .WithOne(x => x.PrimaryPhoto)
-            .HasForeignKey<NewsPrimaryPhoto>(x => x.NewsPhotoId);
+            .HasForeignKey<NewsPrimaryPhoto>(x => x.NewsPhotoId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

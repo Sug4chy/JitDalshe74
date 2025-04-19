@@ -20,4 +20,10 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Logging.Console">
+        <HintPath>..\..\..\..\.nuget\packages\microsoft.extensions.logging.console\9.0.3\lib\net9.0\Microsoft.Extensions.Logging.Console.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

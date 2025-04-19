@@ -25,4 +25,7 @@ public readonly record struct IdOf<TEntity> : IComparable<IdOf<TEntity>>
     {
         return _value.CompareTo(other._value);
     }
+
+    public override string ToString()
+        => _value.ToString();
 }
