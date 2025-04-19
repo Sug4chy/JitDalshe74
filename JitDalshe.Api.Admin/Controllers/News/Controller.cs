@@ -36,7 +36,7 @@ public sealed class Controller : AbstractController
         var result = await editNews.EditAsync(
             newsId: IdOf<Domain.Entities.News>.From(id),
             text: request.Text,
-            primaryPhotoId: IdOf<Domain.Entities.NewsPhoto>.From(request.PrimaryPhotoId),
+            primaryPhotoId: IdOf<Domain.Entities.NewsPhoto>.From(request.PrimaryPhotoId ?? Guid.Empty),
             ct: ct);
 
         return result.IsSuccess

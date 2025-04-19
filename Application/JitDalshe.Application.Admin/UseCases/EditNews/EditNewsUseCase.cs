@@ -36,22 +36,25 @@ internal sealed class EditNewsUseCase : IEditNewsUseCase
 
             var news = maybeNews.Value;
 
-            var maybeNewPrimaryPhoto = news.Photos.TryFirst(x => x.Id == primaryPhotoId);
-            if (maybeNewPrimaryPhoto.HasNoValue)
+            if (news.Photos.Count != 0)
             {
-                return Result.Failure<NewsDto, Error>(
-                    Error.Of($"Photo with id: {primaryPhotoId} doesn't exist", ErrorGroup.NotFound));
+                var maybeNewPrimaryPhoto = news.Photos.TryFirst(x => x.Id == primaryPhotoId);
+                if (maybeNewPrimaryPhoto.HasNoValue)
+                {
+                    return Result.Failure<NewsDto, Error>(
+                        Error.Of($"Photo with id: {primaryPhotoId} doesn't exist", ErrorGroup.NotFound));
+                }
+
+                news.PrimaryPhoto = new NewsPrimaryPhoto
+                {
+                    NewsId = news.Id,
+                    News = news,
+                    NewsPhoto = maybeNewPrimaryPhoto.Value,
+                    NewsPhotoId = primaryPhotoId
+                };
             }
 
             news.Text = text;
-            news.PrimaryPhoto = new NewsPrimaryPhoto
-            {
-                NewsId = news.Id,
-                News = news,
-                NewsPhoto = maybeNewPrimaryPhoto.Value,
-                NewsPhotoId = primaryPhotoId
-            };
-
             await _newsRepository.EditAsync(news, ct);
 
             return Result.Success<NewsDto, Error>(news.ToDto());
