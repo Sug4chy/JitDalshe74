@@ -3,5 +3,10 @@ namespace JitDalshe.Ui.Admin.Models;
 public readonly record struct News(
     Guid Id,
     string Text,
-    NewsPhoto[] Photos
-);
+    DateOnly PublishDate,
+    NewsPhoto[] Photos)
+{
+    public string Title => Text.Split('.')[0];
+
+    public string TextWithoutTitle => string.Join('.', Text.Split('.')[1..]);
+}

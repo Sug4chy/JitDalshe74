@@ -1,0 +1,24 @@
+@using JitDalshe.Ui.Admin.Models
+
+<div class="card w-50 mb-3">
+    <div class="card-header">
+        @News.PublishDate.ToString("dd-MM-yyyy")
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">@News.Title</h5>
+        <p class="card-text">@((MarkupString)News.TextWithoutTitle.Replace("\n", "<br/>"))</p>
+        <button type="button"
+                class="btn btn-primary"
+                @onclick="LogClick">
+            Подробнее
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public News News { get; init; }
+
+    private void LogClick()
+        => Console.WriteLine("Button clicked");
+
+}
