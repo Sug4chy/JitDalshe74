@@ -10,24 +10,41 @@
         <p class="card-text">@((MarkupString)News.TextWithoutTitle.Replace("\n", "<br/>"))</p>
     </div>
     <div class="card-footer">
-        <button type="button"
-                class="btn btn-primary"
-                data-toggle="modal"
-                data-target="#modal_@News.Id"
-                @onclick="ShowInfoModalAsync">
-            Подробнее
-        </button>
+        <div class="d-flex">
+            <button type="button"
+                    class="btn btn-primary"
+                    data-toggle="modal"
+                    data-target="@InfoModalId"
+                    @onclick="ShowInfoModalAsync">
+                Подробнее
+            </button>
+            <button type="button"
+                    class="btn btn-secondary"
+                    data-toggle="modal"
+                    data-target="@EditModalId"
+                    @onclick="ShowEditModalAsync">
+                Изменить
+            </button>
+        </div>
     </div>
 </div>
 
-<NewsInfoModal News="News"/>
+<NewsInfoModal News="News" Id="@InfoModalId[1..]"/>
+<NewsEditModal News="News" Id="@EditModalId[1..]"/>
 
 @code {
-    [Parameter] public News News { get; init; }
+    private string InfoModalId => $"#modal_{News.Id}";
+    private string EditModalId => $"#modal_edit_{News.Id}";
+
+    [Parameter] public required News News { get; init; }
 
     private async Task ShowInfoModalAsync()
     {
-        await JsRuntime.InvokeVoidAsync("showModal", $"#modal_{News.Id}");
+        await JsRuntime.InvokeVoidAsync("showModal", InfoModalId);
     }
 
+    private async Task ShowEditModalAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("showModal", EditModalId);
+    }
 }

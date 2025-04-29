@@ -1,6 +1,6 @@
 @using JitDalshe.Ui.Admin.Models
 
-<div id="modal_@News.Id"
+<div id="@Id"
      class="modal fade"
      tabindex="-1"
      role="dialog"
@@ -19,16 +19,13 @@
                      alt=""/>
                 @((MarkupString)News.TextWithoutTitle.Replace("\n", "<br/>"))
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
         </div>
     </div>
 </div>
 
 @code {
 
-    [Parameter] public News News { get; set; }
+    [Parameter] public required string Id { get; init; } 
+    [Parameter] public required News News { get; init; }
 
 }
