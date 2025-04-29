@@ -5,5 +5,9 @@ window.getElementID = (element) => {
 }
 
 window.showModal = (modalID) => {
-    $(modalID).modal()
+    $(modalID).modal('show')
+}
+
+window.hideModal = (modalID) => {
+    $(modalID).modal('hide')
 }

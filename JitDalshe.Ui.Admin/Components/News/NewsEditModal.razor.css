@@ -11,9 +11,18 @@
     box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);
 }
 
-.img-primary {
-    width: 50%;
-    height: 50%;
-    margin-left: 5%;
-    margin-right: 5%;
+.horizontal-scroll {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin: 20px;
+    justify-content: space-around;
+}
+
+img {
+    flex: 0 0 auto;
+    width: auto;
+    height: 200px;
+    max-width: 200px;
+    margin-right: 10px;
 }
