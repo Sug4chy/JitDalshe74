@@ -1,4 +1,5 @@
 @using JitDalshe.Ui.Admin.Models
+@inject IJSRuntime JsRuntime
 
 <div class="card w-50 mb-3">
     <div class="card-header">
@@ -9,16 +10,22 @@
         <p class="card-text">@((MarkupString)News.TextWithoutTitle.Replace("\n", "<br/>"))</p>
         <button type="button"
                 class="btn btn-primary"
-                @onclick="LogClick">
+                data-toggle="modal"
+                data-target="#modal_@News.Id"
+                @onclick="ShowModalAsync">
             Подробнее
         </button>
     </div>
 </div>
 
+<EditNewsModal News="News"/>
+
 @code {
     [Parameter] public News News { get; init; }
 
-    private void LogClick()
-        => Console.WriteLine("Button clicked");
+    private async Task ShowModalAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("showModal", $"#modal_{News.Id}");
+    }
 
 }
