@@ -1,29 +1,31 @@
 @using JitDalshe.Ui.Admin.Models
 @inject IJSRuntime JsRuntime
 
-<div class="card w-50 mb-3">
+<div class="card w-75 mb-3">
     <div class="card-header">
         @News.PublishDate.ToString("dd-MM-yyyy")
     </div>
     <div class="card-body">
         <h5 class="card-title">@News.Title</h5>
         <p class="card-text">@((MarkupString)News.TextWithoutTitle.Replace("\n", "<br/>"))</p>
+    </div>
+    <div class="card-footer">
         <button type="button"
                 class="btn btn-primary"
                 data-toggle="modal"
                 data-target="#modal_@News.Id"
-                @onclick="ShowModalAsync">
+                @onclick="ShowInfoModalAsync">
             Подробнее
         </button>
     </div>
 </div>
 
-<EditNewsModal News="News"/>
+<NewsInfoModal News="News"/>
 
 @code {
     [Parameter] public News News { get; init; }
 
-    private async Task ShowModalAsync()
+    private async Task ShowInfoModalAsync()
     {
         await JsRuntime.InvokeVoidAsync("showModal", $"#modal_{News.Id}");
     }

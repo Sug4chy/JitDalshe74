@@ -1,12 +1,11 @@
 @using JitDalshe.Ui.Admin.Models
 
 <div id="modal_@News.Id"
-     class="modal fade" 
+     class="modal fade"
      tabindex="-1"
-     role="dialog" 
-     aria-labelledby="exampleModalLabel" 
+     role="dialog"
      aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal_@News.Id">@News.Title</h5>
@@ -15,6 +14,9 @@
                 </button>
             </div>
             <div class="modal-body">
+                <img src="@News.Photos.Single(x => x.IsPrimary).Uri"
+                     class="mb-4 img-primary rounded"
+                     alt=""/>
                 @((MarkupString)News.TextWithoutTitle.Replace("\n", "<br/>"))
             </div>
             <div class="modal-footer">
