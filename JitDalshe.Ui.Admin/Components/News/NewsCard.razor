@@ -7,10 +7,9 @@
     </div>
     <div class="card-body">
         <h5 class="card-title">@News.Title</h5>
-        <p class="card-text">@((MarkupString)News.TextWithoutTitle.Replace("\n", "<br/>"))</p>
     </div>
     <div class="card-footer">
-        <div class="d-flex">
+        <div class="d-flex footer-buttons">
             <button type="button"
                     class="btn btn-primary"
                     data-toggle="modal"
@@ -24,6 +23,11 @@
                     data-target="@EditModalId"
                     @onclick="ShowEditModalAsync">
                 Изменить
+            </button>
+            <button type="button"
+                    class="btn btn-danger"
+                    @onclick="DeleteNewsAsync">
+                Удалить
             </button>
         </div>
     </div>
@@ -46,5 +50,10 @@
     private async Task ShowEditModalAsync()
     {
         await JsRuntime.InvokeVoidAsync("showModal", EditModalId);
+    }
+
+    private async Task DeleteNewsAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("alert", EditModalId);
     }
 }

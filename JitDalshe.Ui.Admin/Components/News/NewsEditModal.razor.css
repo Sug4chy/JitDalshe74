@@ -26,3 +26,8 @@ img {
     max-width: 200px;
     margin-right: 10px;
 }
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+}

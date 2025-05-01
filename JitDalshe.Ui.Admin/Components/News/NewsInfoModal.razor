@@ -19,6 +19,9 @@
                      alt=""/>
                 @((MarkupString)News.TextWithoutTitle.Replace("\n", "<br/>"))
             </div>
+            <div class="modal-footer">
+                Опубликовано @News.PublishDate.ToString("dd-MM-yyyy")
+            </div>
         </div>
     </div>
 </div>
