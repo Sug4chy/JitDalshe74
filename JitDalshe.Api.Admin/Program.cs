@@ -2,6 +2,7 @@ using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
+using JitDalshe.Api.Extensions;
 using JitDalshe.Application.Admin;
 using JitDalshe.Infrastructure.Persistence;
 
@@ -22,7 +23,15 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
+builder.Services.AddCors();
+
+builder.Services.AddExceptionHandling();
+
 var app = builder.Build();
+
+app.UseExceptionHandling();
+
+app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 if (app.Environment.IsDevelopment())
 {
