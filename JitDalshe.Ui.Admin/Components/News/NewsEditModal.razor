@@ -94,31 +94,37 @@
 
     private async Task EditNewsAsync()
     {
-        var response = await NewsApiClient.EditNewsAsync(
-            id: News.Id,
-            request: new EditNewsRequest
-            {
-                PrimaryPhotoId = _selectedPhotoId?.Value,
-                Text = _currentEnteredText
-            });
-        switch (response.StatusCode)
+        try
         {
-            case HttpStatusCode.OK:
-                ToastService.ShowSuccess("Новость успешно обновлена!");
-                await HideModalAsync();
-                await OnNewsEditedCallback.InvokeAsync();
-                break;
-            case HttpStatusCode.BadRequest:
-                Console.WriteLine(response.Error.Content);
-                string errorToShow = response.Error!
-                    .DeserializeValidationError().Errors
-                    .First().Value.First();
-                ToastService.ShowWarning(errorToShow);
-                break;
-            case HttpStatusCode.NotFound:
-                var error = response.Error!.DeserializeError();
-                ToastService.ShowWarning(error.Message);
-                break;
+            var response = await NewsApiClient.EditNewsAsync(
+                id: News.Id,
+                request: new EditNewsRequest
+                {
+                    PrimaryPhotoId = _selectedPhotoId?.Value,
+                    Text = _currentEnteredText
+                });
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    ToastService.ShowSuccess("Новость успешно обновлена!");
+                    await HideModalAsync();
+                    await OnNewsEditedCallback.InvokeAsync();
+                    break;
+                case HttpStatusCode.BadRequest:
+                    string errorToShow = response.Error!
+                        .DeserializeValidationError().Errors
+                        .First().Value.First();
+                    ToastService.ShowWarning(errorToShow);
+                    break;
+                case HttpStatusCode.NotFound:
+                    var error = response.Error!.DeserializeError();
+                    ToastService.ShowWarning(error.Message);
+                    break;
+            }
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError(e.Message);
         }
     }
 

@@ -1,8 +1,10 @@
 @using System.Net
 @using JitDalshe.Ui.Admin.Api.News
+@using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
 @inject IJSRuntime JsRuntime
 @inject INewsApiClient NewsApiClient
+@inject IToastService ToastService
 
 <div class="card mb-3">
     <div class="card-header">
@@ -45,6 +47,7 @@
 
     [Parameter] public required News News { get; init; }
     [Parameter] public required EventCallback OnNewsEditedCallback { get; init; }
+    [Parameter] public required EventCallback OnNewsDeletedCallback { get; init; }
 
     private async Task ShowInfoModalAsync()
     {
@@ -61,15 +64,21 @@
         try
         {
             var response = await NewsApiClient.DeleteNewsByIdAsync(News.Id);
-            if (response.StatusCode is HttpStatusCode.NoContent)
+            switch (response.StatusCode)
             {
-            
+                case HttpStatusCode.NoContent:
+                    ToastService.ShowSuccess("Новость успешно удалена!");
+                    await OnNewsDeletedCallback.InvokeAsync();
+                    break;
+                case HttpStatusCode.NotFound:
+                    var error = response.Error!.DeserializeError();
+                    ToastService.ShowWarning(error.Message);
+                    break;
             }
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            ToastService.ShowError(e.Message);
         }
     }
 }

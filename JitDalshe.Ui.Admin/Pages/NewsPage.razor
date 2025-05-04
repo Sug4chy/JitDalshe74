@@ -14,7 +14,7 @@
 {
     @foreach (var news in _news)
     {
-        <NewsCard News="news" OnNewsEditedCallback="LoadNewsAsync"></NewsCard>
+        <NewsCard News="news" OnNewsEditedCallback="LoadNewsAsync" OnNewsDeletedCallback="LoadNewsAsync"/>
     }
 }
 else
