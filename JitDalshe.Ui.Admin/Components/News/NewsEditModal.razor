@@ -1,39 +1,50 @@
+@using System.Net
+@using JitDalshe.Ui.Admin.Api.News
+@using JitDalshe.Ui.Admin.Api.News.Requests
+@using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
 @inject IJSRuntime JsRuntime
+@inject INewsApiClient NewsApiClient
+@inject IToastService ToastService
 
 <div id="@Id"
      class="modal fade"
      tabindex="-1"
-     aria-hidden="true"
      data-backdrop="static"
      data-keyboard="false">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal_@News.Id">@News.Title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button"
+                        class="close"
+                        aria-label="Close"
+                        @onclick="CloseModalAsync">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="gap-3 horizontal-scroll">
-                    <InputRadioGroup class="mb-4"
-                                     TValue="Guid"
-                                     ValueChanged="e => PrimaryPhotoSelected(e)"
-                                     ValueExpression="() => _selectedPhotoId">
-                        @foreach (var photo in News.Photos)
-                        {
-                            <label
-                                class="image-radio @(photo.Id == _selectedPhotoId ? "selected" : string.Empty)">
-                                <InputRadio TValue="Guid"
-                                            Value="photo.Id"
-                                            style="display: none"/>
-                                <img src="@photo.Uri" class="img-thumbnail rounded" alt=""/>
-                            </label>
-                        }
-                    </InputRadioGroup>
-                </div>
-                <InputTextArea @bind-Value="News.Text"
+                @if (News.Photos.Length > 0)
+                {
+                    <div class="gap-3 horizontal-scroll">
+                        <InputRadioGroup class="mb-4"
+                                         TValue="GuidReference"
+                                         ValueChanged="e => PrimaryPhotoSelected(e)"
+                                         ValueExpression="() => _selectedPhotoId!">
+                            @foreach (var photo in News.Photos)
+                            {
+                                <label
+                                    class="image-radio @(photo.Id == _selectedPhotoId! ? "selected" : string.Empty)">
+                                    <InputRadio TValue="Guid"
+                                                Value="photo.Id"
+                                                style="display: none"/>
+                                    <img src="@photo.Uri" class="img-thumbnail rounded" alt=""/>
+                                </label>
+                            }
+                        </InputRadioGroup>
+                    </div>
+                }
+                <InputTextArea @bind-Value="_currentEnteredText"
                                style="width: 100%; height: 400px"
                                class="form-control"/>
             </div>
@@ -41,7 +52,8 @@
                 Опубликовано @News.PublishDate.ToString("dd-MM-yyyy")
                 <button type="button"
                         class="btn btn-primary"
-                        @onclick="HideModalAsync">Сохранить</button>
+                        @onclick="EditNewsAsync">Сохранить
+                </button>
             </div>
         </div>
     </div>
@@ -49,27 +61,71 @@
 
 @code {
 
-    private Guid _selectedPhotoId;
+    private GuidReference? _selectedPhotoId;
+    private string _currentEnteredText = null!;
 
     [Parameter] public required News News { get; init; }
     [Parameter] public required string Id { get; init; }
+    [Parameter] public required EventCallback OnNewsEditedCallback { get; init; }
 
-    protected override Task OnInitializedAsync()
+    private void RefreshFormFields()
     {
-        _selectedPhotoId = News.Photos.Single(x => x.IsPrimary).Id;
-        return base.OnInitializedAsync();
+        _currentEnteredText = News.Text;
+        _selectedPhotoId = News.Photos.Length > 0
+            ? new GuidReference { Value = News.Photos.Single(x => x.IsPrimary).Id }
+            : null;
     }
 
-    private void PrimaryPhotoSelected(Guid guid)
+    private void PrimaryPhotoSelected(GuidReference guid)
     {
         _selectedPhotoId = guid;
-        Console.WriteLine($"Selected photo: {_selectedPhotoId}");
-        StateHasChanged();
     }
 
     private async Task HideModalAsync()
     {
         await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
+    }
+
+    private async Task CloseModalAsync()
+    {
+        RefreshFormFields();
+        await HideModalAsync();
+    }
+
+    private async Task EditNewsAsync()
+    {
+        var response = await NewsApiClient.EditNewsAsync(
+            id: News.Id,
+            request: new EditNewsRequest
+            {
+                PrimaryPhotoId = _selectedPhotoId?.Value,
+                Text = _currentEnteredText
+            });
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                ToastService.ShowSuccess("Новость успешно обновлена!");
+                await HideModalAsync();
+                await OnNewsEditedCallback.InvokeAsync();
+                break;
+            case HttpStatusCode.BadRequest:
+                Console.WriteLine(response.Error.Content);
+                string errorToShow = response.Error!
+                    .DeserializeValidationError().Errors
+                    .First().Value.First();
+                ToastService.ShowWarning(errorToShow);
+                break;
+            case HttpStatusCode.NotFound:
+                var error = response.Error!.DeserializeError();
+                ToastService.ShowWarning(error.Message);
+                break;
+        }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        RefreshFormFields();
+        return base.OnInitializedAsync();
     }
 
 }

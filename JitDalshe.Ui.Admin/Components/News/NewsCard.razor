@@ -1,7 +1,10 @@
+@using System.Net
+@using JitDalshe.Ui.Admin.Api.News
 @using JitDalshe.Ui.Admin.Models
 @inject IJSRuntime JsRuntime
+@inject INewsApiClient NewsApiClient
 
-<div class="card w-75 mb-3">
+<div class="card mb-3">
     <div class="card-header">
         @News.PublishDate.ToString("dd-MM-yyyy")
     </div>
@@ -34,13 +37,14 @@
 </div>
 
 <NewsInfoModal News="News" Id="@InfoModalId[1..]"/>
-<NewsEditModal News="News" Id="@EditModalId[1..]"/>
+<NewsEditModal News="News" Id="@EditModalId[1..]" OnNewsEditedCallback="OnNewsEditedCallback"/>
 
 @code {
     private string InfoModalId => $"#modal_{News.Id}";
     private string EditModalId => $"#modal_edit_{News.Id}";
 
     [Parameter] public required News News { get; init; }
+    [Parameter] public required EventCallback OnNewsEditedCallback { get; init; }
 
     private async Task ShowInfoModalAsync()
     {
@@ -54,6 +58,18 @@
 
     private async Task DeleteNewsAsync()
     {
-        await JsRuntime.InvokeVoidAsync("alert", EditModalId);
+        try
+        {
+            var response = await NewsApiClient.DeleteNewsByIdAsync(News.Id);
+            if (response.StatusCode is HttpStatusCode.NoContent)
+            {
+            
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }
