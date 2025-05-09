@@ -4,6 +4,7 @@ using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Application.Admin.UseCases.DeleteNews;
 using JitDalshe.Application.Admin.UseCases.EditNews;
 using JitDalshe.Application.Admin.UseCases.ListNews;
+using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,9 +35,9 @@ public sealed class Controller : AbstractController
         CancellationToken ct = default)
     {
         var result = await editNews.EditAsync(
-            newsId: IdOf<Domain.Entities.News>.From(id),
+            newsId: IdOf<Domain.Entities.News.News>.From(id),
             text: request.Text,
-            primaryPhotoId: IdOf<Domain.Entities.NewsPhoto>.From(request.PrimaryPhotoId ?? Guid.Empty),
+            primaryPhotoId: IdOf<NewsPhoto>.From(request.PrimaryPhotoId ?? Guid.Empty),
             ct: ct);
 
         return result.IsSuccess
@@ -51,7 +52,7 @@ public sealed class Controller : AbstractController
         CancellationToken ct = default
     )
     {
-        var result = await deleteNews.DeleteAsync(IdOf<Domain.Entities.News>.From(id), ct);
+        var result = await deleteNews.DeleteAsync(IdOf<Domain.Entities.News.News>.From(id), ct);
 
         return result.IsSuccess
             ? NoContent()

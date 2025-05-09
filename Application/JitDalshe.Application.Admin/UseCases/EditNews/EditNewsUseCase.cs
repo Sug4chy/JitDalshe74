@@ -4,7 +4,7 @@ using JitDalshe.Application.Admin.Dto;
 using JitDalshe.Application.Admin.Extensions;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Errors;
-using JitDalshe.Domain.Entities;
+using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
 
 namespace JitDalshe.Application.Admin.UseCases.EditNews;

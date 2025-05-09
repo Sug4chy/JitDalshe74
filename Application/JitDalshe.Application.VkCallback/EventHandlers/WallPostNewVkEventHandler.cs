@@ -3,7 +3,7 @@ using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Errors;
 using JitDalshe.Application.VkCallback.Abstractions;
 using JitDalshe.Application.VkCallback.Events;
-using JitDalshe.Domain.Entities;
+using JitDalshe.Domain.Entities.News;
 using Microsoft.Extensions.Logging;
 
 namespace JitDalshe.Application.VkCallback.EventHandlers;

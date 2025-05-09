@@ -1,4 +1,4 @@
-using JitDalshe.Domain.Entities;
+using JitDalshe.Domain.Entities.News;
 using Microsoft.EntityFrameworkCore;
 
 namespace JitDalshe.Infrastructure.Persistence.Context;

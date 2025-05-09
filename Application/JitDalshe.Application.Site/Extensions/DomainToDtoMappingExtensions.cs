@@ -1,5 +1,5 @@
 using JitDalshe.Application.Site.Dto;
-using JitDalshe.Domain.Entities;
+using JitDalshe.Domain.Entities.News;
 
 namespace JitDalshe.Application.Site.Extensions;
 

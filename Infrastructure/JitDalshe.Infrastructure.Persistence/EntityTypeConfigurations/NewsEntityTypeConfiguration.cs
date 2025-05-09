@@ -1,4 +1,4 @@
-using JitDalshe.Domain.Entities;
+using JitDalshe.Domain.Entities.News;
 using JitDalshe.Infrastructure.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -11,12 +11,7 @@ public sealed class NewsEntityTypeConfiguration : IEntityTypeConfiguration<News>
     {
         builder.ToTable(nameof(News).ToSnakeCase());
 
-        builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id)
-            .IsRequired()
-            .ValueGeneratedNever()
-            .HasGuidConversion()
-            .HasColumnName(nameof(News.Id).ToSnakeCase());
+        builder.HasId();
 
         builder.Property(x => x.ExtId)
             .IsRequired()

@@ -1,5 +1,5 @@
 using CSharpFunctionalExtensions;
-using JitDalshe.Domain.Entities;
+using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
 
 namespace JitDalshe.Application.Abstractions.Repositories;

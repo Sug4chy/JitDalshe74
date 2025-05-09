@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
-using JitDalshe.Domain.Entities;
+using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
 using JitDalshe.Infrastructure.Persistence.Attributes;
 using JitDalshe.Infrastructure.Persistence.Context;

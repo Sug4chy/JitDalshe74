@@ -1,7 +1,7 @@
 using JitDalshe.Domain.Abstractions;
 using JitDalshe.Domain.ValueObjects;
 
-namespace JitDalshe.Domain.Entities;
+namespace JitDalshe.Domain.Entities.News;
 
 public sealed class News : AuditableEntity<IdOf<News>>
 {
