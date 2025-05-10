@@ -21,10 +21,13 @@ internal sealed class ListEventsUseCase : IListEventsUseCase
     {
         try
         {
-            var events = await _events.FindAllAsync(pageNumber, pageSize, ct);
+            var events = await _events.FindAllAsync(ct);
 
             return Result.Success<EventDto[], Error>(
                 events
+                    .OrderByDescending(x => x.Date)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
                     .Select(x => x.ToDto())
                     .ToArray()
             );

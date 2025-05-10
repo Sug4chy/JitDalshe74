@@ -21,9 +21,16 @@ internal sealed class ListNewsUseCase : IListNewsUseCase
     {
         try
         {
-            var news = await _newsRepository.ListNewsAsync(pageNumber, pageSize, ct);
+            var news = await _newsRepository.ListNewsAsync(ct);
 
-            return Result.Success<NewsDto[], Error>(news.Select(x => x.ToDto()).ToArray());
+            return Result.Success<NewsDto[], Error>(
+                news
+                    .OrderByDescending(x => x.PublicationDate)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(x => x.ToDto())
+                    .ToArray()
+            );
         }
         catch (Exception e)
         {

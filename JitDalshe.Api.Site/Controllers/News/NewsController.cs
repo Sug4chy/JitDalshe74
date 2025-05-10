@@ -10,8 +10,14 @@ namespace JitDalshe.Api.Site.Controllers.News;
 [Route("/api/v1/[controller]")]
 public sealed class NewsController : AbstractController
 {
+    /// <summary>
+    /// Получение новостей с пагинацией (от новых к старым)
+    /// </summary>
     [HttpGet]
     [ValidateRequest]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListNews(
         [FromQuery] ListNewsRequest request,
         [FromServices] IListNewsUseCase useCase,

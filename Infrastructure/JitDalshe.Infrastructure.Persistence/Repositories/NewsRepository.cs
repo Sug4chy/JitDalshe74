@@ -19,23 +19,13 @@ public sealed class NewsRepository : INewsRepository
         _dbContext = dbContext;
     }
 
-    public Task<News[]> ListNewsAsync(
-        int? pageNumber = null,
-        int? pageSize = null,
-        CancellationToken ct = default)
+    public Task<News[]> ListNewsAsync(CancellationToken ct = default)
     {
         var baseQuery = _dbContext.News
             .Include(x => x.Images)
             .Include(x => x.PrimaryImage)
             .ThenInclude(x => x!.NewsImage)
             .AsQueryable();
-
-        if (pageNumber is not null && pageSize is not null)
-        {
-            baseQuery = baseQuery
-                .Skip((pageNumber.Value - 1) * pageSize.Value)
-                .Take(pageSize.Value);
-        }
 
         return baseQuery.ToArrayAsync(ct);
     }

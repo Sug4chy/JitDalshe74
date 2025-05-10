@@ -19,7 +19,7 @@ internal sealed class EventsRepository :  IEventsRepository
         _dbContext = dbContext;
     }
 
-    public Task<Event[]> FindAllAsync(int? pageNumber = null, int? pageSize = null, CancellationToken ct = default)
+    public Task<Event[]> FindAllAsync(CancellationToken ct = default)
         => _dbContext.Events
             .Include(x => x.Image)
             .ToArrayAsync(ct);
