@@ -1,7 +1,7 @@
 namespace JitDalshe.Ui.Admin.Models;
 
-public readonly record struct NewsPhoto(
+public readonly record struct NewsImage(
     Guid Id,
-    string Uri,
+    string Url,
     bool IsPrimary
 );

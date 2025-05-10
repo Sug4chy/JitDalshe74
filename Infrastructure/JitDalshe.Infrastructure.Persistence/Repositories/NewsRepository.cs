@@ -4,6 +4,7 @@ using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
 using JitDalshe.Infrastructure.Persistence.Attributes;
 using JitDalshe.Infrastructure.Persistence.Context;
+using JitDalshe.Infrastructure.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace JitDalshe.Infrastructure.Persistence.Repositories;
@@ -24,9 +25,9 @@ public sealed class NewsRepository : INewsRepository
         CancellationToken ct = default)
     {
         var baseQuery = _dbContext.News
-            .Include(x => x.Photos)
-            .Include(x => x.PrimaryPhoto)
-            .ThenInclude(x => x!.NewsPhoto)
+            .Include(x => x.Images)
+            .Include(x => x.PrimaryImage)
+            .ThenInclude(x => x!.NewsImage)
             .AsQueryable();
 
         if (pageNumber is not null && pageSize is not null)
@@ -39,16 +40,12 @@ public sealed class NewsRepository : INewsRepository
         return baseQuery.ToArrayAsync(ct);
     }
 
-    public async Task<Maybe<News>> GetNewsByIdAsync(IdOf<News> id, CancellationToken ct = default)
-    {
-        var news = await _dbContext.News
-            .Include(x => x.Photos)
-            .Include(x => x.PrimaryPhoto)
-            .ThenInclude(x => x!.NewsPhoto)
-            .FirstOrDefaultAsync(x => x.Id == id, ct);
-
-        return Maybe<News>.From(news);
-    }
+    public Task<Maybe<News>> GetNewsByIdAsync(IdOf<News> id, CancellationToken ct = default) 
+        => _dbContext.News
+            .Include(x => x.Images)
+            .Include(x => x.PrimaryImage)
+            .ThenInclude(x => x!.NewsImage)
+            .TryFirstAsync(x => x.Id == id, ct);
 
     public async Task AddAsync(News news, CancellationToken ct = default)
     {
@@ -68,7 +65,7 @@ public sealed class NewsRepository : INewsRepository
 
         if (oldPrimaryPhoto is not null)
         {
-            _dbContext.NewsPrimaryPhotos.Add(news.PrimaryPhoto!);
+            _dbContext.NewsPrimaryPhotos.Add(news.PrimaryImage!);
         }
 
         await _dbContext.SaveChangesAsync(ct);
@@ -76,12 +73,12 @@ public sealed class NewsRepository : INewsRepository
 
     public async Task DeleteAsync(News news, CancellationToken ct = default)
     {
-        if (news.PrimaryPhoto is not null)
+        if (news.PrimaryImage is not null)
         {
-            _dbContext.NewsPrimaryPhotos.Remove(news.PrimaryPhoto);
+            _dbContext.NewsPrimaryPhotos.Remove(news.PrimaryImage);
         }
 
-        _dbContext.NewsPhotos.RemoveRange(news.Photos);
+        _dbContext.NewsPhotos.RemoveRange(news.Images);
         _dbContext.News.Remove(news);
         await _dbContext.SaveChangesAsync(ct);
     }

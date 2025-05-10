@@ -11,6 +11,6 @@ public interface IEditNewsUseCase
     Task<Result<NewsDto, Error>> EditAsync(
         IdOf<News>  newsId,
         string text,
-        IdOf<NewsPhoto> primaryPhotoId,
+        IdOf<NewsImage> primaryPhotoId,
         CancellationToken ct = default);
 }

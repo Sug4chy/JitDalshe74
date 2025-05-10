@@ -22,7 +22,7 @@ internal sealed class EditNewsUseCase : IEditNewsUseCase
     public async Task<Result<NewsDto, Error>> EditAsync(
         IdOf<News> newsId, 
         string text, 
-        IdOf<NewsPhoto> primaryPhotoId, 
+        IdOf<NewsImage> primaryPhotoId, 
         CancellationToken ct = default)
     {
         try
@@ -36,21 +36,21 @@ internal sealed class EditNewsUseCase : IEditNewsUseCase
 
             var news = maybeNews.Value;
 
-            if (news.Photos.Count != 0)
+            if (news.Images.Count != 0)
             {
-                var maybeNewPrimaryPhoto = news.Photos.TryFirst(x => x.Id == primaryPhotoId);
+                var maybeNewPrimaryPhoto = news.Images.TryFirst(x => x.Id == primaryPhotoId);
                 if (maybeNewPrimaryPhoto.HasNoValue)
                 {
                     return Result.Failure<NewsDto, Error>(
                         Error.Of($"Photo with id: {primaryPhotoId} doesn't exist", ErrorGroup.NotFound));
                 }
 
-                news.PrimaryPhoto = new NewsPrimaryPhoto
+                news.PrimaryImage = new NewsPrimaryImage
                 {
                     NewsId = news.Id,
                     News = news,
-                    NewsPhoto = maybeNewPrimaryPhoto.Value,
-                    NewsPhotoId = primaryPhotoId
+                    NewsImage = maybeNewPrimaryPhoto.Value,
+                    NewsImageId = primaryPhotoId
                 };
             }
 

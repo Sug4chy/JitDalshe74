@@ -29,14 +29,14 @@ public sealed class NewsEntityTypeConfiguration : IEntityTypeConfiguration<News>
 
         builder.HasAudits();
 
-        builder.HasMany(x => x.Photos)
+        builder.HasMany(x => x.Images)
             .WithOne(x => x.News)
             .HasForeignKey(x => x.NewsId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.PrimaryPhoto)
+        builder.HasOne(x => x.PrimaryImage)
             .WithOne(x => x.News)
-            .HasForeignKey<NewsPrimaryPhoto>(x => x.NewsId)
+            .HasForeignKey<NewsPrimaryImage>(x => x.NewsId)
             .OnDelete(DeleteBehavior.Cascade);
 
     }

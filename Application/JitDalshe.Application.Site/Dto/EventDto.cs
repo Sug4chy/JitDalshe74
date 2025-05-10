@@ -1,6 +1,6 @@
 namespace JitDalshe.Application.Site.Dto;
 
-public readonly record struct NewsDto(
-    string Text,
+public readonly record struct EventDto(
+    string Title,
     string ImageUrl
 );

@@ -10,13 +10,13 @@ public static class DomainToDtoMappingExtensions
             Id: news.Id,
             Text: news.Text,
             PublishDate: news.PublicationDate,
-            Photos: news.Photos
-                .Select(x => x.ToDto(news.PrimaryPhoto is not null && x.Id == news.PrimaryPhoto.NewsPhotoId))
+            Images: news.Images
+                .Select(x => x.ToDto(news.PrimaryImage is not null && x.Id == news.PrimaryImage.NewsImageId))
                 .ToArray());
 
-    public static NewsPhotoDto ToDto(this NewsPhoto newsPhoto, bool isPrimary)
+    public static NewsImageDto ToDto(this NewsImage newsImage, bool isPrimary)
         => new(
-            Id: newsPhoto.Id,
-            Uri: newsPhoto.Uri.ToString(),
+            Id: newsImage.Id,
+            Url: newsImage.Url.ToString(),
             IsPrimary: isPrimary);
 }

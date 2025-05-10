@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace JitDalshe.Api.Site.Controllers.News;
 
 [ApiController]
-[Route("/api/v1/news")]
-public sealed class Controller : AbstractController
+[Route("/api/v1/[controller]")]
+public sealed class NewsController : AbstractController
 {
     [HttpGet]
     [ValidateRequest]

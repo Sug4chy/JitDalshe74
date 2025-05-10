@@ -13,9 +13,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                @if (News.Photos.Length > 0)
+                @if (News.Images.Length > 0)
                 {
-                    <img src="@News.Photos.Single(x => x.IsPrimary).Uri"
+                    <img src="@News.Images.Single(x => x.IsPrimary).Url"
                          class="mb-4 img-primary rounded"
                          alt=""/>
                 }

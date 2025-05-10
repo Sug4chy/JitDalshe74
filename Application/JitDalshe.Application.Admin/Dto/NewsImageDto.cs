@@ -1,7 +1,7 @@
 namespace JitDalshe.Application.Admin.Dto;
 
-public readonly record struct NewsPhotoDto(
+public readonly record struct NewsImageDto(
     Guid Id,
-    string Uri,
+    string Url,
     bool IsPrimary
 );

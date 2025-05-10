@@ -3,18 +3,18 @@ using JitDalshe.Domain.ValueObjects;
 
 namespace JitDalshe.Domain.Entities.News;
 
-public sealed class NewsPhoto : AuditableEntity<IdOf<NewsPhoto>>
+public sealed class NewsImage : AuditableEntity<IdOf<NewsImage>>
 {
     public long ExtId { get; init; }
-    public Uri Uri { get; init; }
+    public Uri Url { get; init; }
 
     public IdOf<News> NewsId { get; }
     public News? News { get; }
 
-    public NewsPrimaryPhoto? PrimaryPhoto { get; }
+    public NewsPrimaryImage? PrimaryPhoto { get; }
 
-    public NewsPhoto()
+    public NewsImage()
     {
-        Id = IdOf<NewsPhoto>.New();
+        Id = IdOf<NewsImage>.New();
     }
 }

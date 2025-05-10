@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace JitDalshe.Api.Admin.Controllers.News;
 
 [ApiController]
-[Route("/admin-api/v1/news")]
-public sealed class Controller : AbstractController
+[Route("/admin-api/v1/[controller]")]
+public sealed class NewsController : AbstractController
 {
     [HttpGet]
     public async Task<IActionResult> ListNews(
@@ -37,7 +37,7 @@ public sealed class Controller : AbstractController
         var result = await editNews.EditAsync(
             newsId: IdOf<Domain.Entities.News.News>.From(id),
             text: request.Text,
-            primaryPhotoId: IdOf<NewsPhoto>.From(request.PrimaryPhotoId ?? Guid.Empty),
+            primaryPhotoId: IdOf<NewsImage>.From(request.PrimaryPhotoId ?? Guid.Empty),
             ct: ct);
 
         return result.IsSuccess

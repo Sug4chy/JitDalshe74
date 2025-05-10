@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Application\JitDalshe.Application.Site\JitDalshe.Application.Site.csproj" />
+      <ProjectReference Include="..\Infrastructure\JitDalshe.Infrastructure.Minio\JitDalshe.Infrastructure.Minio.csproj" />
         <ProjectReference Include="..\Infrastructure\JitDalshe.Infrastructure.Persistence\JitDalshe.Infrastructure.Persistence.csproj"/>
         <ProjectReference Include="..\JitDalshe.Api\JitDalshe.Api.csproj"/>
     </ItemGroup>

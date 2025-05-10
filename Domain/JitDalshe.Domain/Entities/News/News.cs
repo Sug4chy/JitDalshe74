@@ -9,9 +9,9 @@ public sealed class News : AuditableEntity<IdOf<News>>
     public string Text { get; set; }
     public DateOnly PublicationDate { get; init; }
 
-    public ICollection<NewsPhoto> Photos { get; init; }
+    public ICollection<NewsImage> Images { get; init; }
 
-    public NewsPrimaryPhoto? PrimaryPhoto { get; set; }
+    public NewsPrimaryImage? PrimaryImage { get; set; }
 
     public News()
     {

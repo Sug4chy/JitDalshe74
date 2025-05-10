@@ -24,21 +24,21 @@
                 </button>
             </div>
             <div class="modal-body">
-                @if (News.Photos.Length > 0)
+                @if (News.Images.Length > 0)
                 {
                     <div class="gap-3 horizontal-scroll">
                         <InputRadioGroup class="mb-4"
                                          TValue="GuidReference"
                                          ValueChanged="e => PrimaryPhotoSelected(e)"
                                          ValueExpression="() => _selectedPhotoId!">
-                            @foreach (var photo in News.Photos)
+                            @foreach (var photo in News.Images)
                             {
                                 <label
                                     class="image-radio @(photo.Id == _selectedPhotoId! ? "selected" : string.Empty)">
                                     <InputRadio TValue="Guid"
                                                 Value="photo.Id"
                                                 style="display: none"/>
-                                    <img src="@photo.Uri" class="img-thumbnail rounded" alt=""/>
+                                    <img src="@photo.Url" class="img-thumbnail rounded" alt=""/>
                                 </label>
                             }
                         </InputRadioGroup>
@@ -71,8 +71,8 @@
     private void RefreshFormFields()
     {
         _currentEnteredText = News.Text;
-        _selectedPhotoId = News.Photos.Length > 0
-            ? new GuidReference { Value = News.Photos.Single(x => x.IsPrimary).Id }
+        _selectedPhotoId = News.Images.Length > 0
+            ? new GuidReference { Value = News.Images.Single(x => x.IsPrimary).Id }
             : null;
     }
 

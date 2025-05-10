@@ -20,7 +20,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGenWithControllerGroups();
 builder.Services.AddControllers();
 
 builder.Services.AddCors();

@@ -27,10 +27,10 @@ public sealed class WallPostNewVkEventHandler : IVkEventHandler<WallPostNewVkEve
         {
             var photoAttachments = @event.Object.Attachments.Where(x => x.Type is "photo");
             var newsPhotos = photoAttachments
-                .Select(x => new NewsPhoto
+                .Select(x => new NewsImage
                 {
                     ExtId = x.Photo!.Id,
-                    Uri = new Uri(
+                    Url = new Uri(
                         x.Photo.Sizes.MaxBy(s => SizeTypesSorted.IndexOf(s.Type))!.Url)
                 })
                 .ToList();
@@ -41,14 +41,14 @@ public sealed class WallPostNewVkEventHandler : IVkEventHandler<WallPostNewVkEve
                 Text = @event.Object.Text,
                 PublicationDate = DateOnly.FromDateTime(
                     DateTimeOffset.FromUnixTimeSeconds(@event.Object.Date).Date),
-                Photos = newsPhotos,
+                Images = newsPhotos,
             };
-            if (news.Photos.Count is not 0)
+            if (news.Images.Count is not 0)
             {
-                news.PrimaryPhoto = new NewsPrimaryPhoto
+                news.PrimaryImage = new NewsPrimaryImage
                 {
                     NewsId = news.Id,
-                    NewsPhotoId = news.Photos.First().Id
+                    NewsImageId = news.Images.First().Id
                 };
             }
 

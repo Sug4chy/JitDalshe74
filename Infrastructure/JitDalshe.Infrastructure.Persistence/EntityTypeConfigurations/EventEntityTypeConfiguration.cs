@@ -27,8 +27,8 @@ public sealed class EventEntityTypeConfiguration : IEntityTypeConfiguration<Even
 
         builder.HasAudits();
 
-        builder.HasOne(x => x.Photo)
+        builder.HasOne(x => x.Image)
             .WithOne(x => x.Event)
-            .HasForeignKey<EventPhoto>(x => x.EventId);
+            .HasForeignKey<EventImage>(x => x.EventId);
     }
 }
