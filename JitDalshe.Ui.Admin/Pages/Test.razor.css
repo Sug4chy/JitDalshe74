@@ -1,0 +1,30 @@
+.image-upload-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+}
+
+.image-upload-label {
+    cursor: pointer;
+}
+
+.image-upload-box {
+    width: 200px;
+    height: 200px;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #999;
+}
+
+.plus-sign {
+    font-size: 50px;
+    color: #999;
+}
+
+.uploaded-image {
+    max-width: 100%;
+    max-height: 100%;
+}

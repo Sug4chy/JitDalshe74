@@ -38,8 +38,8 @@
     </div>
 </div>
 
-<NewsInfoModal News="News" Id="@InfoModalId[1..]"/>
-<NewsEditModal News="News" Id="@EditModalId[1..]" OnNewsEditedCallback="OnNewsEditedCallback"/>
+<InfoNewsModal News="News" Id="@InfoModalId[1..]"/>
+<EditNewsModal News="News" Id="@EditModalId[1..]" OnNewsEditedCallback="OnNewsEditedCallback"/>
 
 @code {
     private string InfoModalId => $"#modal_{News.Id}";
