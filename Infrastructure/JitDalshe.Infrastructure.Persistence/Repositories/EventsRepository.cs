@@ -1,5 +1,7 @@
+using System.Linq.Expressions;
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
+using JitDalshe.Application.Enums;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
 using JitDalshe.Infrastructure.Persistence.Attributes;
@@ -19,10 +21,34 @@ internal sealed class EventsRepository :  IEventsRepository
         _dbContext = dbContext;
     }
 
-    public Task<Event[]> FindAllAsync(CancellationToken ct = default)
-        => _dbContext.Events
+    public Task<Event[]> FindAllAsync<TOrderKey>(
+        int? pageNumber = null, 
+        int? pageSize = null, 
+        Expression<Func<Event, TOrderKey>>? orderByExpression = null,
+        SortingOrder sortingOrder = SortingOrder.Ascending, 
+        CancellationToken ct = default)
+    {
+        var query = _dbContext.Events
             .Include(x => x.Image)
-            .ToArrayAsync(ct);
+            .AsQueryable();
+
+        if (pageNumber.HasValue && pageSize.HasValue)
+        {
+            query = query.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+        }
+
+        if (orderByExpression is not null)
+        {
+            query = sortingOrder switch
+            {
+                SortingOrder.Ascending => query.OrderBy(orderByExpression),
+                SortingOrder.Descending => query.OrderByDescending(orderByExpression),
+                _ => query
+            };
+        }
+
+        return query.ToArrayAsync(ct);
+    }
 
     public Task<Maybe<Event>> FindByIdAsync(IdOf<Event> id, CancellationToken ct = default)
         => _dbContext.Events

@@ -2,8 +2,8 @@ using System.Net.Mime;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Api.Site.Controllers.Events.Requests;
-using JitDalshe.Application.Site.UseCases.GetEventImage;
 using JitDalshe.Application.Site.UseCases.ListEvents;
+using JitDalshe.Application.UseCases.GetEventImage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Site.Controllers.Events;

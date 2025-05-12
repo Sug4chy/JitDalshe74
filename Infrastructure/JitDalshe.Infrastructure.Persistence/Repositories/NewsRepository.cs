@@ -1,5 +1,7 @@
+using System.Linq.Expressions;
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
+using JitDalshe.Application.Enums;
 using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
 using JitDalshe.Infrastructure.Persistence.Attributes;
@@ -19,18 +21,38 @@ public sealed class NewsRepository : INewsRepository
         _dbContext = dbContext;
     }
 
-    public Task<News[]> ListNewsAsync(CancellationToken ct = default)
+    public Task<News[]> FindAllAsync<TOrderKey>(
+        int? pageNumber = null,
+        int? pageSize = null,
+        Expression<Func<News, TOrderKey>>? orderByExpression = null,
+        SortingOrder sortingOrder = SortingOrder.Ascending,
+        CancellationToken ct = default)
     {
-        var baseQuery = _dbContext.News
+        var query = _dbContext.News
             .Include(x => x.Images)
             .Include(x => x.PrimaryImage)
             .ThenInclude(x => x!.NewsImage)
             .AsQueryable();
 
-        return baseQuery.ToArrayAsync(ct);
+        if (pageNumber.HasValue && pageSize.HasValue)
+        {
+            query = query.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+        }
+
+        if (orderByExpression is not null)
+        {
+            query = sortingOrder switch
+            {
+                SortingOrder.Ascending => query.OrderBy(orderByExpression),
+                SortingOrder.Descending => query.OrderByDescending(orderByExpression),
+                _ => query
+            };
+        }
+
+        return query.ToArrayAsync(ct);
     }
 
-    public Task<Maybe<News>> GetNewsByIdAsync(IdOf<News> id, CancellationToken ct = default) 
+    public Task<Maybe<News>> FindByIdAsync(IdOf<News> id, CancellationToken ct = default)
         => _dbContext.News
             .Include(x => x.Images)
             .Include(x => x.PrimaryImage)

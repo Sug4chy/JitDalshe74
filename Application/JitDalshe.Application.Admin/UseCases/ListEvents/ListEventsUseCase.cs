@@ -1,15 +1,13 @@
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
-using JitDalshe.Application.Attributes;
+using JitDalshe.Application.Admin.Dto;
+using JitDalshe.Application.Admin.Extensions;
 using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
-using JitDalshe.Application.Site.Dto;
-using JitDalshe.Application.Site.Extensions;
 
-namespace JitDalshe.Application.Site.UseCases.ListEvents;
+namespace JitDalshe.Application.Admin.UseCases.ListEvents;
 
-[UseCase]
-internal sealed class ListEventsUseCase : IListEventsUseCase
+public sealed class ListEventsUseCase : IListEventsUseCase
 {
     private readonly IEventsRepository _events;
 
@@ -18,15 +16,13 @@ internal sealed class ListEventsUseCase : IListEventsUseCase
         _events = events;
     }
 
-    public async Task<Result<EventDto[], Error>> ListAsync(int pageNumber, int pageSize, CancellationToken ct = default)
+    public async Task<Result<EventDto[], Error>> ListAsync(CancellationToken ct = default)
     {
         try
         {
             var events = await _events.FindAllAsync(
                 orderByExpression: x => x.Date,
                 sortingOrder: SortingOrder.Descending,
-                pageNumber: pageNumber,
-                pageSize: pageSize,
                 ct: ct);
 
             return Result.Success<EventDto[], Error>(

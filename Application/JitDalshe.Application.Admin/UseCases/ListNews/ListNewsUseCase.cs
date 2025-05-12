@@ -3,6 +3,7 @@ using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Admin.Dto;
 using JitDalshe.Application.Admin.Extensions;
 using JitDalshe.Application.Attributes;
+using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
 
 namespace JitDalshe.Application.Admin.UseCases.ListNews;
@@ -21,7 +22,10 @@ internal sealed class ListNewsUseCase : IListNewsUseCase
     {
         try
         {
-            var news = await _newsRepository.ListNewsAsync(ct: ct);
+            var news = await _newsRepository.FindAllAsync(
+                orderByExpression: x => x.PublicationDate,
+                sortingOrder: SortingOrder.Descending,
+                ct: ct);
 
             return Result.Success<NewsDto[], Error>(
                 news

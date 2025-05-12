@@ -1,8 +1,8 @@
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Errors;
-using JitDalshe.Application.Site.Models;
+using JitDalshe.Application.Models;
 
-namespace JitDalshe.Application.Site.UseCases.GetEventImage;
+namespace JitDalshe.Application.UseCases.GetEventImage;
 
 public interface IGetEventImageUseCase
 {

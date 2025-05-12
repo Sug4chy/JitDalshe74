@@ -21,7 +21,7 @@ internal sealed class DeleteNewsUseCase : IDeleteNewsUseCase
     {
         try
         {
-            var maybeNews = await _newsRepository.GetNewsByIdAsync(id, ct);
+            var maybeNews = await _newsRepository.FindByIdAsync(id, ct);
             if (maybeNews.HasNoValue)
             {
                 return UnitResult.Failure(Error.Of($"News with id: {id} was not found.", ErrorGroup.NotFound));

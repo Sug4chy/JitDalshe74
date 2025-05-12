@@ -14,6 +14,9 @@ namespace JitDalshe.Api.Admin.Controllers.News;
 [Route("/admin-api/v1/[controller]")]
 public sealed class NewsController : AbstractController
 {
+    /// <summary>
+    /// Получение списка всех новостей (от новых к старым)
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> ListNews(
         [FromServices] IListNewsUseCase listNews,
@@ -26,6 +29,9 @@ public sealed class NewsController : AbstractController
             : Error(result.Error);
     }
 
+    /// <summary>
+    /// Редактирование новости (текста и основного изображения) по ID
+    /// </summary>
     [HttpPut("{id:guid}")]
     [ValidateRequest]
     public async Task<IActionResult> EditNews(
@@ -45,6 +51,9 @@ public sealed class NewsController : AbstractController
             : Error(result.Error);
     }
 
+    /// <summary>
+    /// Удаление новости по ID
+    /// </summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteNews(
         [FromRoute] Guid id,

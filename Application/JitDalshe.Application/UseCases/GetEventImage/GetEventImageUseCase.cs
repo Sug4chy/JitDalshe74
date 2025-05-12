@@ -3,11 +3,11 @@ using JitDalshe.Application.Abstractions.ImageStorage;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Errors;
-using JitDalshe.Application.Site.Models;
+using JitDalshe.Application.Models;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
 
-namespace JitDalshe.Application.Site.UseCases.GetEventImage;
+namespace JitDalshe.Application.UseCases.GetEventImage;
 
 [UseCase]
 internal sealed class GetEventImageUseCase : IGetEventImageUseCase

@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Site.Extensions;
 using JitDalshe.Application.Attributes;
+using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
 using JitDalshe.Application.Site.Dto;
 
@@ -21,13 +22,15 @@ internal sealed class ListNewsUseCase : IListNewsUseCase
     {
         try
         {
-            var news = await _newsRepository.ListNewsAsync(ct);
+            var news = await _newsRepository.FindAllAsync(
+                orderByExpression: x => x.PublicationDate,
+                sortingOrder: SortingOrder.Descending,
+                pageNumber: pageNumber,
+                pageSize: pageSize,
+                ct: ct);
 
             return Result.Success<NewsDto[], Error>(
                 news
-                    .OrderByDescending(x => x.PublicationDate)
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
                     .Select(x => x.ToDto())
                     .ToArray()
             );

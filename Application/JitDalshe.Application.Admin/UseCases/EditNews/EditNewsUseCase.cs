@@ -27,7 +27,7 @@ internal sealed class EditNewsUseCase : IEditNewsUseCase
     {
         try
         {
-            var maybeNews = await _newsRepository.GetNewsByIdAsync(newsId, ct);
+            var maybeNews = await _newsRepository.FindByIdAsync(newsId, ct);
             if (maybeNews.HasNoValue)
             {
                 return Result.Failure<NewsDto, Error>(
