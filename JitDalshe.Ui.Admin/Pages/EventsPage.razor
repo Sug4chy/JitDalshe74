@@ -1,6 +1,11 @@
 @page "/events"
+@using System.Net
+@using JitDalshe.Ui.Admin.Api.Events
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Events
+@using JitDalshe.Ui.Admin.Extensions
+@inject IEventsApiClient EventsApiClient
+@inject IToastService ToastService
 
 <PageTitle>События</PageTitle>
 
@@ -17,11 +22,45 @@
         </svg> Добавить
     </button>
 </div>
-@foreach (var eventItem in _events)
+@if (_events is not null)
 {
-    <EventCard Event="eventItem"/>
+    @foreach (var eventItem in _events)
+    {
+        <EventCard Event="eventItem"/>
+    }
+}
+else
+{
+    <p>Loading...</p>
 }
 
 @code {
-    private Event[] _events;
+    private Event[] _events = null!;
+
+    private async Task LoadEventsAsync()
+    {
+        try
+        {
+            var response = await EventsApiClient.ListEventsAsync();
+            if (response.StatusCode is HttpStatusCode.OK)
+            {
+                _events = response.Content!;
+            }
+            else
+            {
+                var error = response.Error!.DeserializeError();
+                ToastService.ShowError(error.Message);
+                _events = [];
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    protected override Task OnInitializedAsync()
+        => LoadEventsAsync();
+
 }
