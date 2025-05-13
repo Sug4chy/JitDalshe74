@@ -16,4 +16,5 @@ public interface IEventsRepository
         CancellationToken ct = default);
 
     Task<Maybe<Event>> FindByIdAsync(IdOf<Event> id, CancellationToken ct = default);
+    Task AddAsync(Event @event, CancellationToken ct = default);
 }

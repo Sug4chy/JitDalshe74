@@ -3,6 +3,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
 using JitDalshe.Api.Extensions;
+using JitDalshe.Application;
 using JitDalshe.Application.Admin;
 using JitDalshe.Infrastructure.Minio;
 using JitDalshe.Infrastructure.Persistence;
@@ -13,12 +14,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
     .ConfigureContainer<ContainerBuilder>(containerBuilder =>
     {
-        containerBuilder.RegisterModule<AdminApplicationModule>();
+        containerBuilder.RegisterModule<CommonApplicationModule>();
+        containerBuilder.RegisterModule(new AdminApplicationModule
+        {
+            ImageUrlTemplate = $"{builder.Configuration["CurrentURL"]}/events/[id]/image"
+        });
+
         containerBuilder.RegisterModule(new PersistenceInfrastructureModule
         {
             ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         });
-
         containerBuilder.RegisterModule(new MinioInfrastructureModule
         {
             ConfigureClient = configureClient =>

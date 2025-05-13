@@ -10,4 +10,9 @@ public sealed class EventImage : AuditableEntity<IdOf<EventImage>>
 
     public Event? Event { get; init; }
     public IdOf<Event> EventId { get; init; }
+
+    public EventImage(IdOf<EventImage> id)
+    {
+        Id = id;
+    }
 }

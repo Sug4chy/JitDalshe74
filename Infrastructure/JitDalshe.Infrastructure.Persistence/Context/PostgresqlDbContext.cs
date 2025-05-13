@@ -10,7 +10,7 @@ public sealed class PostgresqlDbContext(DbContextOptions<PostgresqlDbContext> op
     public DbSet<NewsImage> NewsPhotos { get; init; }
     public DbSet<NewsPrimaryImage>  NewsPrimaryPhotos { get; init; }
     public DbSet<Event> Events { get; init; }
-    public DbSet<EventImage> EventPhotos { get; init; }
+    public DbSet<EventImage> EventImages { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

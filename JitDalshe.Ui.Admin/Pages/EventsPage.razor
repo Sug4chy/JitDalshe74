@@ -30,7 +30,7 @@ else
 }
 
 <EventCard Event="@(new Event(Guid.NewGuid(), nameof(Event.Title), null, DateOnly.MinValue, string.Empty))"/>
-<CreateEventModal Id="@CreateEventModalId"/>
+<CreateEventModal Id="@CreateEventModalId" EventCreated="LoadEventsAsync"/>
 
 @code {
     private const string CreateEventModalId = "modal_create_event";

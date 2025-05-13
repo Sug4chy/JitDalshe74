@@ -48,4 +48,28 @@ public sealed class MinioImageStorage : IImageStorage
             return Maybe<Stream>.None;
         }
     }
+
+    public async Task<IdOf<EventImage>> SaveImage(
+        byte[] imageContent,
+        string contentType,
+        CancellationToken ct = default)
+    {
+        bool bucketExists = await _minioClient.BucketExistsAsync(new BucketExistsArgs()
+            .WithBucket(EventImagesBucketName), ct);
+        if (!bucketExists)
+        {
+            await _minioClient.MakeBucketAsync(new MakeBucketArgs()
+                .WithBucket(EventImagesBucketName), ct);
+        }
+
+        var newImageId = IdOf<EventImage>.New();
+        await _minioClient.PutObjectAsync(new PutObjectArgs()
+            .WithBucket(EventImagesBucketName)
+            .WithObject(newImageId.ToString())
+            .WithObjectSize(imageContent.LongLength)
+            .WithStreamData(new MemoryStream(imageContent))
+            .WithContentType(contentType), ct);
+
+        return newImageId;
+    }
 }

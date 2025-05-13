@@ -10,4 +10,9 @@ public sealed class Event : AuditableEntity<IdOf<Event>>
     public DateOnly Date { get; init; }
 
     public EventImage? Image { get; init; }
+
+    public Event(IdOf<Event> id)
+    {
+        Id = id;
+    }
 }

@@ -12,11 +12,11 @@
 .image-upload-box {
     width: 200px;
     height: 200px;
-    background-color: #ccc;
+    background-color: #eee;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px dashed #999;
+    border: 5px dashed #999;
 }
 
 .plus-sign {
@@ -25,6 +25,8 @@
 }
 
 .uploaded-image {
-    max-width: 100%;
-    max-height: 100%;
+    width: 50%;
+    height: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
 }

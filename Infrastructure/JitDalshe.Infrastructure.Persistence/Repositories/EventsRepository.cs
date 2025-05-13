@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace JitDalshe.Infrastructure.Persistence.Repositories;
 
 [Repository]
-internal sealed class EventsRepository :  IEventsRepository
+internal sealed class EventsRepository : IEventsRepository
 {
     private readonly PostgresqlDbContext _dbContext;
 
@@ -22,10 +22,10 @@ internal sealed class EventsRepository :  IEventsRepository
     }
 
     public Task<Event[]> FindAllAsync<TOrderKey>(
-        int? pageNumber = null, 
-        int? pageSize = null, 
+        int? pageNumber = null,
+        int? pageSize = null,
         Expression<Func<Event, TOrderKey>>? orderByExpression = null,
-        SortingOrder sortingOrder = SortingOrder.Ascending, 
+        SortingOrder sortingOrder = SortingOrder.Ascending,
         CancellationToken ct = default)
     {
         var query = _dbContext.Events
@@ -54,4 +54,11 @@ internal sealed class EventsRepository :  IEventsRepository
         => _dbContext.Events
             .Include(x => x.Image)
             .TryFirstAsync(x => x.Id == id, ct);
+
+    public async Task AddAsync(Event @event, CancellationToken ct = default)
+    {
+        _dbContext.Events.Add(@event);
+        _dbContext.EventImages.Add(@event.Image!);
+        await _dbContext.SaveChangesAsync(ct);
+    }
 }
