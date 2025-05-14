@@ -55,6 +55,9 @@ public sealed class EventsController : AbstractController
             : Error(result.Error);
     }
 
+    /// <summary>
+    /// Создание нового события
+    /// </summary>
     [HttpPost]
     [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -77,6 +80,9 @@ public sealed class EventsController : AbstractController
             : Error(result.Error);
     }
 
+    /// <summary>
+    /// Редактирование события (заголовка, описания и даты)
+    /// </summary>
     [HttpPatch("{id:guid}")]
     [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -101,7 +107,13 @@ public sealed class EventsController : AbstractController
             : Error(result.Error);
     }
 
+    /// <summary>
+    /// Изменение изображения, которое прикреплено к событию
+    /// </summary>
     [HttpPatch("{id:guid}/image")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ReplaceEventImage(
         [FromRoute] Guid id,
         [FromBody] string imageBase64Url,

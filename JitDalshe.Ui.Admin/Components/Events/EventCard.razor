@@ -1,4 +1,6 @@
 @using JitDalshe.Ui.Admin.Models
+@inject IJSRuntime JsRuntime
+
 <div class="card mb-3">
     <div class="card-header">
         @Event.Date.ToString("dd-MM-yyyy")
@@ -15,7 +17,8 @@
             </button>
             <button type="button"
                     class="btn btn-secondary"
-                    data-toggle="modal">
+                    data-toggle="modal"
+                    @onclick="ShowEditEventModalAsync">
                 Изменить
             </button>
             <button type="button"
@@ -26,6 +29,17 @@
     </div>
 </div>
 
+<EditEventModal Id="@EditEventModalId" Event="@Event" EventEdited="@OnEventEditedCallback"/>
+
 @code {
+    private string EditEventModalId => $"modal_edit_{Event.Id}";
+
     [Parameter] public required Event Event { get; init; }
+    [Parameter] public required EventCallback OnEventEditedCallback { get; init; }
+
+    private async Task ShowEditEventModalAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("showModal", $"#{EditEventModalId}");
+    }
+
 }

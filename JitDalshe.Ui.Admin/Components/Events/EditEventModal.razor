@@ -1,0 +1,177 @@
+@using System.Net
+@using JitDalshe.Ui.Admin.Api.Events
+@using JitDalshe.Ui.Admin.Api.Events.Requests
+@using JitDalshe.Ui.Admin.Extensions
+@using JitDalshe.Ui.Admin.Models
+@using Refit
+@inject IJSRuntime JsRuntime
+@inject IEventsApiClient EventsApiClient
+@inject IToastService ToastService
+
+<div id="@Id"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     data-backdrop="static"
+     data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Event.Title</h5>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                        @onclick="CloseModalAsync">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="image-upload-container">
+                    <label class="image-upload-label">
+                        <InputFile accept="image/*" OnChange="HandleFileUploadAsync" style="display: none"/>
+                        <img src="@_currentImageUrl"
+                             alt=""
+                             class="uploaded-image rounded"
+                             data-toggle="tooltip"
+                             data-placement="top"
+                             title="Изменить изображение"/>
+                    </label>
+                </div>
+                <label for="title-input">Заголовок</label>
+                <InputText id="title-input"
+                           class="form-control"
+                           @bind-Value="_title"/>
+                <label for="description-input">Описание</label>
+                <InputTextArea id="description-input"
+                               class="form-control"
+                               @bind-Value="_description"/>
+                <label for="date-input">Дата события</label>
+                <InputDate id="date-input"
+                           TValue="DateTime"
+                           class="form-control"
+                           @bind-Value="_date"/>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary"
+                        type="button"
+                        @onclick="SubmitCreateEventAsync">
+                    Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string _currentImageUrl = null!;
+    private string _title = null!;
+    private string _description = null!;
+    private DateTime _date;
+
+    [Parameter] public required string Id { get; init; }
+    [Parameter] public required Event Event { get; init; }
+    [Parameter] public required EventCallback EventEdited { get; init; }
+
+    private void InitializeFields()
+    {
+        _currentImageUrl = Event.ImageUrl;
+        _title = Event.Title;
+        _description = Event.Description ?? string.Empty;
+        _date = Event.Date.ToDateTime(TimeOnly.MinValue);
+    }
+
+    private async Task CloseModalAsync()
+    {
+        InitializeFields();
+        await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
+    }
+
+    private async Task HandleFileUploadAsync(InputFileChangeEventArgs args)
+    {
+        var file = args.File;
+        if (file is null)
+        {
+            return;
+        }
+
+        byte[] buffer = new byte[file.Size];
+        await using var stream = file.OpenReadStream();
+        int _ = await stream.ReadAsync(buffer);
+
+        _currentImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+    }
+
+    private void HandleError(IApiResponse response)
+    {
+        var error = response.Error!.DeserializeError();
+
+        switch ((int)response.StatusCode / 100)
+        {
+            case 4:
+            {
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var err = response.Error!.DeserializeValidationError();
+                    ToastService.ShowWarning(err.Errors.First().Value.First());
+                    return;
+                }
+
+                ToastService.ShowWarning(error.Message);
+                break;
+            }
+            case 5:
+            {
+                ToastService.ShowError(error.Message);
+                break;
+            }
+        }
+    }
+
+    private async Task SubmitCreateEventAsync()
+    {
+        try
+        {
+            var response = await EventsApiClient.EditEventAsync(
+                id: Event.Id,
+                request: new EditEventRequest(
+                    Title: _title,
+                    Description: _description,
+                    Date: _date,
+                    ImageBase64Url: _currentImageUrl));
+            if (!response.IsSuccessful)
+            {
+                HandleError(response);
+                return;
+            }
+
+            if (_currentImageUrl != Event.ImageUrl)
+            {
+                response = await EventsApiClient.ReplaceEventImageAsync(
+                    id: Event.Id,
+                    imageBase64Url: _currentImageUrl);
+                if (!response.IsSuccessful)
+                {
+                    HandleError(response);
+                    return;
+                }
+            }
+
+            await CloseModalAsync();
+            ToastService.ShowSuccess("Событие успешно отредактировано");
+            await EventEdited.InvokeAsync();
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowPermanentError(e);
+            await CloseModalAsync();
+        }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        InitializeFields();
+        return base.OnInitializedAsync();
+    }
+
+}

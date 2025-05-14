@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.ImageStorage;
+using JitDalshe.Application.Exceptions;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
 using Minio;
@@ -73,8 +74,17 @@ public sealed class MinioImageStorage : IImageStorage
         return newImageId;
     }
 
-    public Task RemoveImageAsync(IdOf<EventImage> id, CancellationToken ct = default) 
-        => _minioClient.RemoveObjectAsync(new RemoveObjectArgs()
-            .WithBucket(EventImagesBucketName)
-            .WithObject(id.ToString()), ct);
+    public async Task RemoveImageAsync(IdOf<EventImage> id, CancellationToken ct = default)
+    {
+        try
+        {
+            await _minioClient.RemoveObjectAsync(new RemoveObjectArgs()
+                .WithBucket(EventImagesBucketName)
+                .WithObject(id.ToString()), ct);
+        }
+        catch (Exceptions.ObjectNotFoundException)
+        {
+            throw new ImageNotFoundException();
+        }
+    }
 }

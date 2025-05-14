@@ -3,6 +3,7 @@ using JitDalshe.Application.Abstractions.ImageStorage;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Errors;
+using JitDalshe.Application.Exceptions;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
 
@@ -53,6 +54,10 @@ internal sealed class ReplaceEventImageUseCase : IReplaceEventImageUseCase
             await _events.ReplaceEventImageAsync(@event, newEventImage, ct);
 
             return UnitResult.Success<Error>();
+        }
+        catch (ImageNotFoundException e)
+        {
+            return UnitResult.Failure(Error.Of(e.Message, ErrorGroup.NotFound));
         }
         catch (Exception e)
         {
