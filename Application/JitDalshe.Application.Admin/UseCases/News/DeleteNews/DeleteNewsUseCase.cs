@@ -2,10 +2,9 @@ using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Errors;
-using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
 
-namespace JitDalshe.Application.Admin.UseCases.DeleteNews;
+namespace JitDalshe.Application.Admin.UseCases.News.DeleteNews;
 
 [UseCase]
 internal sealed class DeleteNewsUseCase : IDeleteNewsUseCase
@@ -17,7 +16,7 @@ internal sealed class DeleteNewsUseCase : IDeleteNewsUseCase
         _newsRepository = newsRepository;
     }
 
-    public async Task<UnitResult<Error>> DeleteAsync(IdOf<News> id, CancellationToken ct = default)
+    public async Task<UnitResult<Error>> DeleteAsync(IdOf<Domain.Entities.News.News> id, CancellationToken ct = default)
     {
         try
         {

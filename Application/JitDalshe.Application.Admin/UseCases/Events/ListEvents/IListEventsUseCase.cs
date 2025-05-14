@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 using JitDalshe.Application.Admin.Dto;
 using JitDalshe.Application.Errors;
 
-namespace JitDalshe.Application.Admin.UseCases.ListEvents;
+namespace JitDalshe.Application.Admin.UseCases.Events.ListEvents;
 
 public interface IListEventsUseCase
 {

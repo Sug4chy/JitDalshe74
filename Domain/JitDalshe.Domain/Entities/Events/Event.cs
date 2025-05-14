@@ -5,11 +5,11 @@ namespace JitDalshe.Domain.Entities.Events;
 
 public sealed class Event : AuditableEntity<IdOf<Event>>
 {
-    public required string Title { get; init; }
-    public string? Description { get; init; }
-    public DateOnly Date { get; init; }
+    public required string Title { get; set; }
+    public string? Description { get; set; }
+    public DateOnly Date { get; set; }
 
-    public EventImage? Image { get; init; }
+    public EventImage? Image { get; set; }
 
     public Event(IdOf<Event> id)
     {

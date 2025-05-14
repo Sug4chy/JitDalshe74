@@ -49,7 +49,7 @@ public sealed class MinioImageStorage : IImageStorage
         }
     }
 
-    public async Task<IdOf<EventImage>> SaveImage(
+    public async Task<IdOf<EventImage>> SaveImageAsync(
         byte[] imageContent,
         string contentType,
         CancellationToken ct = default)
@@ -72,4 +72,9 @@ public sealed class MinioImageStorage : IImageStorage
 
         return newImageId;
     }
+
+    public Task RemoveImageAsync(IdOf<EventImage> id, CancellationToken ct = default) 
+        => _minioClient.RemoveObjectAsync(new RemoveObjectArgs()
+            .WithBucket(EventImagesBucketName)
+            .WithObject(id.ToString()), ct);
 }

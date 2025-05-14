@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Errors;
 
-namespace JitDalshe.Application.Admin.UseCases.CreateEvent;
+namespace JitDalshe.Application.Admin.UseCases.Events.CreateEvent;
 
 public interface ICreateEventUseCase
 {

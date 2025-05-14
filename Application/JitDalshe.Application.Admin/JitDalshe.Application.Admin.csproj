@@ -10,4 +10,8 @@
       <ProjectReference Include="..\JitDalshe.Application\JitDalshe.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="UseCases\News\" />
+    </ItemGroup>
+
 </Project>

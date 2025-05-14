@@ -7,7 +7,7 @@ using JitDalshe.Application.Errors;
 using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
 
-namespace JitDalshe.Application.Admin.UseCases.EditNews;
+namespace JitDalshe.Application.Admin.UseCases.News.EditNews;
 
 [UseCase]
 internal sealed class EditNewsUseCase : IEditNewsUseCase
@@ -20,7 +20,7 @@ internal sealed class EditNewsUseCase : IEditNewsUseCase
     }
 
     public async Task<Result<NewsDto, Error>> EditAsync(
-        IdOf<News> newsId, 
+        IdOf<Domain.Entities.News.News> newsId, 
         string text, 
         IdOf<NewsImage> primaryPhotoId, 
         CancellationToken ct = default)

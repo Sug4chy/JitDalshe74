@@ -6,7 +6,7 @@ using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
 
-namespace JitDalshe.Application.Admin.UseCases.ListEvents;
+namespace JitDalshe.Application.Admin.UseCases.Events.ListEvents;
 
 [UseCase]
 public sealed class ListEventsUseCase : IListEventsUseCase

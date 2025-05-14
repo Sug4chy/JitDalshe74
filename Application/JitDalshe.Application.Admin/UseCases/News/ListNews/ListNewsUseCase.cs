@@ -6,7 +6,7 @@ using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
 
-namespace JitDalshe.Application.Admin.UseCases.ListNews;
+namespace JitDalshe.Application.Admin.UseCases.News.ListNews;
 
 [UseCase]
 internal sealed class ListNewsUseCase : IListNewsUseCase

@@ -1,7 +1,7 @@
 using Autofac;
 using JitDalshe.Application.Abstractions.ImageStorage;
 using JitDalshe.Application.Abstractions.Repositories;
-using JitDalshe.Application.Admin.UseCases.CreateEvent;
+using JitDalshe.Application.Admin.UseCases.Events.CreateEvent;
 using JitDalshe.Application.Attributes;
 
 namespace JitDalshe.Application.Admin;

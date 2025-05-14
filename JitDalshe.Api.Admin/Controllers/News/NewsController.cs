@@ -1,9 +1,9 @@
 using JitDalshe.Api.Admin.Controllers.News.Requests;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
-using JitDalshe.Application.Admin.UseCases.DeleteNews;
-using JitDalshe.Application.Admin.UseCases.EditNews;
-using JitDalshe.Application.Admin.UseCases.ListNews;
+using JitDalshe.Application.Admin.UseCases.News.DeleteNews;
+using JitDalshe.Application.Admin.UseCases.News.EditNews;
+using JitDalshe.Application.Admin.UseCases.News.ListNews;
 using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;

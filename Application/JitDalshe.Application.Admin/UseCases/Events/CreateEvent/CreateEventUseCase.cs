@@ -6,7 +6,7 @@ using JitDalshe.Application.Errors;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
 
-namespace JitDalshe.Application.Admin.UseCases.CreateEvent;
+namespace JitDalshe.Application.Admin.UseCases.Events.CreateEvent;
 
 [UseCase]
 internal sealed class CreateEventUseCase : ICreateEventUseCase
@@ -34,7 +34,7 @@ internal sealed class CreateEventUseCase : ICreateEventUseCase
             string imageContentType = imageBase64Url[(imageBase64Url.IndexOf(':') + 1)..imageBase64Url.IndexOf(';')];
             string imageContentString = imageBase64Url.Split(',')[1];
             byte[] imageBytes = Convert.FromBase64String(imageContentString);
-            var imageId = await _imageStorage.SaveImage(imageBytes, imageContentType, ct);
+            var imageId = await _imageStorage.SaveImageAsync(imageBytes, imageContentType, ct);
             var eventId = IdOf<Event>.New();
 
             var eventImage = new EventImage(imageId)
@@ -49,7 +49,6 @@ internal sealed class CreateEventUseCase : ICreateEventUseCase
                 Date = DateOnly.FromDateTime(date),
                 Image = eventImage
             };
-
 
             await _events.AddAsync(@event, ct);
 

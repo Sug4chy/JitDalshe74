@@ -2,9 +2,12 @@ using System.Net.Mime;
 using JitDalshe.Api.Admin.Controllers.Events.Requests;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
-using JitDalshe.Application.Admin.UseCases.CreateEvent;
-using JitDalshe.Application.Admin.UseCases.ListEvents;
+using JitDalshe.Application.Admin.UseCases.Events.CreateEvent;
+using JitDalshe.Application.Admin.UseCases.Events.EditEvent;
+using JitDalshe.Application.Admin.UseCases.Events.ListEvents;
 using JitDalshe.Application.UseCases.GetEventImage;
+using JitDalshe.Domain.Entities.Events;
+using JitDalshe.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Admin.Controllers.Events;
@@ -53,8 +56,9 @@ public sealed class EventsController : AbstractController
 
     [HttpPost]
     [ValidateRequest]
-    [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateEvent(
         [FromBody] CreateEventRequest request,
         [FromServices] ICreateEventUseCase createEvent,
@@ -69,6 +73,31 @@ public sealed class EventsController : AbstractController
 
         return result.IsSuccess
             ? CreatedAtAction("ListEvents", null)
+            : Error(result.Error);
+    }
+
+    [HttpPut("{id:guid}")]
+    [ValidateRequest]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> EditEvent(
+        [FromRoute] Guid id,
+        [FromBody] EditEventRequest request,
+        [FromServices] IEditEventUseCase editEvent,
+        CancellationToken ct = default)
+    {
+        var result = await editEvent.EditAsync(
+            id: IdOf<Event>.From(id),
+            title: request.Title,
+            description: request.Description,
+            date: request.Date,
+            imageBase64Url: request.ImageBase64Url,
+            ct: ct);
+
+        return result.IsSuccess
+            ? Ok()
             : Error(result.Error);
     }
 }
