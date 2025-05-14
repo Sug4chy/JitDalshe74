@@ -64,12 +64,14 @@ internal sealed class EventsRepository : IEventsRepository
 
     public async Task EditAsync(Event @event, CancellationToken ct = default)
     {
-        var oldImage = await _dbContext.EventImages.FirstAsync(x => x.EventId == @event.Id, ct);
-        _dbContext.EventImages.Remove(oldImage);
-
         _dbContext.Events.Update(@event);
-        _dbContext.EventImages.Add(@event.Image!);
+        await _dbContext.SaveChangesAsync(ct);
+    }
 
+    public async Task ReplaceEventImageAsync(Event @event, EventImage newImage, CancellationToken ct = default)
+    {
+        _dbContext.EventImages.Remove(@event.Image!);
+        _dbContext.EventImages.Add(newImage);
         await _dbContext.SaveChangesAsync(ct);
     }
 }

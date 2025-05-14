@@ -35,6 +35,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
         });
     });
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddSwaggerGenWithControllerGroups<Program>();

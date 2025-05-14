@@ -5,6 +5,7 @@ using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Application.Admin.UseCases.Events.CreateEvent;
 using JitDalshe.Application.Admin.UseCases.Events.EditEvent;
 using JitDalshe.Application.Admin.UseCases.Events.ListEvents;
+using JitDalshe.Application.Admin.UseCases.Events.ReplaceEventImage;
 using JitDalshe.Application.UseCases.GetEventImage;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
@@ -76,7 +77,7 @@ public sealed class EventsController : AbstractController
             : Error(result.Error);
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPatch("{id:guid}")]
     [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -93,7 +94,23 @@ public sealed class EventsController : AbstractController
             title: request.Title,
             description: request.Description,
             date: request.Date,
-            imageBase64Url: request.ImageBase64Url,
+            ct: ct);
+
+        return result.IsSuccess
+            ? Ok()
+            : Error(result.Error);
+    }
+
+    [HttpPatch("{id:guid}/image")]
+    public async Task<IActionResult> ReplaceEventImage(
+        [FromRoute] Guid id,
+        [FromBody] string imageBase64Url,
+        [FromServices] IReplaceEventImageUseCase replaceEventImage,
+        CancellationToken ct = default)
+    {
+        var result = await replaceEventImage.ReplaceAsync(
+            eventId: IdOf<Event>.From(id),
+            imageBase64Url: imageBase64Url,
             ct: ct);
 
         return result.IsSuccess

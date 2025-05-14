@@ -12,6 +12,5 @@ public interface IEditEventUseCase
         string title,
         string? description,
         DateTime date,
-        string imageBase64Url,
         CancellationToken ct = default);
 }
