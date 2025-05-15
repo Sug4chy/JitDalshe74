@@ -16,5 +16,5 @@ public interface IEventsApiClient
     Task<IApiResponse> EditEventAsync(Guid id, [Body] EditEventRequest request);
 
     [Patch("/{id}/image")]
-    Task<IApiResponse> ReplaceEventImageAsync(Guid id, [Body] string imageBase64Url);
+    Task<IApiResponse> ReplaceEventImageAsync(Guid id, [Body] ReplaceEventImageRequest request);
 }

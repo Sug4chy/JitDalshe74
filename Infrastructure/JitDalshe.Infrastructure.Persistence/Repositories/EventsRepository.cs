@@ -74,4 +74,10 @@ internal sealed class EventsRepository : IEventsRepository
         _dbContext.EventImages.Add(newImage);
         await _dbContext.SaveChangesAsync(ct);
     }
+
+    public async Task RemoveAsync(Event @event, CancellationToken ct = default)
+    {
+        _dbContext.Events.Remove(@event);
+        await _dbContext.SaveChangesAsync(ct);
+    }
 }

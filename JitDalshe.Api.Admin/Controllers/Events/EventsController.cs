@@ -3,6 +3,7 @@ using JitDalshe.Api.Admin.Controllers.Events.Requests;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Application.Admin.UseCases.Events.CreateEvent;
+using JitDalshe.Application.Admin.UseCases.Events.DeleteEvent;
 using JitDalshe.Application.Admin.UseCases.Events.EditEvent;
 using JitDalshe.Application.Admin.UseCases.Events.ListEvents;
 using JitDalshe.Application.Admin.UseCases.Events.ReplaceEventImage;
@@ -116,17 +117,36 @@ public sealed class EventsController : AbstractController
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ReplaceEventImage(
         [FromRoute] Guid id,
-        [FromBody] string imageBase64Url,
+        [FromBody] ReplaceEventImageRequest request,
         [FromServices] IReplaceEventImageUseCase replaceEventImage,
         CancellationToken ct = default)
     {
         var result = await replaceEventImage.ReplaceAsync(
             eventId: IdOf<Event>.From(id),
-            imageBase64Url: imageBase64Url,
+            imageBase64Url: request.ImageBase64Url,
             ct: ct);
 
         return result.IsSuccess
             ? Ok()
+            : Error(result.Error);
+    }
+
+    /// <summary>
+    /// Удаление события
+    /// </summary>
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteEvent(
+        [FromRoute] Guid id,
+        [FromServices] IDeleteEventUseCase deleteEvent,
+        CancellationToken ct = default)
+    {
+        var result = await deleteEvent.DeleteAsync(IdOf<Event>.From(id), ct);
+
+        return result.IsSuccess
+            ? NoContent()
             : Error(result.Error);
     }
 }

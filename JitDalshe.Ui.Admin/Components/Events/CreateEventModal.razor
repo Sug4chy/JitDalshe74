@@ -118,9 +118,9 @@
                 new CreateEventRequest(_title, _description, _date, _uploadedImageUrl));
             if (response.StatusCode is HttpStatusCode.Created)
             {
+                await CloseModalAsync();
                 ToastService.ShowSuccess("Событие было успешно создано!");
                 await EventCreated.InvokeAsync();
-                await CloseModalAsync();
             }
             else
             {

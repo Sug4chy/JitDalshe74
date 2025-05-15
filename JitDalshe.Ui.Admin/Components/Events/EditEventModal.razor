@@ -81,10 +81,15 @@
         _date = Event.Date.ToDateTime(TimeOnly.MinValue);
     }
 
+    private async Task HideModalAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
+    }
+
     private async Task CloseModalAsync()
     {
         InitializeFields();
-        await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
+        await HideModalAsync();
     }
 
     private async Task HandleFileUploadAsync(InputFileChangeEventArgs args)
@@ -149,7 +154,7 @@
             {
                 response = await EventsApiClient.ReplaceEventImageAsync(
                     id: Event.Id,
-                    imageBase64Url: _currentImageUrl);
+                    request: new ReplaceEventImageRequest(_currentImageUrl));
                 if (!response.IsSuccessful)
                 {
                     HandleError(response);
@@ -157,14 +162,14 @@
                 }
             }
 
-            await CloseModalAsync();
+            await HideModalAsync();
             ToastService.ShowSuccess("Событие успешно отредактировано");
             await EventEdited.InvokeAsync();
         }
         catch (Exception e)
         {
             ToastService.ShowPermanentError(e);
-            await CloseModalAsync();
+            await HideModalAsync();
         }
     }
 

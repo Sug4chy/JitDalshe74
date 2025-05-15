@@ -21,7 +21,7 @@
 {
     @foreach (var eventItem in _events)
     {
-        <EventCard Event="eventItem"/>
+        <EventCard Event="eventItem" OnEventEditedCallback="LoadEventsAsync"/>
     }
 }
 else

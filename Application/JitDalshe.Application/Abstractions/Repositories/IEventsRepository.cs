@@ -19,4 +19,5 @@ public interface IEventsRepository
     Task AddAsync(Event @event, CancellationToken ct = default);
     Task EditAsync(Event @event, CancellationToken ct = default);
     Task ReplaceEventImageAsync(Event @event, EventImage newImage, CancellationToken ct = default);
+    Task RemoveAsync(Event @event, CancellationToken ct = default);
 }
