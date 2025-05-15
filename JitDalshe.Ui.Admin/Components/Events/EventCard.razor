@@ -1,5 +1,10 @@
+@using System.Net
+@using JitDalshe.Ui.Admin.Api.Events
+@using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
 @inject IJSRuntime JsRuntime
+@inject IEventsApiClient EventsApiClient
+@inject IToastService ToastService
 
 <div class="card mb-3">
     <div class="card-header">
@@ -22,7 +27,8 @@
                 Изменить
             </button>
             <button type="button"
-                    class="btn btn-danger">
+                    class="btn btn-danger"
+                    @onclick="DeleteEventAsync">
                 Удалить
             </button>
         </div>
@@ -36,10 +42,47 @@
 
     [Parameter] public required Event Event { get; init; }
     [Parameter] public required EventCallback OnEventEditedCallback { get; init; }
+    [Parameter] public required EventCallback OnEventDeletedCallback { get; init; }
 
     private async Task ShowEditEventModalAsync()
     {
         await JsRuntime.InvokeVoidAsync("showModal", $"#{EditEventModalId}");
     }
 
+    private async Task DeleteEventAsync()
+    {
+        try
+        {
+            var response = await EventsApiClient.DeleteEventAsync(Event.Id);
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.NoContent:
+                    ToastService.ShowSuccess("Событие успешно удалено");
+                    await OnEventDeletedCallback.InvokeAsync();
+                    break;
+                default:
+                    var error = response.Error!.DeserializeError();
+                    if ((int)response.StatusCode / 100 == 4)
+                    {
+                        if (response.StatusCode == HttpStatusCode.BadRequest)
+                        {
+                            var ve = response.Error!.DeserializeValidationError();
+                            ToastService.ShowWarning(ve.Errors.First().Value.First());
+                            break;
+                        }
+
+                        ToastService.ShowWarning(error.Message);
+                    }
+                    else if ((int)response.StatusCode / 100 == 5)
+                    {
+                        ToastService.ShowError(error.Message);
+                    }
+                    break;
+            }
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowPermanentError(e);
+        }
+    }
 }

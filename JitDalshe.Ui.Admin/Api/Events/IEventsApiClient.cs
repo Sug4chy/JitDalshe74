@@ -17,4 +17,7 @@ public interface IEventsApiClient
 
     [Patch("/{id}/image")]
     Task<IApiResponse> ReplaceEventImageAsync(Guid id, [Body] ReplaceEventImageRequest request);
+
+    [Delete("/{id}")]
+    Task<IApiResponse> DeleteEventAsync(Guid id);
 }

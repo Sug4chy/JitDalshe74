@@ -21,7 +21,7 @@
 {
     @foreach (var eventItem in _events)
     {
-        <EventCard Event="eventItem" OnEventEditedCallback="LoadEventsAsync"/>
+        <EventCard Event="eventItem" OnEventEditedCallback="LoadEventsAsync" OnEventDeletedCallback="LoadEventsAsync"/>
     }
 }
 else
@@ -29,7 +29,6 @@ else
     <p>Loading...</p>
 }
 
-<EventCard Event="@(new Event(Guid.NewGuid(), nameof(Event.Title), null, DateOnly.MinValue, string.Empty))"/>
 <CreateEventModal Id="@CreateEventModalId" EventCreated="LoadEventsAsync"/>
 
 @code {
