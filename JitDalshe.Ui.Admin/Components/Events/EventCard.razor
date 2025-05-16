@@ -17,7 +17,8 @@
         <div class="d-flex footer-buttons">
             <button type="button"
                     class="btn btn-primary"
-                    data-toggle="modal">
+                    data-toggle="modal"
+                    @onclick="ShowInfoEventModalAsync">
                 Подробнее
             </button>
             <button type="button"
@@ -36,13 +37,20 @@
 </div>
 
 <EditEventModal Id="@EditEventModalId" Event="@Event" EventEdited="@OnEventEditedCallback"/>
+<InfoEventModal Id="@InfoEventModalId" Event="Event"/>
 
 @code {
     private string EditEventModalId => $"modal_edit_{Event.Id}";
+    private string InfoEventModalId => $"modal_info_{Event.Id}";
 
     [Parameter] public required Event Event { get; init; }
     [Parameter] public required EventCallback OnEventEditedCallback { get; init; }
     [Parameter] public required EventCallback OnEventDeletedCallback { get; init; }
+
+    private async Task ShowInfoEventModalAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("showModal", $"#{InfoEventModalId}");
+    }
 
     private async Task ShowEditEventModalAsync()
     {
@@ -77,6 +85,7 @@
                     {
                         ToastService.ShowError(error.Message);
                     }
+
                     break;
             }
         }
@@ -85,4 +94,5 @@
             ToastService.ShowPermanentError(e);
         }
     }
+
 }
