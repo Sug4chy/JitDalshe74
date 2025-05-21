@@ -1,10 +1,9 @@
-@using System.Net
-@using JitDalshe.Ui.Admin.Api.News
+@using JitDalshe.Ui.Admin.Api
 @using JitDalshe.Ui.Admin.Api.News.Requests
 @using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
 @inject IJSRuntime JsRuntime
-@inject INewsApiClient NewsApiClient
+@inject IApiFacade Api
 @inject IToastService ToastService
 
 <div id="@Id"
@@ -96,30 +95,24 @@
     {
         try
         {
-            var response = await NewsApiClient.EditNewsAsync(
-                id: News.Id,
+            var news = await Api.EditNewsAsync(
+                newsId: News.Id,
                 request: new EditNewsRequest
                 {
                     PrimaryPhotoId = _selectedPhotoId?.Value,
                     Text = _currentEnteredText
-                });
-            switch (response.StatusCode)
+                },
+                defaultValue: null,
+                onValidationErrorCallback:
+                    validationError => ToastService.ShowWarning(validationError.Errors.First().Value.First()),
+                onNotFoundCallback: error => ToastService.ShowWarning(error.Message),
+                onErrorCallback: error => ToastService.ShowError(error.Message)
+            );
+            if (news is not null)
             {
-                case HttpStatusCode.OK:
-                    ToastService.ShowSuccess("Новость успешно обновлена!");
-                    await HideModalAsync();
-                    await OnNewsEditedCallback.InvokeAsync();
-                    break;
-                case HttpStatusCode.BadRequest:
-                    string errorToShow = response.Error!
-                        .DeserializeValidationError().Errors
-                        .First().Value.First();
-                    ToastService.ShowWarning(errorToShow);
-                    break;
-                case HttpStatusCode.NotFound:
-                    var error = response.Error!.DeserializeError();
-                    ToastService.ShowWarning(error.Message);
-                    break;
+                ToastService.ShowSuccess("Новость успешно обновлена!");
+                await HideModalAsync();
+                await OnNewsEditedCallback.InvokeAsync();
             }
         }
         catch (Exception e)

@@ -1,11 +1,10 @@
 @page "/news"
-@inject INewsApiClient NewsApiClient
-@inject IToastService ToastService
-@using System.Net
-@using JitDalshe.Ui.Admin.Api.News
-@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Api
 @using JitDalshe.Ui.Admin.Components.News
 @using JitDalshe.Ui.Admin.Extensions
+@using JitDalshe.Ui.Admin.Models
+@inject IApiFacade Api
+@inject IToastService ToastService
 
 <PageTitle>Новости</PageTitle>
 
@@ -30,17 +29,9 @@ else
     {
         try
         {
-            var response = await NewsApiClient.ListNewsAsync();
-            if (response.StatusCode is HttpStatusCode.OK)
-            {
-                _news = response.Content!;
-            }
-            else
-            {
-                var error = response.Error!.DeserializeError();
-                ToastService.ShowError(error.Message);
-                _news = [];
-            }
+            _news = await Api.ListNewsAsync(
+                defaultValue: [],
+                onErrorCallback: error => ToastService.ShowError(error.Message));
         }
         catch (Exception e)
         {

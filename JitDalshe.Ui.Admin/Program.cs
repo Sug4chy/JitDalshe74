@@ -2,6 +2,7 @@ using Blazored.Toast;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using JitDalshe.Ui.Admin;
+using JitDalshe.Ui.Admin.Api;
 using JitDalshe.Ui.Admin.Api.Events;
 using JitDalshe.Ui.Admin.Api.News;
 using Refit;
@@ -16,6 +17,8 @@ if (apiBaseUrl is null)
     Console.WriteLine("API base url is empty");
     return;
 }
+
+builder.Services.AddScoped<IApiFacade, ApiFacade>();
 
 builder.Services
     .AddRefitClient<INewsApiClient>()
