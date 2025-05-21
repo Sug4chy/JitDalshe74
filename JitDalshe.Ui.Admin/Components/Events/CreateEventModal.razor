@@ -1,9 +1,8 @@
-@using System.Net
-@using JitDalshe.Ui.Admin.Api.Events
+@using JitDalshe.Ui.Admin.Api
 @using JitDalshe.Ui.Admin.Api.Events.Requests
 @using JitDalshe.Ui.Admin.Extensions
 @inject IJSRuntime JsRuntime
-@inject IEventsApiClient EventsApiClient
+@inject IApiFacade Api
 @inject IToastService ToastService
 
 <div id="@Id"
@@ -16,9 +15,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Создание нового событие</h5>
-                <button type="button" 
-                        class="close" 
-                        data-dismiss="modal" 
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
                         aria-label="Close"
                         @onclick="CloseModalAsync">
                     <span>&times;</span>
@@ -114,25 +113,16 @@
                 return;
             }
 
-            var response = await EventsApiClient.CreateEventAsync(
-                new CreateEventRequest(_title, _description, _date, _uploadedImageUrl));
-            if (response.StatusCode is HttpStatusCode.Created)
+            if (await Api.CreateEventAsync(
+                    request: new CreateEventRequest(_title, _description, _date, _uploadedImageUrl),
+                    onValidationErrorCallback:
+                        validationError => ToastService.ShowWarning(validationError.Errors.First().Value.First()),
+                    onClientErrorCallback: error => ToastService.ShowWarning(error.Message),
+                    onServerErrorCallback: error => ToastService.ShowError(error.Message)))
             {
                 await CloseModalAsync();
                 ToastService.ShowSuccess("Событие было успешно создано!");
                 await EventCreated.InvokeAsync();
-            }
-            else
-            {
-                var error = response.Error!.DeserializeError();
-                if ((int)response.StatusCode / 100 == 4)
-                {
-                    ToastService.ShowWarning(error.Message);
-                }
-                else
-                {
-                    ToastService.ShowError(error.Message);
-                }
             }
         }
         catch (Exception e)

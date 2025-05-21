@@ -1,5 +1,6 @@
 using System.Text.Json;
 using JitDalshe.Ui.Admin.Api;
+using JitDalshe.Ui.Admin.Api.Errors;
 using Refit;
 
 namespace JitDalshe.Ui.Admin.Extensions;

@@ -1,10 +1,9 @@
 @page "/events"
-@using System.Net
-@using JitDalshe.Ui.Admin.Api.Events
-@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Api
 @using JitDalshe.Ui.Admin.Components.Events
 @using JitDalshe.Ui.Admin.Extensions
-@inject IEventsApiClient EventsApiClient
+@using JitDalshe.Ui.Admin.Models
+@inject IApiFacade Api
 @inject IToastService ToastService
 @inject IJSRuntime JsRuntime
 
@@ -39,17 +38,9 @@ else
     {
         try
         {
-            var response = await EventsApiClient.ListEventsAsync();
-            if (response.StatusCode is HttpStatusCode.OK)
-            {
-                _events = response.Content!;
-            }
-            else
-            {
-                var error = response.Error!.DeserializeError();
-                ToastService.ShowError(error.Message);
-                _events = [];
-            }
+            _events = await Api.ListEventsAsync(
+                defaultValue: [],
+                onErrorCallback: error => ToastService.ShowError(error.Message));
         }
         catch (Exception e)
         {

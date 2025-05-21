@@ -1,4 +1,4 @@
-namespace JitDalshe.Ui.Admin.Api;
+namespace JitDalshe.Ui.Admin.Api.Errors;
 
 public readonly struct ApiError
 {

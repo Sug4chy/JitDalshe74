@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace JitDalshe.Ui.Admin.Api;
+namespace JitDalshe.Ui.Admin.Api.Errors;
 
 public readonly struct ApiValidationError
 {

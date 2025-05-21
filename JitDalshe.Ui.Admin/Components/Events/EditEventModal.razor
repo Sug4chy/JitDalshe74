@@ -1,11 +1,9 @@
-@using System.Net
-@using JitDalshe.Ui.Admin.Api.Events
+@using JitDalshe.Ui.Admin.Api
 @using JitDalshe.Ui.Admin.Api.Events.Requests
 @using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
-@using Refit
 @inject IJSRuntime JsRuntime
-@inject IEventsApiClient EventsApiClient
+@inject IApiFacade Api
 @inject IToastService ToastService
 
 <div id="@Id"
@@ -107,64 +105,37 @@
         _currentImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
     }
 
-    private void HandleError(IApiResponse response)
-    {
-        var error = response.Error!.DeserializeError();
-
-        switch ((int)response.StatusCode / 100)
-        {
-            case 4:
-            {
-                if (response.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    var err = response.Error!.DeserializeValidationError();
-                    ToastService.ShowWarning(err.Errors.First().Value.First());
-                    return;
-                }
-
-                ToastService.ShowWarning(error.Message);
-                break;
-            }
-            case 5:
-            {
-                ToastService.ShowError(error.Message);
-                break;
-            }
-        }
-    }
-
     private async Task SubmitCreateEventAsync()
     {
         try
         {
-            var response = await EventsApiClient.EditEventAsync(
-                id: Event.Id,
-                request: new EditEventRequest(
-                    Title: _title,
-                    Description: _description,
-                    Date: _date,
-                    ImageBase64Url: _currentImageUrl));
-            if (!response.IsSuccessful)
+            if (await Api.EditEventAsync(
+                    eventId: Event.Id,
+                    request: new EditEventRequest(
+                        Title: _title,
+                        Description: _description,
+                        Date: _date,
+                        ImageBase64Url: _currentImageUrl),
+                    onValidationErrorCallback:
+                    validationError => ToastService.ShowWarning(validationError.Errors.First().Value.First()),
+                    onClientErrorCallback: error => ToastService.ShowWarning(error.Message),
+                    onServerErrorCallback: error => ToastService.ShowError(error.Message)))
             {
-                HandleError(response);
-                return;
-            }
-
-            if (_currentImageUrl != Event.ImageUrl)
-            {
-                response = await EventsApiClient.ReplaceEventImageAsync(
-                    id: Event.Id,
-                    request: new ReplaceEventImageRequest(_currentImageUrl));
-                if (!response.IsSuccessful)
+                if (_currentImageUrl != Event.ImageUrl)
                 {
-                    HandleError(response);
-                    return;
+                    await Api.ReplaceEventImageAsync(
+                        eventId: Event.Id,
+                        request: new ReplaceEventImageRequest(_currentImageUrl),
+                        onValidationErrorCallback:
+                        validationError => ToastService.ShowWarning(validationError.Errors.First().Value.First()),
+                        onClientErrorCallback: error => ToastService.ShowWarning(error.Message),
+                        onServerErrorCallback: error => ToastService.ShowError(error.Message));
                 }
-            }
 
-            await HideModalAsync();
-            ToastService.ShowSuccess("Событие успешно отредактировано");
-            await EventEdited.InvokeAsync();
+                await HideModalAsync();
+                ToastService.ShowSuccess("Событие успешно отредактировано");
+                await EventEdited.InvokeAsync();
+            }
         }
         catch (Exception e)
         {
