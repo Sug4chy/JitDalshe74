@@ -1,6 +1,6 @@
 namespace JitDalshe.Application.Models;
 
-public sealed record BannerModel(
+public sealed record DisplayingBannerModel(
     string Title,
     string ImageUrl,
     int DisplayOrder,
