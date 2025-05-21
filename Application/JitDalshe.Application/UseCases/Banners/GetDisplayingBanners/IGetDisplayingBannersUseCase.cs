@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 using JitDalshe.Application.Errors;
 using JitDalshe.Application.Models;
 
-namespace JitDalshe.Application.UseCases.GetDisplayingBanners;
+namespace JitDalshe.Application.UseCases.Banners.GetDisplayingBanners;
 
 public interface IGetDisplayingBannersUseCase
 {

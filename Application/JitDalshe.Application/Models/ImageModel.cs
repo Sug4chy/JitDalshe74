@@ -1,6 +1,6 @@
 namespace JitDalshe.Application.Models;
 
-public sealed record EventImageModel(
+public sealed record ImageModel(
     Stream ImageStream,
     string ContentType
 );

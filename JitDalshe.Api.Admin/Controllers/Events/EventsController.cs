@@ -7,7 +7,7 @@ using JitDalshe.Application.Admin.UseCases.Events.DeleteEvent;
 using JitDalshe.Application.Admin.UseCases.Events.EditEvent;
 using JitDalshe.Application.Admin.UseCases.Events.ListEvents;
 using JitDalshe.Application.Admin.UseCases.Events.ReplaceEventImage;
-using JitDalshe.Application.UseCases.GetEventImage;
+using JitDalshe.Application.UseCases.Events.GetEventImage;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;

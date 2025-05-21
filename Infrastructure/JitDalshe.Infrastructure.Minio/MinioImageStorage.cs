@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.ImageStorage;
 using JitDalshe.Application.Exceptions;
+using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
 using Minio;
@@ -12,6 +13,7 @@ namespace JitDalshe.Infrastructure.Minio;
 public sealed class MinioImageStorage : IImageStorage
 {
     private const string EventImagesBucketName = "event-images";
+    private const string BannerImagesBucketName = "banner-images";
 
     private readonly IMinioClient _minioClient;
 
@@ -20,21 +22,31 @@ public sealed class MinioImageStorage : IImageStorage
         _minioClient = minioClient;
     }
 
-    public async Task<Maybe<Stream>> GetImageByIdAsync(IdOf<EventImage> id, CancellationToken ct = default)
+    public Task<Maybe<Stream>> GetImageByIdAsync(IdOf<EventImage> id, CancellationToken ct = default)
+        => GetImageByIdAsync(id, EventImagesBucketName, ct);
+
+    public Task<Maybe<Stream>> GetImageByIdAsync(IdOf<BannerImage> id, CancellationToken ct = default)
+        => GetImageByIdAsync(id, BannerImagesBucketName, ct);
+
+    private async Task<Maybe<Stream>> GetImageByIdAsync<TImage>(
+        IdOf<TImage> id, 
+        string bucketName, 
+        CancellationToken ct = default) 
+        where TImage : Entity<IdOf<TImage>>
     {
         var ms = new MemoryStream();
 
         try
         {
             bool bucketExists = await _minioClient.BucketExistsAsync(new BucketExistsArgs()
-                .WithBucket(EventImagesBucketName), ct);
+                .WithBucket(bucketName), ct);
             if (!bucketExists)
             {
                 return Maybe<Stream>.None;
             }
 
             await _minioClient.GetObjectAsync(new GetObjectArgs()
-                .WithBucket(EventImagesBucketName)
+                .WithBucket(bucketName)
                 .WithObject(id.ToString())
                 .WithCallbackStream(stream =>
                 {

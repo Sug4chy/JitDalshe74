@@ -7,7 +7,7 @@ using JitDalshe.Application.Models;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
 
-namespace JitDalshe.Application.UseCases.GetEventImage;
+namespace JitDalshe.Application.UseCases.Events.GetEventImage;
 
 [UseCase]
 internal sealed class GetEventImageUseCase : IGetEventImageUseCase
@@ -21,30 +21,30 @@ internal sealed class GetEventImageUseCase : IGetEventImageUseCase
         _imageStorage = imageStorage;
     }
 
-    public async Task<Result<EventImageModel, Error>> GetImageAsync(Guid eventId, CancellationToken ct = default)
+    public async Task<Result<ImageModel, Error>> GetImageAsync(Guid eventId, CancellationToken ct = default)
     {
         try
         {
             var maybeEvent = await _events.FindByIdAsync(IdOf<Event>.From(eventId), ct);
             if (maybeEvent.HasNoValue)
             {
-                return Result.Failure<EventImageModel, Error>(
+                return Result.Failure<ImageModel, Error>(
                     Error.Of("Событие с таким ID не найдено", ErrorGroup.NotFound));
             }
 
             var maybeImageStream = await _imageStorage.GetImageByIdAsync(maybeEvent.Value.Image!.Id, ct);
             if (maybeImageStream.HasNoValue)
             {
-                return Result.Failure<EventImageModel, Error>(
+                return Result.Failure<ImageModel, Error>(
                     Error.Of("Изображения для события не найдено", ErrorGroup.NotFound));
             }
 
-            return Result.Success<EventImageModel, Error>(
-                new EventImageModel(maybeImageStream.Value, maybeEvent.Value.Image.ContentType));
+            return Result.Success<ImageModel, Error>(
+                new ImageModel(maybeImageStream.Value, maybeEvent.Value.Image.ContentType));
         }
         catch (Exception e)
         {
-            return Result.Failure<EventImageModel, Error>(Error.Of(e.Message));
+            return Result.Failure<ImageModel, Error>(Error.Of(e.Message));
         }
     }
 }

@@ -5,7 +5,7 @@ using JitDalshe.Application.Errors;
 using JitDalshe.Application.Extensions;
 using JitDalshe.Application.Models;
 
-namespace JitDalshe.Application.UseCases.GetDisplayingBanners;
+namespace JitDalshe.Application.UseCases.Banners.GetDisplayingBanners;
 
 [UseCase]
 internal sealed class GetDisplayingBannersUseCase : IGetDisplayingBannersUseCase
@@ -21,7 +21,7 @@ internal sealed class GetDisplayingBannersUseCase : IGetDisplayingBannersUseCase
     {
         try
         {
-            var banners = await _banners.GetDisplayingBannersAsync(ct);
+            var banners = await _banners.FindDisplayingBannersAsync(ct);
 
             return Result.Success<DisplayingBannerModel[], Error>(
                 banners
