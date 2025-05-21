@@ -1,5 +1,7 @@
+using System.Linq.Expressions;
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
+using JitDalshe.Application.Enums;
 using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.ValueObjects;
 using JitDalshe.Infrastructure.Persistence.Attributes;
@@ -30,4 +32,26 @@ public sealed class BannersRepository : IBannersRepository
         => _dbContext.Banners
             .Include(x => x.Image)
             .TryFirstAsync(x => x.Id == id, ct);
+
+    public Task<Banner[]> FindAllAsync<TOrderKey>(
+        Expression<Func<Banner, TOrderKey>>? orderByExpression = null,
+        SortingOrder sortingOrder = SortingOrder.Ascending,
+        CancellationToken ct = default)
+    {
+        var query = _dbContext.Banners
+            .Include(x => x.Image)
+            .AsQueryable();
+
+        if (orderByExpression is not null)
+        {
+            query = sortingOrder switch
+            {
+                SortingOrder.Ascending => query.OrderBy(orderByExpression),
+                SortingOrder.Descending => query.OrderByDescending(orderByExpression),
+                _ => throw new ArgumentOutOfRangeException(nameof(sortingOrder), sortingOrder, null)
+            };
+        }
+
+        return query.ToArrayAsync(ct);
+    }
 }

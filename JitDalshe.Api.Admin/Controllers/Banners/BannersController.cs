@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using JitDalshe.Api.Controllers.Base;
+using JitDalshe.Application.Admin.UseCases.Banners.ListBanners;
 using JitDalshe.Application.Models;
 using JitDalshe.Application.UseCases.Banners.GetBannerImage;
 using JitDalshe.Application.UseCases.Banners.GetDisplayingBanners;
@@ -48,5 +49,22 @@ public sealed class BannersController : AbstractController
         return result.IsSuccess
             ? File(result.Value.ImageStream, result.Value.ContentType)
             : Error(result.Error);
+    }
+
+    /// <summary>
+    /// Получение списка всех баннеров (от новых к старым)
+    /// </summary>
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ListBanners(
+        [FromServices] IListBannersUseCase listBanners,
+        CancellationToken ct = default)
+    {
+        var result = await listBanners.ListAsync(ct);
+
+        return result.IsSuccess
+            ? Ok(result.Value)
+            :  Error(result.Error);
     }
 }

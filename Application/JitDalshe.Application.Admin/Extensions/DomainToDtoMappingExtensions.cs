@@ -1,4 +1,5 @@
 using JitDalshe.Application.Admin.Dto;
+using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.Entities.News;
 
@@ -15,7 +16,7 @@ public static class DomainToDtoMappingExtensions
                 .Select(x => x.ToDto(news.PrimaryImage is not null && x.Id == news.PrimaryImage.NewsImageId))
                 .ToArray());
 
-    public static NewsImageDto ToDto(this NewsImage newsImage, bool isPrimary)
+    private static NewsImageDto ToDto(this NewsImage newsImage, bool isPrimary)
         => new(
             Id: newsImage.Id,
             Url: newsImage.Url.ToString(),
@@ -28,5 +29,14 @@ public static class DomainToDtoMappingExtensions
             Description: @event.Description,
             Date: @event.Date,
             ImageUrl: @event.Image!.Url
+        );
+
+    public static BannerDto ToDto(this Banner banner)
+        => new(
+            Id:  banner.Id,
+            Title: banner.Title,
+            RedirectOnClickUrl: banner.RedirectOnClickUrl,
+            DisplayOrder: banner.DisplayOrder,
+            ImageUrl: banner.Image!.Url
         );
 }
