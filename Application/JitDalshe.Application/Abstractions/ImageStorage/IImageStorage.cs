@@ -1,5 +1,5 @@
 using CSharpFunctionalExtensions;
-using JitDalshe.Domain.Entities.Banners;
+using JitDalshe.Domain.Abstractions;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
 
@@ -7,13 +7,14 @@ namespace JitDalshe.Application.Abstractions.ImageStorage;
 
 public interface IImageStorage
 {
-    Task<Maybe<Stream>> GetImageByIdAsync(IdOf<EventImage> id, CancellationToken ct = default);
-    Task<Maybe<Stream>> GetImageByIdAsync(IdOf<BannerImage> id, CancellationToken ct = default);
+    Task<Maybe<Stream>> GetImageByIdAsync<TImage>(IdOf<TImage> id, CancellationToken ct = default)
+        where TImage : Entity<IdOf<TImage>>, IImage;
 
-    Task<IdOf<EventImage>> SaveImageAsync(
+    Task<IdOf<TImage>> SaveImageAsync<TImage>(
         byte[] imageContent,
         string contentType,
-        CancellationToken ct = default);
+        CancellationToken ct = default)
+        where TImage : Entity<IdOf<TImage>>, IImage;
 
     Task RemoveImageAsync(IdOf<EventImage> id, CancellationToken ct = default);
 }

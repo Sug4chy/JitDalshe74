@@ -14,7 +14,7 @@ public sealed class Banner : AuditableEntity<IdOf<Banner>>
     public int? DisplayOrder
     {
         get => _displayOrder;
-        init
+        set
         {
             if (value is <= 0 or > 5)
             {
@@ -26,4 +26,9 @@ public sealed class Banner : AuditableEntity<IdOf<Banner>>
     }
 
     public BannerImage? Image { get; init; }
+
+    public Banner(IdOf<Banner> id)
+    {
+        Id = id;
+    }
 }

@@ -14,4 +14,6 @@ public interface IBannersRepository
         Expression<Func<Banner, TOrderKey>>? orderByExpression = null,
         SortingOrder sortingOrder = SortingOrder.Ascending,
         CancellationToken ct = default);
+    Task AddAsync(Banner banner, CancellationToken ct = default);
+    Task EditBannerAsync(Banner banner, CancellationToken ct = default);
 }

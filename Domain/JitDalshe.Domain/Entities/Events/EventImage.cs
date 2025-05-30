@@ -3,7 +3,7 @@ using JitDalshe.Domain.ValueObjects;
 
 namespace JitDalshe.Domain.Entities.Events;
 
-public sealed class EventImage : AuditableEntity<IdOf<EventImage>>
+public sealed class EventImage : AuditableEntity<IdOf<EventImage>>, IImage
 {
     public required string Url { get; init; }
     public required string ContentType { get; init; }

@@ -54,4 +54,16 @@ public sealed class BannersRepository : IBannersRepository
 
         return query.ToArrayAsync(ct);
     }
+
+    public async Task AddAsync(Banner banner, CancellationToken ct = default)
+    {
+        _dbContext.Banners.Add(banner);
+        await _dbContext.SaveChangesAsync(ct);
+    }
+
+    public async Task EditBannerAsync(Banner banner, CancellationToken ct = default)
+    {
+        _dbContext.Banners.Update(banner);
+        await _dbContext.SaveChangesAsync(ct);
+    }
 }

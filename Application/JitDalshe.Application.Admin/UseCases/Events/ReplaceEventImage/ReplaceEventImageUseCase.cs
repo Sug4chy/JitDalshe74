@@ -42,7 +42,7 @@ internal sealed class ReplaceEventImageUseCase : IReplaceEventImageUseCase
 
             await _imageStorage.RemoveImageAsync(@event.Image!.Id, ct);
 
-            var newImageId = await _imageStorage.SaveImageAsync(imageBytes, imageContentType, ct);
+            var newImageId = await _imageStorage.SaveImageAsync<EventImage>(imageBytes, imageContentType, ct);
             var newEventImage = new EventImage(newImageId)
             {
                 Url = @event.Image!.Url,

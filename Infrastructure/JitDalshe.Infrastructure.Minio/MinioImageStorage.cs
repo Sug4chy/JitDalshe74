@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.ImageStorage;
 using JitDalshe.Application.Exceptions;
+using JitDalshe.Domain.Abstractions;
 using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
@@ -22,16 +23,10 @@ public sealed class MinioImageStorage : IImageStorage
         _minioClient = minioClient;
     }
 
-    public Task<Maybe<Stream>> GetImageByIdAsync(IdOf<EventImage> id, CancellationToken ct = default)
-        => GetImageByIdAsync(id, EventImagesBucketName, ct);
-
-    public Task<Maybe<Stream>> GetImageByIdAsync(IdOf<BannerImage> id, CancellationToken ct = default)
-        => GetImageByIdAsync(id, BannerImagesBucketName, ct);
-
     private async Task<Maybe<Stream>> GetImageByIdAsync<TImage>(
-        IdOf<TImage> id, 
-        string bucketName, 
-        CancellationToken ct = default) 
+        IdOf<TImage> id,
+        string bucketName,
+        CancellationToken ct = default)
         where TImage : Entity<IdOf<TImage>>
     {
         var ms = new MemoryStream();
@@ -62,20 +57,22 @@ public sealed class MinioImageStorage : IImageStorage
         }
     }
 
-    public async Task<IdOf<EventImage>> SaveImageAsync(
+    private async Task<IdOf<TImage>> SaveImageAsync<TImage>(
         byte[] imageContent,
+        string bucketName,
         string contentType,
         CancellationToken ct = default)
+        where TImage : Entity<IdOf<TImage>>, IImage
     {
         bool bucketExists = await _minioClient.BucketExistsAsync(new BucketExistsArgs()
-            .WithBucket(EventImagesBucketName), ct);
+            .WithBucket(bucketName), ct);
         if (!bucketExists)
         {
             await _minioClient.MakeBucketAsync(new MakeBucketArgs()
-                .WithBucket(EventImagesBucketName), ct);
+                .WithBucket(bucketName), ct);
         }
 
-        var newImageId = IdOf<EventImage>.New();
+        var newImageId = IdOf<TImage>.New();
         await _minioClient.PutObjectAsync(new PutObjectArgs()
             .WithBucket(EventImagesBucketName)
             .WithObject(newImageId.ToString())
@@ -84,6 +81,34 @@ public sealed class MinioImageStorage : IImageStorage
             .WithContentType(contentType), ct);
 
         return newImageId;
+    }
+
+    public Task<Maybe<Stream>> GetImageByIdAsync<TImage>(IdOf<TImage> id, CancellationToken ct = default)
+        where TImage : Entity<IdOf<TImage>>, IImage
+        => id switch
+        {
+            IdOf<EventImage> => GetImageByIdAsync(id, EventImagesBucketName, ct),
+            IdOf<BannerImage> => GetImageByIdAsync(id, BannerImagesBucketName, ct),
+            _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
+        };
+
+    public Task<IdOf<TImage>> SaveImageAsync<TImage>(
+        byte[] imageContent,
+        string contentType,
+        CancellationToken ct = default)
+        where TImage : Entity<IdOf<TImage>>, IImage
+    {
+        if (typeof(TImage) == typeof(BannerImage))
+        {
+            return SaveImageAsync<TImage>(imageContent, BannerImagesBucketName, contentType, ct);
+        }
+
+        if (typeof(TImage) == typeof(EventImage))
+        {
+            return SaveImageAsync<TImage>(imageContent, EventImagesBucketName, contentType, ct);
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(contentType), contentType, null);
     }
 
     public async Task RemoveImageAsync(IdOf<EventImage> id, CancellationToken ct = default)

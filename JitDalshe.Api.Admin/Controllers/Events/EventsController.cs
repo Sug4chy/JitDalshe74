@@ -22,7 +22,6 @@ public sealed class EventsController : AbstractController
     /// Получение изображения, привязанного к событию
     /// </summary>
     [HttpGet("{id:guid}/image")]
-    [Produces(MediaTypeNames.Multipart.FormData)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

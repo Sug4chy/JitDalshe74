@@ -17,7 +17,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
         containerBuilder.RegisterModule<CommonApplicationModule>();
         containerBuilder.RegisterModule(new AdminApplicationModule
         {
-            ImageUrlTemplate = $"{builder.Configuration["CurrentURL"]}/events/[id]/image"
+            ImageUrlTemplate = $"{builder.Configuration["CurrentURL"]}/[entity]/[id]/image"
         });
 
         containerBuilder.RegisterModule(new PersistenceInfrastructureModule

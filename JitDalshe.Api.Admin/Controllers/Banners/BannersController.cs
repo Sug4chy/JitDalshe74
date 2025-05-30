@@ -1,5 +1,8 @@
 using System.Net.Mime;
+using JitDalshe.Api.Admin.Controllers.Banners.Requests;
+using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
+using JitDalshe.Application.Admin.UseCases.Banners.CreateBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.ListBanners;
 using JitDalshe.Application.Models;
 using JitDalshe.Application.UseCases.Banners.GetBannerImage;
@@ -65,6 +68,29 @@ public sealed class BannersController : AbstractController
 
         return result.IsSuccess
             ? Ok(result.Value)
+            :  Error(result.Error);
+    }
+
+    [HttpPost]
+    [ValidateRequest]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CreateBanner(
+        [FromBody] CreateBannerRequest request,
+        [FromServices] ICreateBannerUseCase createBanner,
+        CancellationToken ct = default)
+    {
+        var result = await createBanner.CreateAsync(
+            title: request.Title,
+            imageBase64Url: request.ImageBase64Url,
+            isClickable: request.IsClickable,
+            redirectOnClickUrl: request.RedirectOnClickUrl,
+            displayOrder: request.DisplayOrder,
+            ct: ct);
+
+        return result.IsSuccess
+            ? CreatedAtAction("ListBanners", null)
             :  Error(result.Error);
     }
 }
