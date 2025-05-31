@@ -5,6 +5,7 @@ using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Application.Admin.UseCases.Banners.CreateBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.EditBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.ListBanners;
+using JitDalshe.Application.Admin.UseCases.Banners.ReplaceBannerImage;
 using JitDalshe.Application.Models;
 using JitDalshe.Application.UseCases.Banners.GetBannerImage;
 using JitDalshe.Application.UseCases.Banners.GetDisplayingBanners;
@@ -113,6 +114,24 @@ public sealed class BannersController : AbstractController
             isClickable: request.IsClickable,
             redirectOnClickUrl: request.RedirectOnClickUrl,
             displayOrder: request.DisplayOrder,
+            ct: ct);
+
+        return result.IsSuccess
+            ? Ok()
+            : Error(result.Error);
+    }
+
+    [HttpPatch("{id:guid}/image")]
+    [ValidateRequest]
+    public async Task<IActionResult> ReplaceBannerImage(
+        [FromRoute] Guid id,
+        [FromBody] ReplaceBannerImageRequest request,
+        [FromServices] IReplaceBannerImageUseCase replaceBannerImage,
+        CancellationToken ct = default)
+    {
+        var result = await replaceBannerImage.ReplaceAsync(
+            bannerId: IdOf<Banner>.From(id),
+            imageBase64Url: request.ImageBase64Url,
             ct: ct);
 
         return result.IsSuccess

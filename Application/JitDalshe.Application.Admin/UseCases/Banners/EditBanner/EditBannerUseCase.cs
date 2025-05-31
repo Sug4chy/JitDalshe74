@@ -8,7 +8,7 @@ using JitDalshe.Domain.ValueObjects;
 namespace JitDalshe.Application.Admin.UseCases.Banners.EditBanner;
 
 [UseCase]
-public sealed class EditBannerUseCase : IEditBannerUseCase
+internal sealed class EditBannerUseCase : IEditBannerUseCase
 {
     private readonly IBannersRepository _banners;
 

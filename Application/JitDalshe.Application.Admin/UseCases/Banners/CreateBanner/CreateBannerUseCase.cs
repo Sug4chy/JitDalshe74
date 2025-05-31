@@ -9,7 +9,7 @@ using JitDalshe.Domain.ValueObjects;
 namespace JitDalshe.Application.Admin.UseCases.Banners.CreateBanner;
 
 [UseCase]
-public sealed class CreateBannerUseCase : ICreateBannerUseCase
+internal sealed class CreateBannerUseCase : ICreateBannerUseCase
 {
     private readonly IBannersRepository _banners;
     private readonly IImageStorage _imageStorage;

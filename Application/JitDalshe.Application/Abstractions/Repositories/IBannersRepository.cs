@@ -16,4 +16,5 @@ public interface IBannersRepository
         CancellationToken ct = default);
     Task AddAsync(Banner banner, CancellationToken ct = default);
     Task EditBannerAsync(Banner banner, CancellationToken ct = default);
+    Task ReplaceBannerImageAsync(Banner banner, BannerImage newImage, CancellationToken ct = default);
 }

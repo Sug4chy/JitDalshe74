@@ -23,6 +23,15 @@ public sealed class MinioImageStorage : IImageStorage
         _minioClient = minioClient;
     }
 
+    public Task<Maybe<Stream>> GetImageByIdAsync<TImage>(IdOf<TImage> id, CancellationToken ct = default)
+        where TImage : Entity<IdOf<TImage>>, IImage
+        => id switch
+        {
+            IdOf<EventImage> => GetImageByIdAsync(id, EventImagesBucketName, ct),
+            IdOf<BannerImage> => GetImageByIdAsync(id, BannerImagesBucketName, ct),
+            _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
+        };
+
     private async Task<Maybe<Stream>> GetImageByIdAsync<TImage>(
         IdOf<TImage> id,
         string bucketName,
@@ -57,6 +66,20 @@ public sealed class MinioImageStorage : IImageStorage
         }
     }
 
+    public Task<IdOf<TImage>> SaveImageAsync<TImage>(
+        byte[] imageContent,
+        string contentType,
+        CancellationToken ct = default)
+        where TImage : Entity<IdOf<TImage>>, IImage
+        => typeof(TImage) switch
+        {
+            { } eventImageType when eventImageType == typeof(EventImage) =>
+                SaveImageAsync<TImage>(imageContent, EventImagesBucketName, contentType, ct),
+            { } bannerImageType when bannerImageType == typeof(BannerImage) =>
+                SaveImageAsync<TImage>(imageContent, BannerImagesBucketName, contentType, ct),
+            _ => throw new ArgumentOutOfRangeException(nameof(TImage), typeof(TImage).Name, null)
+        };
+
     private async Task<IdOf<TImage>> SaveImageAsync<TImage>(
         byte[] imageContent,
         string bucketName,
@@ -83,40 +106,22 @@ public sealed class MinioImageStorage : IImageStorage
         return newImageId;
     }
 
-    public Task<Maybe<Stream>> GetImageByIdAsync<TImage>(IdOf<TImage> id, CancellationToken ct = default)
+    public Task RemoveImageAsync<TImage>(IdOf<TImage> id, CancellationToken ct = default)
         where TImage : Entity<IdOf<TImage>>, IImage
         => id switch
         {
-            IdOf<EventImage> => GetImageByIdAsync(id, EventImagesBucketName, ct),
-            IdOf<BannerImage> => GetImageByIdAsync(id, BannerImagesBucketName, ct),
+            IdOf<EventImage> => RemoveImageAsync(id, EventImagesBucketName, ct),
+            IdOf<BannerImage> => RemoveImageAsync(id, BannerImagesBucketName, ct),
             _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
         };
 
-    public Task<IdOf<TImage>> SaveImageAsync<TImage>(
-        byte[] imageContent,
-        string contentType,
-        CancellationToken ct = default)
+    private async Task RemoveImageAsync<TImage>(IdOf<TImage> id, string bucketName, CancellationToken ct = default)
         where TImage : Entity<IdOf<TImage>>, IImage
-    {
-        if (typeof(TImage) == typeof(BannerImage))
-        {
-            return SaveImageAsync<TImage>(imageContent, BannerImagesBucketName, contentType, ct);
-        }
-
-        if (typeof(TImage) == typeof(EventImage))
-        {
-            return SaveImageAsync<TImage>(imageContent, EventImagesBucketName, contentType, ct);
-        }
-
-        throw new ArgumentOutOfRangeException(nameof(contentType), contentType, null);
-    }
-
-    public async Task RemoveImageAsync(IdOf<EventImage> id, CancellationToken ct = default)
     {
         try
         {
             await _minioClient.RemoveObjectAsync(new RemoveObjectArgs()
-                .WithBucket(EventImagesBucketName)
+                .WithBucket(bucketName)
                 .WithObject(id.ToString()), ct);
         }
         catch (Exceptions.ObjectNotFoundException)

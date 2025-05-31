@@ -66,4 +66,11 @@ public sealed class BannersRepository : IBannersRepository
         _dbContext.Banners.Update(banner);
         await _dbContext.SaveChangesAsync(ct);
     }
+
+    public async Task ReplaceBannerImageAsync(Banner banner, BannerImage newImage, CancellationToken ct = default)
+    {
+        _dbContext.BannerImages.Remove(banner.Image!);
+        _dbContext.BannerImages.Add(newImage);
+        await _dbContext.SaveChangesAsync(ct);
+    }
 }

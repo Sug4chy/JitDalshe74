@@ -67,17 +67,17 @@ public sealed class NewsRepository : INewsRepository
 
     public async Task EditAsync(News news, CancellationToken ct = default)
     {
-        var oldPrimaryPhoto = await _dbContext.NewsPrimaryPhotos.FirstOrDefaultAsync(x => x.NewsId == news.Id, ct);
+        var oldPrimaryPhoto = await _dbContext.NewsPrimaryImages.FirstOrDefaultAsync(x => x.NewsId == news.Id, ct);
         if (oldPrimaryPhoto is not null)
         {
-            _dbContext.NewsPrimaryPhotos.Remove(oldPrimaryPhoto);
+            _dbContext.NewsPrimaryImages.Remove(oldPrimaryPhoto);
         }
 
         _dbContext.News.Update(news);
 
         if (oldPrimaryPhoto is not null)
         {
-            _dbContext.NewsPrimaryPhotos.Add(news.PrimaryImage!);
+            _dbContext.NewsPrimaryImages.Add(news.PrimaryImage!);
         }
 
         await _dbContext.SaveChangesAsync(ct);
@@ -87,10 +87,10 @@ public sealed class NewsRepository : INewsRepository
     {
         if (news.PrimaryImage is not null)
         {
-            _dbContext.NewsPrimaryPhotos.Remove(news.PrimaryImage);
+            _dbContext.NewsPrimaryImages.Remove(news.PrimaryImage);
         }
 
-        _dbContext.NewsPhotos.RemoveRange(news.Images);
+        _dbContext.NewsImages.RemoveRange(news.Images);
         _dbContext.News.Remove(news);
         await _dbContext.SaveChangesAsync(ct);
     }
