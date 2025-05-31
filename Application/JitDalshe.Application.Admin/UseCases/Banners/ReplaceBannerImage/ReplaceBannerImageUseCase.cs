@@ -3,6 +3,7 @@ using JitDalshe.Application.Abstractions.ImageStorage;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Errors;
+using JitDalshe.Application.Exceptions;
 using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.ValueObjects;
 
@@ -53,6 +54,10 @@ internal sealed class ReplaceBannerImageUseCase : IReplaceBannerImageUseCase
             await _banners.ReplaceBannerImageAsync(banner, newImage, ct);
 
             return UnitResult.Success<Error>();
+        }
+        catch (ImageNotFoundException)
+        {
+            return UnitResult.Failure(Error.Of("Изображение не найдено", ErrorGroup.NotFound));
         }
         catch (Exception e)
         {

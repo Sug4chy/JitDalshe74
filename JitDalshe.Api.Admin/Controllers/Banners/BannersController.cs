@@ -3,6 +3,7 @@ using JitDalshe.Api.Admin.Controllers.Banners.Requests;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Application.Admin.UseCases.Banners.CreateBanner;
+using JitDalshe.Application.Admin.UseCases.Banners.DeleteBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.EditBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.ListBanners;
 using JitDalshe.Application.Admin.UseCases.Banners.ReplaceBannerImage;
@@ -123,6 +124,10 @@ public sealed class BannersController : AbstractController
 
     [HttpPatch("{id:guid}/image")]
     [ValidateRequest]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ReplaceBannerImage(
         [FromRoute] Guid id,
         [FromBody] ReplaceBannerImageRequest request,
@@ -136,6 +141,22 @@ public sealed class BannersController : AbstractController
 
         return result.IsSuccess
             ? Ok()
+            : Error(result.Error);
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteBanner(
+        [FromRoute] Guid id,
+        [FromServices] IDeleteBannerUseCase deleteBanner,
+        CancellationToken ct = default)
+    {
+        var result = await deleteBanner.DeleteAsync(id: IdOf<Banner>.From(id), ct);
+
+        return result.IsSuccess
+            ? NoContent()
             : Error(result.Error);
     }
 }
