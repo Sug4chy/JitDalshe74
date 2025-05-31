@@ -3,6 +3,7 @@ using JitDalshe.Api.Admin.Controllers.Banners.Requests;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Application.Admin.UseCases.Banners.CreateBanner;
+using JitDalshe.Application.Admin.UseCases.Banners.EditBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.ListBanners;
 using JitDalshe.Application.Models;
 using JitDalshe.Application.UseCases.Banners.GetBannerImage;
@@ -68,7 +69,7 @@ public sealed class BannersController : AbstractController
 
         return result.IsSuccess
             ? Ok(result.Value)
-            :  Error(result.Error);
+            : Error(result.Error);
     }
 
     [HttpPost]
@@ -91,6 +92,31 @@ public sealed class BannersController : AbstractController
 
         return result.IsSuccess
             ? CreatedAtAction("ListBanners", null)
-            :  Error(result.Error);
+            : Error(result.Error);
+    }
+
+    [HttpPatch("{id:guid}")]
+    [ValidateRequest]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> EditBanner(
+        [FromRoute] Guid id,
+        [FromBody] EditBannerRequest request,
+        [FromServices] IEditBannerUseCase editBanner,
+        CancellationToken ct = default)
+    {
+        var result = await editBanner.EditAsync(
+            bannerId: IdOf<Banner>.From(id),
+            title: request.Title,
+            isClickable: request.IsClickable,
+            redirectOnClickUrl: request.RedirectOnClickUrl,
+            displayOrder: request.DisplayOrder,
+            ct: ct);
+
+        return result.IsSuccess
+            ? Ok()
+            : Error(result.Error);
     }
 }

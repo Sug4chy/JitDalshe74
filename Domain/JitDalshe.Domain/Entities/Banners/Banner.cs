@@ -7,9 +7,9 @@ public sealed class Banner : AuditableEntity<IdOf<Banner>>
 {
     private int? _displayOrder;
 
-    public required string Title { get; init; }
-    public bool IsClickable { get; init; }
-    public string? RedirectOnClickUrl { get; init; }
+    public required string Title { get; set; }
+    public bool IsClickable { get; set; }
+    public string? RedirectOnClickUrl { get; set; }
 
     public int? DisplayOrder
     {
