@@ -1,38 +1,16 @@
 @page "/banners"
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Components.Banners
 
 <PageTitle>Баннеры</PageTitle>
 
 <h1 class="mb-4">Баннеры</h1>
 
 <h2>Предпросмотр активных баннеров</h2>
-<div id="carouselBannersIndicators" class="carousel slide carousel-container" data-ride="carousel">
-    <ol class="carousel-indicators">
-        @foreach (var displayingBanner in _displayingBanners)
-        {
-            <li data-target="#carouselBannersIndicators"
-                data-slide-to="@displayingBanner.DisplayOrder"
-                class="@(displayingBanner.DisplayOrder == 0 ? "active" : null)"></li>
-        }
-    </ol>
-    <div class="carousel-inner">
-        @foreach (var displayingBanner in _displayingBanners)
-        {
-            <div class="carousel-item carousel-card rounded @(displayingBanner.DisplayOrder == 0 ? "active" : null)">
-                <img src="@displayingBanner.ImageUrl" alt="">
-                <div class="card-text-overlay">@displayingBanner.Title</div>
-            </div>
-        }
-    </div>
-    <a class="carousel-control-prev" href="#carouselBannersIndicators" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselBannersIndicators" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
-</div>
+
+<main class="main-slider-container">
+    <BannersSlider Items="_displayingBanners"/>
+</main>
 
 @*TODO общий список с пагинацией*@
 

@@ -1,0 +1,11 @@
+@using JitDalshe.Ui.Admin.Models
+
+<section class="main-section">
+    <article class="main-article">
+        <Swiper Items="@Items.OrderBy(x => x.DisplayOrder).ToArray()"/>
+    </article>
+</section>
+
+@code {
+    [Parameter] public required DisplayingBanner[] Items { get; init; } = [];
+}

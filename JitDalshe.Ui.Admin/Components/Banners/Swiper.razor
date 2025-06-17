@@ -1,0 +1,30 @@
+@using JitDalshe.Ui.Admin.Models
+@inject IJSRuntime JsRuntime
+
+<div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+        @foreach (var item in Items)
+        {
+            <div class="swiper-slide" style="background-image: url('@item.ImageUrl')">
+                <h2 class="slide-text">@item.Title</h2>
+            </div>
+        }
+    </div>
+
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
+
+@code {
+    [Parameter] public required DisplayingBanner[] Items { get; init; } = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JsRuntime.InvokeVoidAsync("initSwiper");
+        }
+    }
+
+}
