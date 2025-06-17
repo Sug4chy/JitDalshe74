@@ -167,7 +167,7 @@ public sealed class ApiFacade : IApiFacade
 
         switch (response.StatusCode)
         {
-            case HttpStatusCode.Created:
+            case HttpStatusCode.OK:
                 return true;
             default:
                 HandleError(
