@@ -5,7 +5,10 @@
     <div class="swiper-wrapper">
         @foreach (var item in Items)
         {
-            <div class="swiper-slide" style="background-image: url('@item.ImageUrl')">
+            <div class="swiper-slide"
+                 style="background-image: url('@item.ImageUrl');
+                        @(item.RedirectOnClickUrl is null ? null : "cursor: pointer;")"
+                 @onclick="async () => await RedirectAsync(item.RedirectOnClickUrl)">
                 <h2 class="slide-text">@item.Title</h2>
             </div>
         }
@@ -24,6 +27,14 @@
         if (firstRender)
         {
             await JsRuntime.InvokeVoidAsync("initSwiper");
+        }
+    }
+
+    private async Task RedirectAsync(string? url)
+    {
+        if (url is not null)
+        {
+            await JsRuntime.InvokeVoidAsync("redirectTo", url);
         }
     }
 
