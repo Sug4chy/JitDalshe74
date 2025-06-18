@@ -1,9 +1,9 @@
-@inject IJSRuntime JsRuntime
-
 <div id="@Id"
      class="modal fade"
      tabindex="-1"
-     role="dialog">
+     role="dialog"
+     data-backdrop="@(Static ? "static" : null)"
+     data-keyboard="@(Static ? "false" : "true")">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,7 +12,7 @@
                         class="close"
                         data-dismiss="modal"
                         aria-label="Close"
-                        @onclick="OnClose ?? EventCallback.Empty">
+                        @onclick="OnClose">
                     <span>&times;</span>
                 </button>
             </div>
@@ -29,7 +29,7 @@
                 {
                     <button class="btn btn-primary"
                             type="button"
-                            @onclick="OnFooterButtonClick ?? EventCallback.Empty">
+                            @onclick="OnFooterButtonClick">
                         @FooterButtonText
                     </button>
                 }
@@ -43,13 +43,13 @@
     [Parameter] public required string Id { get; init; }
     [Parameter] public bool Static { get; init; }
     [Parameter] public required string Title { get; init; }
-    [Parameter] public EventCallback? OnClose { get; init; }
+    [Parameter] public EventCallback OnClose { get; init; } = EventCallback.Empty;
     [Parameter] public RenderFragment? ChildContent { get; init; }
     [Parameter] public FooterPositioning? FooterContentPosition { get; init; }
     [Parameter] public FooterType Footer { get; init; }
     [Parameter] public string? FooterText { get; init; }
     [Parameter] public string? FooterButtonText { get; init; }
-    [Parameter] public EventCallback? OnFooterButtonClick { get; init; }
+    [Parameter] public EventCallback OnFooterButtonClick { get; init; } = EventCallback.Empty;
 
     [Flags]
     public enum FooterType
@@ -71,14 +71,5 @@
             FooterPositioning.SpaceBetween => "modal-footer-space-between",
             _ => null
         };
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (Static)
-        {
-            await JsRuntime.InvokeVoidAsync("setAttributeToElement", $"#{Id}", "data-backdrop", "static");
-            await JsRuntime.InvokeVoidAsync("setAttributeToElement", $"#{Id}", "data-keyboard", "false");
-        }
-    }
 
 }
