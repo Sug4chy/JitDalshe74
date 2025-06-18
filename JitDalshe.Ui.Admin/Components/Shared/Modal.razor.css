@@ -1,0 +1,9 @@
+.modal-footer-start {
+    display: flex;
+    justify-content: start;
+}
+
+.modal-footer-space-between {
+    display: flex;
+    justify-content: space-between;
+}

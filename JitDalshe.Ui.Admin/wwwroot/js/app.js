@@ -31,3 +31,7 @@ function initSwiper() {
 function redirectTo(url) {
     window.open(url, '_blank');
 }
+
+function setAttributeToElement(elementID, attribute, value) {
+    document.getElementById(elementID).setAttribute(attribute, value);
+}
