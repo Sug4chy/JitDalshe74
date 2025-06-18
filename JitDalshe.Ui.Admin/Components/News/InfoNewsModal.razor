@@ -7,7 +7,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_@News.Id">@News.Title</h5>
+                <h5 class="modal-title" id="modal_@News.Id">Редактирование новости</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span>&times;</span>
                 </button>
@@ -19,7 +19,12 @@
                          class="mb-4 img-primary rounded"
                          alt=""/>
                 }
-                @((MarkupString)News.TextWithoutTitle.Replace("\n", "<br/>"))
+                <p>
+                    @((MarkupString)News.TextWithoutTitle.Replace("\n", "<br/>"))
+                </p>
+                <p>
+                    Ссылка на пост: @News.PostUrl
+                </p>
             </div>
             <div class="modal-footer">
                 Опубликовано @News.PublishDate.ToString("dd-MM-yyyy")
@@ -30,7 +35,7 @@
 
 @code {
 
-    [Parameter] public required string Id { get; init; } 
+    [Parameter] public required string Id { get; init; }
     [Parameter] public required News News { get; init; }
 
 }

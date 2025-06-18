@@ -4,7 +4,8 @@ public sealed record News(
     Guid Id,
     string Text,
     DateOnly PublishDate,
-    NewsImage[] Images)
+    NewsImage[] Images,
+    string PostUrl)
 {
     public string Title => Text.Split('.')[0];
 

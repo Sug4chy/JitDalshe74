@@ -4,5 +4,6 @@ public readonly record struct NewsDto(
     Guid Id,
     string Text,
     DateOnly PublishDate,
-    NewsImageDto[] Images
+    NewsImageDto[] Images,
+    string PostUrl
 );
