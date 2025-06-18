@@ -11,6 +11,7 @@ public interface IEventsRepository
     Task<Event[]> FindAllAsync<TOrderKey>(
         int? pageNumber = null,
         int? pageSize = null,
+        Expression<Func<Event, bool>>? filteringExpression = null,
         Expression<Func<Event, TOrderKey>>? orderByExpression = null,
         SortingOrder sortingOrder = SortingOrder.Ascending,
         CancellationToken ct = default);
