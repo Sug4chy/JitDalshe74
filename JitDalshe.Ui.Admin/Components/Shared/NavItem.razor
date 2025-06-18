@@ -1,0 +1,12 @@
+<li class="nav-item">
+    <NavLink class="nav-link" href="@Href">
+        @Text
+    </NavLink>
+</li>
+
+@code {
+
+    [Parameter] public required string Href { get; init; }
+    [Parameter] public required string Text { get; init; }
+
+}
