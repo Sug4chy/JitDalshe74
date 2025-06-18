@@ -24,6 +24,7 @@ internal sealed class EventsRepository : IEventsRepository
     public Task<Event[]> FindAllAsync<TOrderKey>(
         int? pageNumber = null,
         int? pageSize = null,
+        Expression<Func<Event, bool>>? filteringExpression = null,
         Expression<Func<Event, TOrderKey>>? orderByExpression = null,
         SortingOrder sortingOrder = SortingOrder.Ascending,
         CancellationToken ct = default)
@@ -32,9 +33,9 @@ internal sealed class EventsRepository : IEventsRepository
             .Include(x => x.Image)
             .AsQueryable();
 
-        if (pageNumber.HasValue && pageSize.HasValue)
+        if (filteringExpression is not null)
         {
-            query = query.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            query = query.Where(filteringExpression);
         }
 
         if (orderByExpression is not null)
@@ -45,6 +46,11 @@ internal sealed class EventsRepository : IEventsRepository
                 SortingOrder.Descending => query.OrderByDescending(orderByExpression),
                 _ => query
             };
+        }
+
+        if (pageNumber.HasValue && pageSize.HasValue)
+        {
+            query = query.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
         }
 
         return query.ToArrayAsync(ct);
