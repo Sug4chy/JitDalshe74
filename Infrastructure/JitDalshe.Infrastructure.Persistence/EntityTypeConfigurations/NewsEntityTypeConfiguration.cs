@@ -27,6 +27,10 @@ public sealed class NewsEntityTypeConfiguration : IEntityTypeConfiguration<News>
             .IsRequired()
             .HasColumnName(nameof(News.PublicationDate).ToSnakeCase());
 
+        builder.Property(x => x.PostUrl)
+            .IsRequired()
+            .HasColumnName(nameof(News.PostUrl).ToSnakeCase());
+
         builder.HasAudits();
 
         builder.HasMany(x => x.Images)

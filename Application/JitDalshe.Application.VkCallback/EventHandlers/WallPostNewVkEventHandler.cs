@@ -30,8 +30,7 @@ public sealed class WallPostNewVkEventHandler : IVkEventHandler<WallPostNewVkEve
                 .Select(x => new NewsImage
                 {
                     ExtId = x.Photo!.Id,
-                    Url = new Uri(
-                        x.Photo.Sizes.MaxBy(s => SizeTypesSorted.IndexOf(s.Type))!.Url)
+                    Url = new Uri(x.Photo.Sizes.MaxBy(s => SizeTypesSorted.IndexOf(s.Type))!.Url)
                 })
                 .ToList();
 
@@ -39,9 +38,9 @@ public sealed class WallPostNewVkEventHandler : IVkEventHandler<WallPostNewVkEve
             {
                 ExtId = @event.Object.Id,
                 Text = @event.Object.Text,
-                PublicationDate = DateOnly.FromDateTime(
-                    DateTimeOffset.FromUnixTimeSeconds(@event.Object.Date).Date),
+                PublicationDate = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeSeconds(@event.Object.Date).Date),
                 Images = newsPhotos,
+                PostUrl = $"http://vk.com/wall{@event.GroupId}_{@event.Object.Id}"
             };
             if (news.Images.Count is not 0)
             {
