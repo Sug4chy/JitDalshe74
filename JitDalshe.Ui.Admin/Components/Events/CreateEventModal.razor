@@ -1,78 +1,55 @@
 @using JitDalshe.Ui.Admin.Api
 @using JitDalshe.Ui.Admin.Api.Events.Requests
 @using JitDalshe.Ui.Admin.Extensions
+@using JitDalshe.Ui.Admin.Components.Shared
 @inject IJSRuntime JsRuntime
 @inject IApiFacade Api
 @inject IToastService ToastService
 
-<div id="@Id"
-     class="modal fade"
-     tabindex="-1"
-     role="dialog"
-     data-backdrop="static"
-     data-keyboard="false">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Создание нового событие</h5>
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close"
-                        @onclick="CloseModalAsync">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="image-upload-container">
-                    <label class="image-upload-label">
-                        <InputFile accept="image/*" OnChange="HandleFileUploadAsync" style="display: none"/>
-                        @if (_uploadedImageUrl is null)
-                        {
-                            <div class="image-upload-box rounded"
-                                 data-toggle="tooltip"
-                                 data-placement="top"
-                                 title="Загрузить изображение">
-                                <div class="plus-sign">+</div>
-                            </div>
-                        }
-                        else
-                        {
-                            <img src="@_uploadedImageUrl"
-                                 alt=""
-                                 class="uploaded-image rounded"
-                                 data-toggle="tooltip"
-                                 data-placement="top"
-                                 title="Изменить изображение"/>
-                        }
-                    </label>
+<Modal Id="@Id"
+       Static="true"
+       Title="Создание нового события"
+       OnClose="@CloseModalAsync"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Сохранить"
+       OnFooterButtonClick="@SubmitCreateEventAsync">
+    <div class="image-upload-container">
+        <label class="image-upload-label">
+            <InputFile accept="image/*" OnChange="HandleFileUploadAsync" style="display: none"/>
+            @if (_uploadedImageUrl is null)
+            {
+                <div class="image-upload-box rounded"
+                     data-toggle="tooltip"
+                     data-placement="top"
+                     title="Загрузить изображение">
+                    <div class="plus-sign">+</div>
                 </div>
-                <label for="title-input">Заголовок</label>
-                <InputText id="title-input"
-                           class="form-control"
-                           ValueExpression="@(() => _title)"
-                           ValueChanged="@(e => _title = e ?? string.Empty)"/>
-                <label for="description-input">Описание</label>
-                <InputTextArea id="description-input"
-                               class="form-control"
-                               ValueExpression="@(() => _description)"
-                               ValueChanged="@(e => _description = e ?? string.Empty)"/>
-                <label for="date-input">Дата события</label>
-                <InputDate id="date-input"
-                           TValue="DateTime"
-                           class="form-control"
-                           @bind-Value="_date"/>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary"
-                        type="button"
-                        @onclick="SubmitCreateEventAsync">
-                    Сохранить
-                </button>
-            </div>
-        </div>
+            }
+            else
+            {
+                <img src="@_uploadedImageUrl"
+                     alt=""
+                     class="uploaded-image rounded"
+                     data-toggle="tooltip"
+                     data-placement="top"
+                     title="Изменить изображение"/>
+            }
+        </label>
     </div>
-</div>
+    <label for="title-input">Заголовок</label>
+    <InputText id="title-input"
+               class="form-control"
+               @bind-Value="_title"/>
+    <label for="description-input">Описание</label>
+    <InputTextArea id="description-input"
+                   class="form-control"
+                   @bind-Value="_description"/>
+    <label for="date-input">Дата события</label>
+    <InputDate id="date-input"
+               TValue="DateTime"
+               class="form-control"
+               @bind-Value="_date"/>
+</Modal>
 
 @code {
     private string? _uploadedImageUrl;
@@ -83,8 +60,17 @@
     [Parameter] public required string Id { get; init; }
     [Parameter] public required EventCallback EventCreated { get; init; }
 
+    private void ClearFields()
+    {
+        _uploadedImageUrl = null;
+        _title = string.Empty;
+        _description = string.Empty;
+        _date = DateTime.Today;
+    }
+
     private async Task CloseModalAsync()
     {
+        ClearFields();
         await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
     }
 
