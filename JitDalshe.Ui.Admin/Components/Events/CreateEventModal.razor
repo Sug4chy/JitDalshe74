@@ -13,29 +13,7 @@
        Footer="Modal.FooterType.Button"
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SubmitCreateEventAsync">
-    <div class="image-upload-container">
-        <label class="image-upload-label">
-            <InputFile accept="image/*" OnChange="HandleFileUploadAsync" style="display: none"/>
-            @if (_uploadedImageUrl is null)
-            {
-                <div class="image-upload-box rounded"
-                     data-toggle="tooltip"
-                     data-placement="top"
-                     title="Загрузить изображение">
-                    <div class="plus-sign">+</div>
-                </div>
-            }
-            else
-            {
-                <img src="@_uploadedImageUrl"
-                     alt=""
-                     class="uploaded-image rounded"
-                     data-toggle="tooltip"
-                     data-placement="top"
-                     title="Изменить изображение"/>
-            }
-        </label>
-    </div>
+    <UploadFile @bind-FileUrl="_uploadedImageUrl"/>
     <label for="title-input">Заголовок</label>
     <InputText id="title-input"
                class="form-control"
@@ -72,21 +50,6 @@
     {
         ClearFields();
         await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
-    }
-
-    private async Task HandleFileUploadAsync(InputFileChangeEventArgs args)
-    {
-        var file = args.File;
-        if (file is null)
-        {
-            return;
-        }
-
-        byte[] buffer = new byte[file.Size];
-        await using var stream = file.OpenReadStream();
-        int _ = await stream.ReadAsync(buffer);
-
-        _uploadedImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
     }
 
     private async Task SubmitCreateEventAsync()
