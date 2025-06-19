@@ -36,9 +36,13 @@
             </InputRadioGroup>
         </div>
     }
-    <InputTextArea @bind-Value="_currentEnteredText"
-                   style="width: 100%; height: 400px"
-                   class="form-control"/>
+    <div class="form-group">
+        <label for="text-input">Текст новости</label>
+        <InputTextArea id="text-input"
+                       @bind-Value="_currentEnteredText"
+                       style="width: 100%; height: 400px"
+                       class="form-control"/>
+    </div>
 </Modal>
 
 @code {
@@ -88,7 +92,7 @@
                 },
                 defaultValue: null,
                 onValidationErrorCallback:
-                    validationError => ToastService.ShowWarning(validationError.Errors.First().Value.First()),
+                validationError => ToastService.ShowWarning(validationError.Errors.First().Value.First()),
                 onNotFoundCallback: error => ToastService.ShowWarning(error.Message),
                 onErrorCallback: error => ToastService.ShowError(error.Message)
             );
