@@ -2,64 +2,41 @@
 @using JitDalshe.Ui.Admin.Api.Events.Requests
 @using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Components.Shared.Forms
 @inject IJSRuntime JsRuntime
 @inject IApiFacade Api
 @inject IToastService ToastService
 
-<div id="@Id"
-     class="modal fade"
-     tabindex="-1"
-     role="dialog"
-     data-backdrop="static"
-     data-keyboard="false">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">@Event.Title</h5>
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close"
-                        @onclick="CloseModalAsync">
-                    <span>&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="image-upload-container">
-                    <label class="image-upload-label">
-                        <InputFile accept="image/*" OnChange="HandleFileUploadAsync" style="display: none"/>
-                        <img src="@_currentImageUrl"
-                             alt=""
-                             class="uploaded-image rounded"
-                             data-toggle="tooltip"
-                             data-placement="top"
-                             title="Изменить изображение"/>
-                    </label>
-                </div>
-                <label for="title-input">Заголовок</label>
-                <InputText id="title-input"
-                           class="form-control"
-                           @bind-Value="_title"/>
-                <label for="description-input">Описание</label>
-                <InputTextArea id="description-input"
-                               class="form-control"
-                               @bind-Value="_description"/>
-                <label for="date-input">Дата события</label>
-                <InputDate id="date-input"
-                           TValue="DateTime"
-                           class="form-control"
-                           @bind-Value="_date"/>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary"
-                        type="button"
-                        @onclick="SubmitCreateEventAsync">
-                    Сохранить
-                </button>
-            </div>
-        </div>
+<Modal Id="@Id"
+       Static="true"
+       Title="Редактирование события"
+       OnClose="@CloseModalAsync"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Сохранить"
+       OnFooterButtonClick="@SubmitCreateEventAsync">
+    <UploadFile @bind-FileUrl="_currentImageUrl"/>
+    <div class="form-group">
+        <label for="title-input">Заголовок</label>
+        <InputText id="title-input"
+                   class="form-control"
+                   @bind-Value="_title"/>
     </div>
-</div>
+    <div class="form-group">
+        <label for="description-input">Описание</label>
+        <InputTextArea id="description-input"
+                       class="form-control"
+                       style="width: 100%; height: 400px"
+                       @bind-Value="_description"/>
+    </div>
+    <div class="form-group">
+        <label for="date-input">Дата события</label>
+        <InputDate id="date-input"
+                   TValue="DateTime"
+                   class="form-control"
+                   @bind-Value="_date"/>
+    </div>
+</Modal>
 
 @code {
     private string _currentImageUrl = null!;
@@ -88,21 +65,6 @@
     {
         InitializeFields();
         await HideModalAsync();
-    }
-
-    private async Task HandleFileUploadAsync(InputFileChangeEventArgs args)
-    {
-        var file = args.File;
-        if (file is null)
-        {
-            return;
-        }
-
-        byte[] buffer = new byte[file.Size];
-        await using var stream = file.OpenReadStream();
-        int _ = await stream.ReadAsync(buffer);
-
-        _currentImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
     }
 
     private async Task SubmitCreateEventAsync()

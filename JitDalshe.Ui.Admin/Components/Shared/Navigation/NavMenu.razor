@@ -7,26 +7,10 @@
         </button>
         <div class="collapse navbar-collapse @NavBarCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        Главная
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="news">
-                        Новости
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="events">
-                        События
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="banners">
-                        Баннеры
-                    </NavLink>
-                </li>
+                <NavItem Href="/" Text="Главная"/>
+                <NavItem Href="/news" Text="Новости"/>
+                <NavItem Href="/events" Text="События"/>
+                <NavItem Href="/banners" Text="Баннеры"/>
             </ul>
         </div>
     </div>
