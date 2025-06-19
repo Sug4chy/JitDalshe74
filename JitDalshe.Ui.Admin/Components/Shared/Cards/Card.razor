@@ -1,0 +1,57 @@
+<div class="card mb-3">
+    <div class="card-header">
+        @HeaderText
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">@Title</h5>
+    </div>
+    <div class="card-footer">
+        <div class="d-flex card-footer-buttons">
+            @if (Buttons.HasFlag(Button.Info))
+            {
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="OnInfoButtonClick">
+                    Подробнее
+                </button>
+            }
+
+            @if (Buttons.HasFlag(Button.Edit))
+            {
+                <button type="button"
+                        class="btn btn-secondary"
+                        @onclick="OnEditButtonClick">
+                    Изменить
+                </button>
+            }
+
+            @if (Buttons.HasFlag(Button.Delete))
+            {
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="OnDeleteButtonClick">
+                    Удалить
+                </button>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter] public required string HeaderText { get; init; }
+    [Parameter] public required string Title { get; init; }
+    [Parameter] public Button Buttons { get; init; }
+    [Parameter] public EventCallback OnInfoButtonClick { get; init; } = EventCallback.Empty;
+    [Parameter] public EventCallback OnEditButtonClick { get; init; } = EventCallback.Empty;
+    [Parameter] public EventCallback OnDeleteButtonClick { get; init; } = EventCallback.Empty;
+
+    [Flags]
+    public enum Button
+    {
+        Info = 1,
+        Edit = 2,
+        Delete = 4
+    }
+
+}

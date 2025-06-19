@@ -2,7 +2,7 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 
 <Modal Id="@Id"
-           Title="@Title"
+           Title="@News.Title"
            Footer="Modal.FooterType.Text"
            FooterText="@FooterText"
            FooterContentPosition="Modal.FooterPositioning.Start">
@@ -22,7 +22,6 @@
 
 @code {
 
-    private const string Title = "Редактирование новости";
     private string FooterText => $"Опубликовано {News.PublishDate.ToString("dd-MM-yyyy")}";
 
     [Parameter] public required string Id { get; init; }

@@ -1,39 +1,17 @@
 @using JitDalshe.Ui.Admin.Api
 @using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Components.Shared.Cards
 @inject IJSRuntime JsRuntime
 @inject IApiFacade Api
 @inject IToastService ToastService
 
-<div class="card mb-3">
-    <div class="card-header">
-        @Event.Date.ToString("dd-MM-yyyy")
-    </div>
-    <div class="card-body">
-        <h5 class="card-title">@Event.Title</h5>
-    </div>
-    <div class="card-footer">
-        <div class="d-flex card-footer-buttons">
-            <button type="button"
-                    class="btn btn-primary"
-                    data-toggle="modal"
-                    @onclick="ShowInfoEventModalAsync">
-                Подробнее
-            </button>
-            <button type="button"
-                    class="btn btn-secondary"
-                    data-toggle="modal"
-                    @onclick="ShowEditEventModalAsync">
-                Изменить
-            </button>
-            <button type="button"
-                    class="btn btn-danger"
-                    @onclick="DeleteEventAsync">
-                Удалить
-            </button>
-        </div>
-    </div>
-</div>
+<Card HeaderText="@Event.Date.ToString("dd-MM-yyyy")"
+      Title="@Event.Title"
+      Buttons="Card.Button.Info | Card.Button.Edit | Card.Button.Delete"
+      OnInfoButtonClick="@ShowInfoEventModalAsync"
+      OnEditButtonClick="@ShowEditEventModalAsync"
+      OnDeleteButtonClick="@DeleteEventAsync"/>
 
 <EditEventModal Id="@EditEventModalId" Event="@Event" EventEdited="@OnEventEditedCallback"/>
 <InfoEventModal Id="@InfoEventModalId" Event="Event"/>
