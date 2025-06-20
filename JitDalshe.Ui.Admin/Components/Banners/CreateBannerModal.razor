@@ -1,0 +1,67 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Components.Shared.Forms
+@inject IJSRuntime JsRuntime
+
+<Modal Id="@Id"
+       Static="true"
+       Title="Создание нового баннера"
+       OnClose="@CloseModalAsync"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Сохранить"
+       OnFooterButtonClick="@SubmitCreateBannerAsync">
+
+    <UploadFile @bind-FileUrl="_imageUrl"/>
+
+    <TextInput Label="Заголовок" @bind-Value="_title"/>
+
+    <CheckboxInput Label="Отображать на сайте?" @bind-Value="_isDisplaying"/>
+
+    @if (_isDisplaying)
+    {
+        <NumberInput Label="Порядковый номер отображения" @bind-Value="_displayingOrder"/>
+    }
+
+    <CheckboxInput Label="Кликабелен?" @bind-Value="_isClickable"/>
+
+    @if (_isClickable)
+    {
+        <TextInput Label="Куда переводит?" @bind-Value="_redirectOnClickUrl"/>
+    }
+
+</Modal>
+
+@code {
+
+    private string _title = null!;
+    private string _imageUrl = null!;
+    private bool _isDisplaying;
+    private int _displayingOrder;
+    private bool _isClickable;
+    private string? _redirectOnClickUrl;
+
+    [Parameter] public required string Id { get; init; }
+
+    private static Task SubmitCreateBannerAsync() => Task.CompletedTask;
+
+    private void RefreshFields()
+    {
+        _title = string.Empty;
+        _imageUrl = string.Empty;
+        _isDisplaying = false;
+        _displayingOrder = 0;
+        _isClickable = false;
+        _redirectOnClickUrl = null;
+    }
+
+    private async Task HideModalAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
+    }
+
+    private async Task CloseModalAsync()
+    {
+        await HideModalAsync();
+        RefreshFields();
+    }
+
+}

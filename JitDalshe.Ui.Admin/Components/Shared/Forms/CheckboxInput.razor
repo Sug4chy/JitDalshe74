@@ -1,13 +1,23 @@
 <div class="form-check">
-    <InputCheckbox id="@_id" class="form-check-input" @bind-Value="Value" ValueChanged="@ValueChanged"/>
+    <InputCheckbox id="@_id"
+                   class="form-check-input"
+                   ValueExpression="@(() => _value)"
+                   ValueChanged="ValueChanged"/>
     <label for="@_id" class="form-check-label">@Label</label>
 </div>
 
 @code {
 
     private readonly string _id = Guid.NewGuid().ToString();
+    private bool _value;
 
     [Parameter] public required string Label { get; init; }
-    [Parameter] public bool Value { get; set; }
-    [Parameter] public EventCallback<bool> ValueChanged { get; set; }
+    [Parameter] public bool Value { get; init; }
+    [Parameter] public EventCallback<bool> ValueChanged { get; init; }
+
+    protected override void OnParametersSet()
+    {
+        _value = Value;
+    }
+
 }

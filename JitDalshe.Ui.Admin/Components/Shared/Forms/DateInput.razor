@@ -3,15 +3,22 @@
     <InputDate id="@_id"
                class="form-control"
                TValue="DateTime"
-               @bind-Value="Value"
-               ValueChanged="@ValueChanged"/>
+               ValueExpression="@(() => _value)"
+               ValueChanged="ValueChanged"/>
 </div>
 
 @code {
 
     private readonly string _id = Guid.NewGuid().ToString();
+    private DateTime _value;
 
     [Parameter] public required string Label { get; init; }
-    [Parameter] public DateTime Value { get; set; }
-    [Parameter] public EventCallback<DateTime> ValueChanged { get; set; }
+    [Parameter] public DateTime Value { get; init; }
+    [Parameter] public EventCallback<DateTime> ValueChanged { get; init; }
+
+    protected override void OnParametersSet()
+    {
+        _value = Value;
+    }
+
 }

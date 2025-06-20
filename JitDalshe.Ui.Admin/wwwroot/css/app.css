@@ -119,3 +119,13 @@ code {
     margin-left: 25%;
     margin-right: 25%;
 }
+
+.topbar-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.btn-show-create-modal {
+    align-content: center;
+}

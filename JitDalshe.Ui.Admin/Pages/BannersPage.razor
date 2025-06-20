@@ -1,6 +1,7 @@
 @page "/banners"
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Banners
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Баннеры</PageTitle>
 
@@ -14,10 +15,10 @@
 
 <div class="topbar-container">
     <h2>Полный список баннеров</h2>
-    @* <button class="btn btn-secondary btn-create-modal" *@
-    @*         @onclick="ShowCreateEventModalAsync"> *@
-    @*     + Добавить *@
-    @* </button> *@
+    <button class="btn btn-secondary btn-show-create-modal"
+            @onclick="ShowCreateBannerModalAsync">
+        + Добавить
+    </button>
 </div>
 
 @if (_banners is not null)
@@ -32,15 +33,16 @@ else
     <p>Loading...</p>
 }
 
-@*TODO общий список с пагинацией*@
-
+<CreateBannerModal Id="@CreateBannerModalId"/>
 
 @code {
 
+    private const string CreateBannerModalId = "modal_create_banner";
+
     private readonly PreviewBanner[] _displayingBanners =
     [
-        new("Первый", "https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 0),
-        new("Второй", "https://images.unsplash.com/photo-1566438480900-0609be27a4be?q=80&w=2194&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 1, "https://google.com")
+        new("Первый", "https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 1),
+        new("Второй", "https://images.unsplash.com/photo-1566438480900-0609be27a4be?q=80&w=2194&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 2, "https://google.com")
     ];
 
     private readonly Banner[] _banners =
@@ -49,7 +51,11 @@ else
             Id: Guid.NewGuid(),
             Title: "Первый",
             ImageUrl: "https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            DisplayOrder: 0),
+            DisplayOrder: 1)
     ];
 
+    private async Task ShowCreateBannerModalAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("showModal", $"#{CreateBannerModalId}");
+    }
 }
