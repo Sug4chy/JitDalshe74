@@ -1,0 +1,12 @@
+<div class="form-group">
+    <label for="@_id">@Label</label>
+    <InputTextArea id="@_id" class="form-control" @bind-Value="Value" ValueChanged="@ValueChanged"/>
+</div>
+
+@code {
+    private readonly string _id = Guid.NewGuid().ToString();
+
+    [Parameter] public required string Label { get; init; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+}

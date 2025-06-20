@@ -16,10 +16,7 @@
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SubmitEditEventAsync">
     <UploadFile @bind-FileUrl="_currentImageUrl"/>
-    <div class="form-group">
-        <label for="title-input">Заголовок</label>
-        <InputText id="title-input" class="form-control" @bind-Value="_title"/>
-    </div>
+    <TextInput Label="Заголовок" @bind-Value="_title"/>
     <div class="form-group">
         <label for="description-input">Описание</label>
         <InputTextArea id="description-input"
