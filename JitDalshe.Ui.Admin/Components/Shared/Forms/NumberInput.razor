@@ -1,14 +1,24 @@
 <div class="form-group">
     <label for="@_id">@Label</label>
-    <InputNumber id="@_id" class="form-control" TValue="int" @bind-Value="Value" ValueChanged="@ValueChanged"/>
+    <InputNumber id="@_id" 
+                 class="form-control" 
+                 TValue="int" 
+                 ValueExpression="@(() => _value)"
+                 ValueChanged="ValueChanged"/>
 </div>
 
 @code {
 
     private readonly string _id = Guid.NewGuid().ToString();
+    private int _value;
 
     [Parameter] public required string Label { get; init; }
-    [Parameter] public int Value { get; set; }
-    [Parameter] public EventCallback<int> ValueChanged { get; set; }
+    [Parameter] public int Value { get; init; }
+    [Parameter] public EventCallback<int> ValueChanged { get; init; }
+
+    protected override void OnParametersSet()
+    {
+        _value = Value;
+    }
 
 }
