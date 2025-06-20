@@ -1,0 +1,82 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Components.Shared.Forms
+@inject IJSRuntime JsRuntime
+
+<Modal Id="@Id"
+       Static="true"
+       Title="Редактирование баннера"
+       OnClose="@CloseModalAsync"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Сохранить"
+       OnFooterButtonClick="@SubmitEditBannerAsync">
+    <UploadFile @bind-FileUrl="_imageUrl"/>
+    <div class="form-group">
+        <label for="banner-title-input">Заголовок</label>
+        <InputText id="banner-title-input" class="form-control" @bind-Value="_title"/>
+    </div>
+    <div class="form-check">
+        <InputCheckbox id="banner-is-displaying-input" class="form-check-input" @bind-Value="_isDisplaying"/>
+        <label for="banner-is-displaying-input" class="form-check-label">Отображать?</label>
+    </div>
+    @if (_isDisplaying)
+    {
+        <div class="form-group">
+            <label for="banner-displaying-order-input">Порядок отображения</label>
+            <InputNumber id="banner-displaying-order-input"
+                         class="form-control"
+                         TValue="int"
+                         @bind-Value="_displayingOrder"/>
+        </div>
+    }
+    <div class="form-check">
+        <InputCheckbox id="banner-is-clickable-input" class="form-check-input" @bind-Value="_isClickable"/>
+        <label for="banner-is-clickable-input" class="form-check-label">Кликабелен?</label>
+    </div>
+    @if (_isClickable)
+    {
+        <div class="form-group">
+            <label for="banner-redirect-on-click-url-input">Куда переводит?</label>
+            <InputText id="banner-redirect-on-click-url-input"
+                         class="form-control"
+                         @bind-Value="_redirectOnClickUrl"/>
+        </div>
+    }
+</Modal>
+
+@code {
+
+    private string _title = null!;
+    private string _imageUrl = null!;
+    private bool _isDisplaying;
+    private int _displayingOrder;
+    private bool _isClickable;
+    private string? _redirectOnClickUrl;
+
+    [Parameter] public required string Id { get; init; }
+    [Parameter] public required Banner Banner { get; init; }
+
+    private void RefreshFields()
+    {
+        _title = Banner.Title;
+        _imageUrl = Banner.ImageUrl;
+        _isDisplaying = Banner.DisplayOrder is not null;
+        _displayingOrder = Banner.DisplayOrder ?? 0;
+        _isClickable = Banner.RedirectOnClickUrl is not null;
+        _redirectOnClickUrl = Banner.RedirectOnClickUrl;
+    }
+
+    private async Task HideModalAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
+    }
+
+    private async Task CloseModalAsync()
+    {
+        RefreshFields();
+        await HideModalAsync();
+    }
+
+    private static Task SubmitEditBannerAsync() => Task.CompletedTask;
+
+}

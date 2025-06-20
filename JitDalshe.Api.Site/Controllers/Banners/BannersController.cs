@@ -16,7 +16,7 @@ public sealed class BannersController : AbstractController
     /// <summary>
     /// Возвращает актуальные отображаемые на главной странице сайта баннеры
     /// </summary>
-    [HttpGet("displaying")]
+    [HttpGet]
     [ProducesResponseType(typeof(DisplayingBannerModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetDisplayingBanners(

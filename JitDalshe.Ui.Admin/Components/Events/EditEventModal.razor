@@ -14,13 +14,11 @@
        OnClose="@CloseModalAsync"
        Footer="Modal.FooterType.Button"
        FooterButtonText="Сохранить"
-       OnFooterButtonClick="@SubmitCreateEventAsync">
+       OnFooterButtonClick="@SubmitEditEventAsync">
     <UploadFile @bind-FileUrl="_currentImageUrl"/>
     <div class="form-group">
         <label for="title-input">Заголовок</label>
-        <InputText id="title-input"
-                   class="form-control"
-                   @bind-Value="_title"/>
+        <InputText id="title-input" class="form-control" @bind-Value="_title"/>
     </div>
     <div class="form-group">
         <label for="description-input">Описание</label>
@@ -31,10 +29,7 @@
     </div>
     <div class="form-group">
         <label for="date-input">Дата события</label>
-        <InputDate id="date-input"
-                   TValue="DateTime"
-                   class="form-control"
-                   @bind-Value="_date"/>
+        <InputDate id="date-input" TValue="DateTime" class="form-control" @bind-Value="_date"/>
     </div>
 </Modal>
 
@@ -67,7 +62,7 @@
         await HideModalAsync();
     }
 
-    private async Task SubmitCreateEventAsync()
+    private async Task SubmitEditEventAsync()
     {
         try
         {

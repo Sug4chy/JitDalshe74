@@ -13,12 +13,12 @@
       OnEditButtonClick="@ShowEditModalAsync"
       OnDeleteButtonClick="@DeleteNewsAsync"/>
 
-<InfoNewsModal News="News" Id="@InfoModalId[1..]"/>
-<EditNewsModal News="News" Id="@EditModalId[1..]" OnNewsEditedCallback="OnNewsEditedCallback"/>
+<InfoNewsModal News="News" Id="@InfoModalId"/>
+<EditNewsModal News="News" Id="@EditModalId" OnNewsEditedCallback="OnNewsEditedCallback"/>
 
 @code {
-    private string InfoModalId => $"#modal_{News.Id}";
-    private string EditModalId => $"#modal_edit_{News.Id}";
+    private string InfoModalId => $"modal_info_news_{News.Id}";
+    private string EditModalId => $"modal_edit_news_{News.Id}";
 
     [Parameter] public required News News { get; init; }
     [Parameter] public required EventCallback OnNewsEditedCallback { get; init; }
@@ -26,12 +26,12 @@
 
     private async Task ShowInfoModalAsync()
     {
-        await JsRuntime.InvokeVoidAsync("showModal", InfoModalId);
+        await JsRuntime.InvokeVoidAsync("showModal", $"#{InfoModalId}");
     }
 
     private async Task ShowEditModalAsync()
     {
-        await JsRuntime.InvokeVoidAsync("showModal", EditModalId);
+        await JsRuntime.InvokeVoidAsync("showModal", $"#{EditModalId}");
     }
 
     private async Task DeleteNewsAsync()

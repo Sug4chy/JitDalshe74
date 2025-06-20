@@ -1,0 +1,38 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Cards
+@using JitDalshe.Ui.Admin.Models
+@inject IJSRuntime JsRuntime
+
+<Card HeaderText="@HeaderText"
+      Title="@Banner.Title"
+      Buttons="Card.Button.Info | Card.Button.Edit | Card.Button.Delete"
+      OnInfoButtonClick="@ShowInfoModalAsync"
+      OnEditButtonClick="@ShowEditModalAsync"
+      OnDeleteButtonClick="@DeleteBannerAsync"/>
+
+<InfoBannerModal Id="@InfoModalId" Banner="@Banner"/>
+<EditBannerModal Id="@EditModalId" Banner="@Banner"/>
+
+@code {
+
+    private string HeaderText => Banner.DisplayOrder is not null
+        ? $"Отображается {Banner.DisplayOrder.Value}-м по порядку"
+        : "Не отображается";
+
+    private string InfoModalId => $"modal_info_banner_{Banner.Id}";
+    private string EditModalId => $"modal_edit_banner_{Banner.Id}";
+
+    [Parameter] public required Banner Banner { get; init; }
+
+    private async Task ShowInfoModalAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("showModal", $"#{InfoModalId}");
+    }
+
+    private async Task ShowEditModalAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("showModal", $"#{EditModalId}");
+    }
+
+    private static Task DeleteBannerAsync() => Task.CompletedTask;
+
+}

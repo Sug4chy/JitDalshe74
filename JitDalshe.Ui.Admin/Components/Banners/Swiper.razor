@@ -20,7 +20,7 @@
 </div>
 
 @code {
-    [Parameter] public required DisplayingBanner[] Items { get; init; } = [];
+    [Parameter] public required PreviewBanner[] Items { get; init; } = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

@@ -17,8 +17,8 @@
 <InfoEventModal Id="@InfoEventModalId" Event="Event"/>
 
 @code {
-    private string EditEventModalId => $"modal_edit_{Event.Id}";
-    private string InfoEventModalId => $"modal_info_{Event.Id}";
+    private string EditEventModalId => $"modal_edit_event_{Event.Id}";
+    private string InfoEventModalId => $"modal_info_event_{Event.Id}";
 
     [Parameter] public required Event Event { get; init; }
     [Parameter] public required EventCallback OnEventEditedCallback { get; init; }

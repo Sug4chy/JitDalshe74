@@ -1,0 +1,32 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models
+
+<Modal Id="@Id"
+       Title="@ModalTitle"
+       Footer="Modal.FooterType.Text"
+       FooterText=""
+       FooterContentPosition="Modal.FooterPositioning.Start">
+    <img src="@Banner.ImageUrl"
+         class="mb-4 img-primary rounded"
+         alt=""/>
+    <p>
+        @Banner.Title
+    </p>
+    @if (Banner.RedirectOnClickUrl is not null)
+    {
+        <p>
+            При нажатии ведёт на: <a href="@Banner.RedirectOnClickUrl">@Banner.RedirectOnClickUrl</a>
+        </p>
+    }
+</Modal>
+
+@code {
+
+    private string ModalTitle => Banner.DisplayOrder is not null
+        ? $"Отображается {Banner.DisplayOrder.Value}-м по порядку"
+        : "Не отображается";
+
+    [Parameter] public required string Id { get; init; }
+    [Parameter] public required Banner Banner { get; init; }
+
+}
