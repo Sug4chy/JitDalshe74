@@ -1,0 +1,14 @@
+<div class="form-group">
+    <label for="@_id">@Label</label>
+    <InputNumber id="@_id" class="form-control" TValue="int" @bind-Value="Value" ValueChanged="@ValueChanged"/>
+</div>
+
+@code {
+
+    private readonly string _id = Guid.NewGuid().ToString();
+
+    [Parameter] public required string Label { get; init; }
+    [Parameter] public int Value { get; set; }
+    [Parameter] public EventCallback<int> ValueChanged { get; set; }
+
+}

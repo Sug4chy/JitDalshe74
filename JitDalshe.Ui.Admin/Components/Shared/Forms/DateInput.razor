@@ -1,0 +1,17 @@
+<div class="form-group">
+    <label for="@_id">@Label</label>
+    <InputDate id="@_id"
+               class="form-control"
+               TValue="DateTime"
+               @bind-Value="Value"
+               ValueChanged="@ValueChanged"/>
+</div>
+
+@code {
+
+    private readonly string _id = Guid.NewGuid().ToString();
+
+    [Parameter] public required string Label { get; init; }
+    [Parameter] public DateTime Value { get; set; }
+    [Parameter] public EventCallback<DateTime> ValueChanged { get; set; }
+}

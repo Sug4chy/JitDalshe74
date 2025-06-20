@@ -10,38 +10,25 @@
        Footer="Modal.FooterType.Button"
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SubmitEditBannerAsync">
+
     <UploadFile @bind-FileUrl="_imageUrl"/>
-    <div class="form-group">
-        <label for="banner-title-input">Заголовок</label>
-        <InputText id="banner-title-input" class="form-control" @bind-Value="_title"/>
-    </div>
-    <div class="form-check">
-        <InputCheckbox id="banner-is-displaying-input" class="form-check-input" @bind-Value="_isDisplaying"/>
-        <label for="banner-is-displaying-input" class="form-check-label">Отображать?</label>
-    </div>
+
+    <TextInput Label="Заголовок" @bind-Value="_title"/>
+
+    <CheckboxInput Label="Отображать на сайте?" @bind-Value="_isDisplaying"/>
+
     @if (_isDisplaying)
     {
-        <div class="form-group">
-            <label for="banner-displaying-order-input">Порядок отображения</label>
-            <InputNumber id="banner-displaying-order-input"
-                         class="form-control"
-                         TValue="int"
-                         @bind-Value="_displayingOrder"/>
-        </div>
+        <NumberInput Label="Порядковый номер отображения" @bind-Value="_displayingOrder"/>
     }
-    <div class="form-check">
-        <InputCheckbox id="banner-is-clickable-input" class="form-check-input" @bind-Value="_isClickable"/>
-        <label for="banner-is-clickable-input" class="form-check-label">Кликабелен?</label>
-    </div>
+
+    <CheckboxInput Label="Кликабелен?" @bind-Value="_isClickable"/>
+
     @if (_isClickable)
     {
-        <div class="form-group">
-            <label for="banner-redirect-on-click-url-input">Куда переводит?</label>
-            <InputText id="banner-redirect-on-click-url-input"
-                         class="form-control"
-                         @bind-Value="_redirectOnClickUrl"/>
-        </div>
+        <TextInput Label="Куда переводит?" @bind-Value="_redirectOnClickUrl"/>
     }
+
 </Modal>
 
 @code {

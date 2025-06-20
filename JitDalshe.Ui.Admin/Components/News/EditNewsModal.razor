@@ -3,6 +3,7 @@
 @using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Components.Shared.Forms
 @inject IJSRuntime JsRuntime
 @inject IApiFacade Api
 @inject IToastService ToastService
@@ -16,6 +17,7 @@
        FooterText="@FooterText"
        FooterButtonText="Сохранить"
        OnFooterButtonClick="EditNewsAsync">
+
     @if (News.Images.Length > 0)
     {
         <div class="gap-3 horizontal-scroll">
@@ -36,13 +38,9 @@
             </InputRadioGroup>
         </div>
     }
-    <div class="form-group">
-        <label for="text-input">Текст новости</label>
-        <InputTextArea id="text-input"
-                       @bind-Value="_currentEnteredText"
-                       style="width: 100%; height: 400px"
-                       class="form-control"/>
-    </div>
+
+    <TextAreaInput Label="Текст новости" @bind-Value="_currentEnteredText"/>
+
 </Modal>
 
 @code {
