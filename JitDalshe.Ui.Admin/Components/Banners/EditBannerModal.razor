@@ -10,19 +10,25 @@
        Footer="Modal.FooterType.Button"
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SubmitEditBannerAsync">
+
     <UploadFile @bind-FileUrl="_imageUrl"/>
+
     <TextInput Label="Заголовок" @bind-Value="_title"/>
+
     <CheckboxInput Label="Отображать на сайте?" @bind-Value="_isDisplaying"/>
+
     @if (_isDisplaying)
     {
         <NumberInput Label="Порядковый номер отображения" @bind-Value="_displayingOrder"/>
     }
 
     <CheckboxInput Label="Кликабелен?" @bind-Value="_isClickable"/>
+
     @if (_isClickable)
     {
         <TextInput Label="Куда переводит?" @bind-Value="_redirectOnClickUrl"/>
     }
+
 </Modal>
 
 @code {

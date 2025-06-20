@@ -14,16 +14,15 @@
        Footer="Modal.FooterType.Button"
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SubmitCreateEventAsync">
+
     <UploadFile @bind-FileUrl="_uploadedImageUrl"/>
+
     <TextInput Label="Заголовок" @bind-Value="_title"/>
+
     <TextAreaInput Label="Описание" @bind-Value="_description"/>
-    <div class="form-group">
-        <label for="date-input">Дата события</label>
-        <InputDate id="date-input"
-                   TValue="DateTime"
-                   class="form-control"
-                   @bind-Value="_date"/>
-    </div>
+
+    <DateInput Label="Дата события" @bind-Value="_date"/>
+
 </Modal>
 
 @code {
