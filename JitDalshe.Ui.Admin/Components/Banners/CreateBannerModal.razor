@@ -1,7 +1,11 @@
+@using JitDalshe.Ui.Admin.Api.Banners.Requests
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
+@using JitDalshe.Ui.Admin.Services.BannerService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IModalService ModalService
+@inject IBannerService BannerService
+@inject IToastService ToastService
 
 <Modal Id="@Id"
        Static="true"
@@ -34,15 +38,14 @@
 @code {
 
     private string _title = null!;
-    private string _imageUrl = null!;
+    private string? _imageUrl;
     private bool _isDisplaying;
     private int _displayingOrder;
     private bool _isClickable;
     private string? _redirectOnClickUrl;
 
     [Parameter] public required string Id { get; init; }
-
-    private static Task SubmitCreateBannerAsync() => Task.CompletedTask;
+    [Parameter] public required EventCallback BannerCreated { get; init; }
 
     private void RefreshFields()
     {
@@ -61,6 +64,28 @@
     {
         await HideModalAsync();
         RefreshFields();
+    }
+
+    private async Task SubmitCreateBannerAsync()
+    {
+        if (_imageUrl is null)
+        {
+            ToastService.ShowInfo("Пожалуйста, прикрепите изображение");
+            return;
+        }
+
+        var request = new CreateBannerRequest(
+            Title: _title,
+            ImageBase64Url: _imageUrl,
+            IsClickable: _isClickable,
+            RedirectOnClickUrl: _redirectOnClickUrl,
+            DisplayOrder: _displayingOrder);
+        if (await BannerService.CreateBannerAsync(request))
+        {
+            await CloseModalAsync();
+            ToastService.ShowSuccess("Баннер успешно создан!");
+            await BannerCreated.InvokeAsync();
+        }
     }
 
 }
