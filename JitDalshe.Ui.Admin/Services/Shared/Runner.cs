@@ -12,29 +12,28 @@ public sealed class Runner
         _toastService = toastService;
     }
 
-    public Task RunShowingToastOnExceptionAsync(Func<Task> action)
+    public async Task RunShowingToastOnExceptionAsync(Func<Task> action)
     {
         try
         {
-            return action();
+            await action();
         }
         catch (Exception e)
         {
             _toastService.ShowPermanentError(e);
-            return Task.CompletedTask;
         }
     }
 
-    public Task<T> RunShowingToastOnExceptionAsync<T>(Func<Task<T>> action, T defaultValue = default!)
+    public async Task<T> RunShowingToastOnExceptionAsync<T>(Func<Task<T>> action, T defaultValue = default!)
     {
         try
         {
-            return action();
+            return await action();
         }
         catch (Exception e)
         {
             _toastService.ShowPermanentError(e);
-            return Task.FromResult(defaultValue);
+            return defaultValue;
         }
     }
 }

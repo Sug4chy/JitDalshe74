@@ -1,11 +1,9 @@
 @page "/events"
-@using JitDalshe.Ui.Admin.Api
 @using JitDalshe.Ui.Admin.Components.Events
-@using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Services.EventService
 @using JitDalshe.Ui.Admin.Services.ModalService
-@inject IApiFacade Api
-@inject IToastService ToastService
+@inject IEventService EventService
 @inject IModalService ModalService
 
 <PageTitle>События</PageTitle>
@@ -37,17 +35,7 @@ else
 
     private async Task LoadEventsAsync()
     {
-        try
-        {
-            _events = await Api.ListEventsAsync(
-                defaultValue: [],
-                onErrorCallback: error => ToastService.ShowError(error.Message));
-        }
-        catch (Exception e)
-        {
-            ToastService.ShowPermanentError(e);
-            _events = [];
-        }
+        _events = await EventService.FindAllAsync();
     }
 
     private Task ShowCreateEventModalAsync()

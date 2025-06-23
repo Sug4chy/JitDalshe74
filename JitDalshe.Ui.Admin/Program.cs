@@ -1,6 +1,5 @@
 using Blazored.Toast;
 using JitDalshe.Ui.Admin;
-using JitDalshe.Ui.Admin.Api;
 using JitDalshe.Ui.Admin.Api.Events;
 using JitDalshe.Ui.Admin.Api.News;
 using JitDalshe.Ui.Admin.Extensions;
@@ -19,8 +18,6 @@ if (apiBaseUrl is null)
     return;
 }
 
-builder.Services.AddScoped<IApiFacade, ApiFacade>();
-
 builder.Services
     .AddRefitClient<INewsApiClient>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/news"));
@@ -30,8 +27,10 @@ builder.Services
     .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/events"));
 
 builder.Services.AddBlazoredToast();
+builder.Services.AddRunner();
 builder.Services.AddModalService();
 builder.Services.AddSwiperService();
 builder.Services.AddNewsService();
+builder.Services.AddEventService();
 
 await builder.Build().RunAsync();
