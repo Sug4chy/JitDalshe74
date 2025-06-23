@@ -30,7 +30,8 @@ public static class DomainToDtoMappingExtensions
             Title: @event.Title,
             Description: @event.Description,
             Date: @event.Date,
-            ImageUrl: @event.Image!.Url
+            ImageUrl: @event.Image!.Url,
+            IsDisplaying: @event.IsDisplaying
         );
 
     public static BannerDto ToDto(this Banner banner)

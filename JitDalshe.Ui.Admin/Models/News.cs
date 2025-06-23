@@ -11,4 +11,6 @@ public sealed record News(
     public string Title => Text.Split('.')[0];
 
     public string TextWithoutTitle => string.Join('.', Text.Split('.')[1..]);
+
+    public string DisplayingStatus => IsDisplaying ? "отображается" : "не отображается";
 }

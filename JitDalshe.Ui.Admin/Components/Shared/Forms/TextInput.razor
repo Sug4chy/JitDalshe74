@@ -2,8 +2,9 @@
     <label for="@_id">@Label</label>
     <InputText id="@_id"
                class="form-control"
+               Value="@Value"
                ValueExpression="@(() => _value)"
-               ValueChanged="ValueChanged"/>
+               ValueChanged="@ValueChangedAsync"/>
 </div>
 
 @code {
@@ -14,6 +15,15 @@
     [Parameter] public required string Label { get; init; }
     [Parameter] public required string? Value { get; set; }
     [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    private async Task ValueChangedAsync(string? newValue)
+    {
+        if (_value != newValue)
+        {
+            _value = newValue;
+            await ValueChanged.InvokeAsync(newValue);
+        }
+    }
 
     protected override void OnParametersSet()
     {

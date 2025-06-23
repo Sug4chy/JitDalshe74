@@ -4,5 +4,6 @@ public sealed record CreateEventRequest(
     string Title,
     string? Description,
     DateTime Date,
-    string ImageBase64Url
+    string ImageBase64Url,
+    bool IsDisplaying
 );

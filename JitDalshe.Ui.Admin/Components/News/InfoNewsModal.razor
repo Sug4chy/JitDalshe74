@@ -23,7 +23,7 @@
 @code {
 
     private string FooterText => $"Опубликовано {News.PublishDate.ToString("dd-MM-yyyy")}";
-    private string Title => $"{News.Title} {(News.IsDisplaying ? "(отображается)" : "(не отображается)")}";
+    private string Title => $"{News.Title} ({News.DisplayingStatus})";
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required News News { get; init; }

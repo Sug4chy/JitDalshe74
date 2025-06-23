@@ -10,5 +10,6 @@ public interface ICreateEventUseCase
         string? description,
         DateTime date,
         string imageBase64Url,
+        bool isDisplaying,
         CancellationToken ct = default);
 }

@@ -23,6 +23,8 @@
 
     <DateInput Label="Дата события" @bind-Value="_date"/>
 
+    <CheckboxInput Label="Отображать на сайте?" @bind-Value="_isDisplaying"/>
+
 </Modal>
 
 @code {
@@ -30,6 +32,7 @@
     private string _title = string.Empty;
     private string _description = string.Empty;
     private DateTime _date = DateTime.Today;
+    private bool _isDisplaying;
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required EventCallback EventCreated { get; init; }
@@ -40,6 +43,7 @@
         _title = string.Empty;
         _description = string.Empty;
         _date = DateTime.Today;
+        _isDisplaying = false;
     }
 
     private async Task CloseModalAsync()
@@ -59,7 +63,7 @@
             }
 
             if (await Api.CreateEventAsync(
-                    request: new CreateEventRequest(_title, _description, _date, _uploadedImageUrl),
+                    request: new CreateEventRequest(_title, _description, _date, _uploadedImageUrl, _isDisplaying),
                     onValidationErrorCallback:
                         validationError => ToastService.ShowWarning(validationError.Errors.First().Value.First()),
                     onClientErrorCallback: error => ToastService.ShowWarning(error.Message),

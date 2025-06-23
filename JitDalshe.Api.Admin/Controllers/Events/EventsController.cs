@@ -73,6 +73,7 @@ public sealed class EventsController : AbstractController
             description: request.Description,
             date: request.Date,
             imageBase64Url: request.ImageBase64Url,
+            isDisplaying: request.IsDisplaying,
             ct: ct);
 
         return result.IsSuccess
@@ -100,6 +101,7 @@ public sealed class EventsController : AbstractController
             title: request.Title,
             description: request.Description,
             date: request.Date,
+            isDisplaying: request.IsDisplaying,
             ct: ct);
 
         return result.IsSuccess

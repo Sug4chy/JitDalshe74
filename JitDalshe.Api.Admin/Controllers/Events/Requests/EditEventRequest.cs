@@ -7,7 +7,8 @@ namespace JitDalshe.Api.Admin.Controllers.Events.Requests;
 public sealed record EditEventRequest(
     string Title,
     string? Description,
-    DateTime Date
+    DateTime Date,
+    bool IsDisplaying
 );
 
 public sealed class EditEventRequestValidator : AbstractValidator<EditEventRequest>
