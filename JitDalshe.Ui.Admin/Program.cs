@@ -1,12 +1,11 @@
 using Blazored.Toast;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using JitDalshe.Ui.Admin;
 using JitDalshe.Ui.Admin.Api;
 using JitDalshe.Ui.Admin.Api.Events;
 using JitDalshe.Ui.Admin.Api.News;
-using JitDalshe.Ui.Admin.Services.ModalService;
-using JitDalshe.Ui.Admin.Services.SwiperService;
+using JitDalshe.Ui.Admin.Extensions;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Refit;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -31,7 +30,7 @@ builder.Services
     .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/events"));
 
 builder.Services.AddBlazoredToast();
-builder.Services.AddScoped<IModalService, ModalService>();
-builder.Services.AddScoped<ISwiperService, SwiperService>();
+builder.Services.AddModalService();
+builder.Services.AddSwiperService();
 
 await builder.Build().RunAsync();
