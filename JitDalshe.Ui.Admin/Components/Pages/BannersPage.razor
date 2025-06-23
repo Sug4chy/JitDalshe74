@@ -1,7 +1,8 @@
 @page "/banners"
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Banners
-@inject IJSRuntime JsRuntime
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
 
 <PageTitle>Баннеры</PageTitle>
 
@@ -54,8 +55,7 @@ else
             DisplayOrder: 1)
     ];
 
-    private async Task ShowCreateBannerModalAsync()
-    {
-        await JsRuntime.InvokeVoidAsync("showModal", $"#{CreateBannerModalId}");
-    }
+    private Task ShowCreateBannerModalAsync()
+        => ModalService.ShowModalAsync($"#{CreateBannerModalId}");
+
 }

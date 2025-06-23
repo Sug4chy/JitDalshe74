@@ -1,6 +1,7 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
-@inject IJSRuntime JsRuntime
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
 
 <Modal Id="@Id"
        Static="true"
@@ -53,10 +54,8 @@
         _redirectOnClickUrl = null;
     }
 
-    private async Task HideModalAsync()
-    {
-        await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
-    }
+    private Task HideModalAsync()
+        => ModalService.HideModalAsync($"#{Id}");
 
     private async Task CloseModalAsync()
     {

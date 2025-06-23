@@ -1,16 +1,27 @@
 @using JitDalshe.Ui.Admin.Models
-@inject IJSRuntime JsRuntime
+@using JitDalshe.Ui.Admin.Services.SwiperService
+@inject ISwiperService SwiperService
 
 <div class="swiper mySwiper">
     <div class="swiper-wrapper">
         @foreach (var item in Items)
         {
-            <div class="swiper-slide"
-                 style="background-image: url('@item.ImageUrl');
-                        @(item.RedirectOnClickUrl is null ? null : "cursor: pointer;")"
-                 @onclick="async () => await RedirectAsync(item.RedirectOnClickUrl)">
-                <h2 class="slide-text">@item.Title</h2>
-            </div>
+            if (item.RedirectOnClickUrl is not null)
+            {
+                <a class="swiper-slide"
+                   style="@Style(item)"
+                   href="@item.RedirectOnClickUrl"
+                   target="_blank">
+                    <h2 class="slide-text">@item.Title</h2>
+                </a>
+            }
+            else
+            {
+                <div class="swiper-slide"
+                     style="@Style(item)">
+                    <h2 class="slide-text">@item.Title</h2>
+                </div>
+            }
         }
     </div>
 
@@ -22,19 +33,15 @@
 @code {
     [Parameter] public required PreviewBanner[] Items { get; init; } = [];
 
+    private static string Style(PreviewBanner item)
+        => $"background-image: url({item.ImageUrl}); " +
+           $"{(item.RedirectOnClickUrl is not null ? "cursor: pointer;" : null)}";
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JsRuntime.InvokeVoidAsync("initSwiper");
-        }
-    }
-
-    private async Task RedirectAsync(string? url)
-    {
-        if (url is not null)
-        {
-            await JsRuntime.InvokeVoidAsync("redirectTo", url);
+            await SwiperService.InitSwiperAsync();
         }
     }
 
