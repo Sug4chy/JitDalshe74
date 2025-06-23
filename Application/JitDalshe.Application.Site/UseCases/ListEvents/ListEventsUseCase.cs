@@ -25,7 +25,7 @@ internal sealed class ListEventsUseCase : IListEventsUseCase
             var events = await _events.FindAllAsync(
                 orderByExpression: x => x.Date,
                 sortingOrder: SortingOrder.Ascending,
-                filteringExpression: x => x.Date > DateOnly.FromDateTime(DateTime.Now),
+                filteringExpression: x => x.Date > DateOnly.FromDateTime(DateTime.Now) && x.IsDisplaying,
                 pageNumber: pageNumber,
                 pageSize: pageSize,
                 ct: ct);

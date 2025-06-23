@@ -17,8 +17,8 @@
 <EditNewsModal News="News" Id="@EditModalId" OnNewsEditedCallback="OnNewsEditedCallback"/>
 
 @code {
-    private string CardHeaderText => $"{News.PublishDate.ToString("dd-MM-yyyy")} " 
-                                     + (News.IsDisplaying ? "(отображается)" : "(не отображается)");
+
+    private string CardHeaderText => $"{News.PublishDate.ToString("dd-MM-yyyy")} ({News.DisplayingStatus})";
     private string InfoModalId => $"modal_info_news_{News.Id}";
     private string EditModalId => $"modal_edit_news_{News.Id}";
 

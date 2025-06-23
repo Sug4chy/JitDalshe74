@@ -2,7 +2,7 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 
 <Modal Id="@Id"
-       Title="@Event.Title"
+       Title="@ModalTitle"
        Footer="Modal.FooterType.Text"
        FooterText="@FooterText"
        FooterContentPosition="Modal.FooterPositioning.Start">
@@ -14,6 +14,7 @@
 
 @code {
     private string FooterText => $"Событие запланировано на {Event.Date.ToString("dd-MM-yyyy")}";
+    private string ModalTitle => $"{Event.Title} ({Event.DisplayingStatus})";
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required Event Event { get; init; }

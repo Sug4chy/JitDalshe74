@@ -1,8 +1,9 @@
 <div class="form-check">
     <InputCheckbox id="@_id"
                    class="form-check-input"
+                   Value="@Value"
                    ValueExpression="@(() => _value)"
-                   ValueChanged="ValueChanged"/>
+                   ValueChanged="@ValueChangedAsync"/>
     <label for="@_id" class="form-check-label">@Label</label>
 </div>
 
@@ -12,8 +13,17 @@
     private bool _value;
 
     [Parameter] public required string Label { get; init; }
-    [Parameter] public bool Value { get; init; }
+    [Parameter] public bool Value { get; set; }
     [Parameter] public EventCallback<bool> ValueChanged { get; init; }
+
+    private async Task ValueChangedAsync(bool newValue)
+    {
+        if (_value != newValue)
+        {
+            _value = newValue;
+            await ValueChanged.InvokeAsync(newValue);
+        }
+    }
 
     protected override void OnParametersSet()
     {

@@ -27,6 +27,7 @@ internal sealed class CreateEventUseCase : ICreateEventUseCase
         string? description,
         DateTime date,
         string imageBase64Url,
+        bool isDisplaying,
         CancellationToken ct = default)
     {
         try
@@ -47,7 +48,8 @@ internal sealed class CreateEventUseCase : ICreateEventUseCase
                 Title = title,
                 Description = description,
                 Date = DateOnly.FromDateTime(date),
-                Image = eventImage
+                Image = eventImage,
+                IsDisplaying = isDisplaying
             };
 
             await _events.AddAsync(@event, ct);

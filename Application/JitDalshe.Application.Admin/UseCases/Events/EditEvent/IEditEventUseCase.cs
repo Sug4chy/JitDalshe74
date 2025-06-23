@@ -12,5 +12,6 @@ public interface IEditEventUseCase
         string title,
         string? description,
         DateTime date,
+        bool isDisplaying,
         CancellationToken ct = default);
 }

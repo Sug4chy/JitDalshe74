@@ -22,6 +22,7 @@ internal sealed class EditEventUseCase : IEditEventUseCase
         string title,
         string? description,
         DateTime date,
+        bool isDisplaying,
         CancellationToken ct = default)
     {
         try
@@ -37,6 +38,7 @@ internal sealed class EditEventUseCase : IEditEventUseCase
             @event.Title = title;
             @event.Description = description;
             @event.Date = DateOnly.FromDateTime(date);
+            @event.IsDisplaying = isDisplaying;
 
             await _events.EditAsync(@event, ct);
 

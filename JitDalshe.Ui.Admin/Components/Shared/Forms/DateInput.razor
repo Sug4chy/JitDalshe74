@@ -3,8 +3,9 @@
     <InputDate id="@_id"
                class="form-control"
                TValue="DateTime"
+               Value="@Value"
                ValueExpression="@(() => _value)"
-               ValueChanged="ValueChanged"/>
+               ValueChanged="@ValueChangedAsync"/>
 </div>
 
 @code {
@@ -13,8 +14,17 @@
     private DateTime _value;
 
     [Parameter] public required string Label { get; init; }
-    [Parameter] public DateTime Value { get; init; }
+    [Parameter] public DateTime Value { get; set; }
     [Parameter] public EventCallback<DateTime> ValueChanged { get; init; }
+
+    private async Task ValueChangedAsync(DateTime newValue)
+    {
+        if (_value != newValue)
+        {
+            _value = newValue;
+            await ValueChanged.InvokeAsync(newValue);
+        }
+    }
 
     protected override void OnParametersSet()
     {

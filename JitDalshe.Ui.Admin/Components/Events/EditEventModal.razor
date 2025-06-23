@@ -24,6 +24,8 @@
 
     <DateInput Label="Дата события" @bind-Value="_date"/>
 
+    <CheckboxInput Label="Отображать на сайте?" @bind-Value="_isDisplaying"/>
+
 </Modal>
 
 @code {
@@ -31,6 +33,7 @@
     private string _title = null!;
     private string _description = null!;
     private DateTime _date;
+    private bool _isDisplaying;
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required Event Event { get; init; }
@@ -42,6 +45,7 @@
         _title = Event.Title;
         _description = Event.Description ?? string.Empty;
         _date = Event.Date.ToDateTime(TimeOnly.MinValue);
+        _isDisplaying = Event.IsDisplaying;
     }
 
     private async Task HideModalAsync()
@@ -65,7 +69,8 @@
                         Title: _title,
                         Description: _description,
                         Date: _date,
-                        ImageBase64Url: _currentImageUrl),
+                        ImageBase64Url: _currentImageUrl,
+                        IsDisplaying: _isDisplaying),
                     onValidationErrorCallback:
                     validationError => ToastService.ShowWarning(validationError.Errors.First().Value.First()),
                     onClientErrorCallback: error => ToastService.ShowWarning(error.Message),

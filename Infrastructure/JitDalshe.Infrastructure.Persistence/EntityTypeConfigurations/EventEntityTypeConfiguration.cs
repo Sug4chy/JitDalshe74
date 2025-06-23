@@ -25,6 +25,11 @@ public sealed class EventEntityTypeConfiguration : IEntityTypeConfiguration<Even
             .HasColumnType("date")
             .HasColumnName(nameof(Event.Date).ToSnakeCase());
 
+        builder.Property(x => x.IsDisplaying)
+            .IsRequired()
+            .HasDefaultValue(false)
+            .HasColumnName(nameof(Event.IsDisplaying).ToSnakeCase());
+
         builder.HasAudits();
 
         builder.HasOne(x => x.Image)

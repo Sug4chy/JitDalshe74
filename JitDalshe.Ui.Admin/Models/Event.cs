@@ -5,5 +5,8 @@ public sealed record Event(
     string Title,
     string? Description,
     DateOnly Date,
-    string ImageUrl
-);
+    string ImageUrl,
+    bool IsDisplaying)
+{
+    public string DisplayingStatus => IsDisplaying ? "отображается" : "не отображается";
+}
