@@ -2,7 +2,8 @@
 @using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Shared.Cards
-@inject IJSRuntime JsRuntime
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
 @inject IApiFacade Api
 @inject IToastService ToastService
 
@@ -26,15 +27,11 @@
     [Parameter] public required EventCallback OnEventEditedCallback { get; init; }
     [Parameter] public required EventCallback OnEventDeletedCallback { get; init; }
 
-    private async Task ShowInfoEventModalAsync()
-    {
-        await JsRuntime.InvokeVoidAsync("showModal", $"#{InfoEventModalId}");
-    }
+    private Task ShowInfoEventModalAsync()
+        => ModalService.ShowModalAsync($"#{InfoEventModalId}");
 
-    private async Task ShowEditEventModalAsync()
-    {
-        await JsRuntime.InvokeVoidAsync("showModal", $"#{EditEventModalId}");
-    }
+    private Task ShowEditEventModalAsync()
+        => ModalService.ShowModalAsync($"#{EditEventModalId}");
 
     private async Task DeleteEventAsync()
     {

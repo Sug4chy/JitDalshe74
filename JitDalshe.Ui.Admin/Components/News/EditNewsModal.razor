@@ -4,7 +4,8 @@
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
-@inject IJSRuntime JsRuntime
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
 @inject IApiFacade Api
 @inject IToastService ToastService
 
@@ -70,10 +71,8 @@
         _selectedPhotoId = guid;
     }
 
-    private async Task HideModalAsync()
-    {
-        await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
-    }
+    private Task HideModalAsync()
+        => ModalService.HideModalAsync($"#{Id}");
 
     private async Task CloseModalAsync()
     {

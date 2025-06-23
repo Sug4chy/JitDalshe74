@@ -5,6 +5,8 @@ using JitDalshe.Ui.Admin;
 using JitDalshe.Ui.Admin.Api;
 using JitDalshe.Ui.Admin.Api.Events;
 using JitDalshe.Ui.Admin.Api.News;
+using JitDalshe.Ui.Admin.Services.ModalService;
+using JitDalshe.Ui.Admin.Services.SwiperService;
 using Refit;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -29,5 +31,7 @@ builder.Services
     .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/events"));
 
 builder.Services.AddBlazoredToast();
+builder.Services.AddScoped<IModalService, ModalService>();
+builder.Services.AddScoped<ISwiperService, SwiperService>();
 
 await builder.Build().RunAsync();

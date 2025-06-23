@@ -3,9 +3,10 @@
 @using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
-@inject IJSRuntime JsRuntime
+@using JitDalshe.Ui.Admin.Services.ModalService
 @inject IApiFacade Api
 @inject IToastService ToastService
+@inject IModalService ModalService
 
 <Modal Id="@Id"
        Static="true"
@@ -46,10 +47,10 @@
         _isDisplaying = false;
     }
 
-    private async Task CloseModalAsync()
+    private Task CloseModalAsync()
     {
         ClearFields();
-        await JsRuntime.InvokeVoidAsync("hideModal", $"#{Id}");
+        return ModalService.HideModalAsync($"#{Id}");
     }
 
     private async Task SubmitCreateEventAsync()

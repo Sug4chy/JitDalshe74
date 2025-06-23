@@ -1,6 +1,7 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Cards
 @using JitDalshe.Ui.Admin.Models
-@inject IJSRuntime JsRuntime
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
 
 <Card HeaderText="@HeaderText"
       Title="@Banner.Title"
@@ -23,15 +24,11 @@
 
     [Parameter] public required Banner Banner { get; init; }
 
-    private async Task ShowInfoModalAsync()
-    {
-        await JsRuntime.InvokeVoidAsync("showModal", $"#{InfoModalId}");
-    }
+    private Task ShowInfoModalAsync()
+        => ModalService.ShowModalAsync($"#{InfoModalId}");
 
-    private async Task ShowEditModalAsync()
-    {
-        await JsRuntime.InvokeVoidAsync("showModal", $"#{EditModalId}");
-    }
+    private Task ShowEditModalAsync()
+        => ModalService.ShowModalAsync($"#{EditModalId}");
 
     private static Task DeleteBannerAsync() => Task.CompletedTask;
 

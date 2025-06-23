@@ -1,12 +1,8 @@
-window.getElementID = (element) => {
-    return element.id;
-}
-
-window.showModal = (modalID) => {
+function showModal(modalID) {
     $(modalID).modal('show')
 }
 
-window.hideModal = (modalID) => {
+function hideModal(modalID) {
     $(modalID).modal('hide')
 }
 
@@ -26,8 +22,4 @@ function initSwiper() {
         },
         loop: true
     });
-}
-
-function redirectTo(url) {
-    window.open(url, '_blank');
 }
