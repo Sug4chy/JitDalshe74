@@ -1,10 +1,8 @@
 @page "/news"
-@using JitDalshe.Ui.Admin.Api
 @using JitDalshe.Ui.Admin.Components.News
-@using JitDalshe.Ui.Admin.Extensions
 @using JitDalshe.Ui.Admin.Models
-@inject IApiFacade Api
-@inject IToastService ToastService
+@using JitDalshe.Ui.Admin.Services.NewsService
+@inject INewsService NewsService
 
 <PageTitle>Новости</PageTitle>
 
@@ -27,17 +25,7 @@ else
 
     private async Task LoadNewsAsync()
     {
-        try
-        {
-            _news = await Api.ListNewsAsync(
-                defaultValue: [],
-                onErrorCallback: error => ToastService.ShowError(error.Message));
-        }
-        catch (Exception e)
-        {
-            ToastService.ShowPermanentError(e);
-            _news = [];
-        }
+        _news = await NewsService.FindAllAsync();
     }
 
     protected override Task OnInitializedAsync()

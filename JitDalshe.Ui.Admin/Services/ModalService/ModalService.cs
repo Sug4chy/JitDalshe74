@@ -1,5 +1,4 @@
-using Blazored.Toast.Services;
-using JitDalshe.Ui.Admin.Extensions;
+using JitDalshe.Ui.Admin.Services.Shared;
 using Microsoft.JSInterop;
 
 namespace JitDalshe.Ui.Admin.Services.ModalService;
@@ -7,35 +6,22 @@ namespace JitDalshe.Ui.Admin.Services.ModalService;
 public sealed class ModalService : IModalService
 {
     private readonly IJSRuntime _jsRuntime;
-    private readonly IToastService _toastService;
+    private readonly Runner _runner;
 
-    public ModalService(IJSRuntime jsRuntime, IToastService toastService)
+    public ModalService(IJSRuntime jsRuntime, Runner runner)
     {
         _jsRuntime = jsRuntime;
-        _toastService = toastService;
-    }
-
-    private Task RunShowingToastOnExceptionAsync(Func<Task> action)
-    {
-        try
-        {
-            return action();
-        }
-        catch (Exception e)
-        {
-            _toastService.ShowPermanentError(e);
-            return Task.CompletedTask;
-        }
+        _runner = runner;
     }
 
     public Task ShowModalAsync(string id, CancellationToken ct = default)
-        => RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunShowingToastOnExceptionAsync(async () =>
         {
             await _jsRuntime.InvokeVoidAsync(JsInteropConstants.ShowModal, ct, id);
         });
 
     public Task HideModalAsync(string id, CancellationToken ct = default)
-        => RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunShowingToastOnExceptionAsync(async () =>
         {
             await _jsRuntime.InvokeVoidAsync(JsInteropConstants.HideModal, ct, id);
         });

@@ -32,5 +32,6 @@ builder.Services
 builder.Services.AddBlazoredToast();
 builder.Services.AddModalService();
 builder.Services.AddSwiperService();
+builder.Services.AddNewsService();
 
 await builder.Build().RunAsync();
