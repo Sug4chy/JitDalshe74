@@ -22,7 +22,8 @@ internal sealed class EditNewsUseCase : IEditNewsUseCase
     public async Task<Result<NewsDto, Error>> EditAsync(
         IdOf<Domain.Entities.News.News> newsId, 
         string text, 
-        IdOf<NewsImage> primaryPhotoId, 
+        IdOf<NewsImage> primaryPhotoId,
+        bool isDisplaying,
         CancellationToken ct = default)
     {
         try
@@ -55,6 +56,7 @@ internal sealed class EditNewsUseCase : IEditNewsUseCase
             }
 
             news.Text = text;
+            news.IsDisplaying = isDisplaying;
             await _newsRepository.EditAsync(news, ct);
 
             return Result.Success<NewsDto, Error>(news.ToDto());

@@ -5,7 +5,8 @@ public sealed record News(
     string Text,
     DateOnly PublishDate,
     NewsImage[] Images,
-    string PostUrl)
+    string PostUrl,
+    bool IsDisplaying)
 {
     public string Title => Text.Split('.')[0];
 

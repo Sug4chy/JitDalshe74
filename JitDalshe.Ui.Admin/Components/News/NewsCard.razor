@@ -6,7 +6,7 @@
 @inject IToastService ToastService
 @inject IApiFacade Api
 
-<Card HeaderText="@News.PublishDate.ToString("dd-MM-yyyy")"
+<Card HeaderText="@CardHeaderText"
       Title="@News.Title"
       Buttons="Card.Button.Info | Card.Button.Edit | Card.Button.Delete"
       OnInfoButtonClick="@ShowInfoModalAsync"
@@ -17,6 +17,8 @@
 <EditNewsModal News="News" Id="@EditModalId" OnNewsEditedCallback="OnNewsEditedCallback"/>
 
 @code {
+    private string CardHeaderText => $"{News.PublishDate.ToString("dd-MM-yyyy")} " 
+                                     + (News.IsDisplaying ? "(отображается)" : "(не отображается)");
     private string InfoModalId => $"modal_info_news_{News.Id}";
     private string EditModalId => $"modal_edit_news_{News.Id}";
 

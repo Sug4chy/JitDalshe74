@@ -6,6 +6,7 @@ namespace JitDalshe.Api.Admin.Controllers.News.Requests;
 [Validator<EditNewsRequestValidator>]
 public sealed record EditNewsRequest(
     string Text,
+    bool IsDisplaying,
     Guid? PrimaryPhotoId = null
 );
 

@@ -5,5 +5,6 @@ public readonly record struct NewsDto(
     string Text,
     DateOnly PublishDate,
     NewsImageDto[] Images,
-    string PostUrl
+    string PostUrl,
+    bool IsDisplaying
 );

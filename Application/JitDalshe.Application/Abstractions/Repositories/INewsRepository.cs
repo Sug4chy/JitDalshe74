@@ -11,6 +11,7 @@ public interface INewsRepository
     Task<News[]> FindAllAsync<TOrderKey>(
         int? pageNumber = null,
         int? pageSize = null,
+        Expression<Func<News, bool>>? filteringExpression = null,
         Expression<Func<News, TOrderKey>>? orderByExpression = null,
         SortingOrder sortingOrder = SortingOrder.Ascending,
         CancellationToken ct = default);

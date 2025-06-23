@@ -43,6 +43,7 @@ public sealed class NewsController : AbstractController
         var result = await editNews.EditAsync(
             newsId: IdOf<Domain.Entities.News.News>.From(id),
             text: request.Text,
+            isDisplaying: request.IsDisplaying,
             primaryPhotoId: IdOf<NewsImage>.From(request.PrimaryPhotoId ?? Guid.Empty),
             ct: ct);
 

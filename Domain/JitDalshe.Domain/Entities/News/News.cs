@@ -9,6 +9,7 @@ public sealed class News : AuditableEntity<IdOf<News>>
     public string Text { get; set; }
     public DateOnly PublicationDate { get; init; }
     public string PostUrl { get; init; }
+    public bool IsDisplaying { get; set; }
 
     public ICollection<NewsImage> Images { get; init; }
 

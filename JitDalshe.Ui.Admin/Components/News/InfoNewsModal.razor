@@ -2,10 +2,10 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 
 <Modal Id="@Id"
-           Title="@News.Title"
-           Footer="Modal.FooterType.Text"
-           FooterText="@FooterText"
-           FooterContentPosition="Modal.FooterPositioning.Start">
+       Title="@Title"
+       Footer="Modal.FooterType.Text"
+       FooterText="@FooterText"
+       FooterContentPosition="Modal.FooterPositioning.Start">
     @if (News.Images.Length > 0)
     {
         <img src="@News.Images.Single(x => x.IsPrimary).Url"
@@ -23,6 +23,7 @@
 @code {
 
     private string FooterText => $"Опубликовано {News.PublishDate.ToString("dd-MM-yyyy")}";
+    private string Title => $"{News.Title} {(News.IsDisplaying ? "(отображается)" : "(не отображается)")}";
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required News News { get; init; }
