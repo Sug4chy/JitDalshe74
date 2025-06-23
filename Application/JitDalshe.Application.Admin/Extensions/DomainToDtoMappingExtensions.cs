@@ -15,7 +15,8 @@ public static class DomainToDtoMappingExtensions
             Images: news.Images
                 .Select(x => x.ToDto(news.PrimaryImage is not null && x.Id == news.PrimaryImage.NewsImageId))
                 .ToArray(),
-            PostUrl: news.PostUrl);
+            PostUrl: news.PostUrl,
+            IsDisplaying: news.IsDisplaying);
 
     private static NewsImageDto ToDto(this NewsImage newsImage, bool isPrimary)
         => new(

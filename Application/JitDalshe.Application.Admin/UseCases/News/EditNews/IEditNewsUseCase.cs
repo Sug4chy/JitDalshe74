@@ -12,5 +12,6 @@ public interface IEditNewsUseCase
         IdOf<Domain.Entities.News.News>  newsId,
         string text,
         IdOf<NewsImage> primaryPhotoId,
+        bool isDisplaying,
         CancellationToken ct = default);
 }

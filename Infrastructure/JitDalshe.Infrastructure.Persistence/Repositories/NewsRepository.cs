@@ -24,6 +24,7 @@ public sealed class NewsRepository : INewsRepository
     public Task<News[]> FindAllAsync<TOrderKey>(
         int? pageNumber = null,
         int? pageSize = null,
+        Expression<Func<News, bool>>? filteringExpression = null,
         Expression<Func<News, TOrderKey>>? orderByExpression = null,
         SortingOrder sortingOrder = SortingOrder.Ascending,
         CancellationToken ct = default)
@@ -34,9 +35,9 @@ public sealed class NewsRepository : INewsRepository
             .ThenInclude(x => x!.NewsImage)
             .AsQueryable();
 
-        if (pageNumber.HasValue && pageSize.HasValue)
+        if (filteringExpression is not null)
         {
-            query = query.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            query = query.Where(filteringExpression);
         }
 
         if (orderByExpression is not null)
@@ -47,6 +48,11 @@ public sealed class NewsRepository : INewsRepository
                 SortingOrder.Descending => query.OrderByDescending(orderByExpression),
                 _ => query
             };
+        }
+
+        if (pageNumber.HasValue && pageSize.HasValue)
+        {
+            query = query.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
         }
 
         return query.ToArrayAsync(ct);

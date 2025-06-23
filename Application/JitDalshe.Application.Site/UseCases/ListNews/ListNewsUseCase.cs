@@ -25,6 +25,7 @@ internal sealed class ListNewsUseCase : IListNewsUseCase
             var news = await _newsRepository.FindAllAsync(
                 orderByExpression: x => x.PublicationDate,
                 sortingOrder: SortingOrder.Descending,
+                filteringExpression: x => x.IsDisplaying,
                 pageNumber: pageNumber,
                 pageSize: pageSize,
                 ct: ct);
