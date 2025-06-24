@@ -96,4 +96,55 @@ public sealed class BannerService : IBannerService
                     return false;
             }
         });
+
+    public Task<bool> EditBannerAsync(Guid id, EditBannerRequest request)
+        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        {
+            var response = await _bannersApi.EditBannerAsync(id, request);
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return true;
+                default:
+                    HandleError(
+                        statusCode: response.StatusCode,
+                        apiError: response.Error!);
+                    return false;
+            }
+        });
+
+    public Task<bool> ReplaceBannerImageAsync(Guid id, ReplaceBannerImageRequest request)
+        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        {
+            var response = await _bannersApi.ReplaceBannerImageAsync(id, request);
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return true;
+                default:
+                    HandleError(
+                        statusCode: response.StatusCode,
+                        apiError: response.Error!);
+                    return false;
+            }
+        });
+
+    public Task<bool> DeleteBannerAsync(Guid id)
+        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        {
+            var response = await _bannersApi.DeleteBannerAsync(id);
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.NoContent:
+                    return true;
+                default:
+                    HandleError(
+                        statusCode: response.StatusCode,
+                        apiError: response.Error!);
+                    return false;
+            }
+        });
 }

@@ -10,11 +10,14 @@
 
 <h1 class="mb-4">Баннеры</h1>
 
-<h2>Предпросмотр активных баннеров</h2>
+@if (_previewBanners is { Length: > 0 })
+{
+    <h2>Предпросмотр активных баннеров</h2>
 
-<main class="main-slider-container">
-    <BannersSlider Items="@_previewBanners"/>
-</main>
+    <main class="main-slider-container">
+        <BannersSlider Items="@_previewBanners"/>
+    </main>
+}
 
 <div class="topbar-container">
     <h2>Полный список баннеров</h2>
@@ -28,7 +31,7 @@
 {
     @foreach (var banner in _banners)
     {
-        <BannerCard Banner="banner"/>
+        <BannerCard Banner="banner" BannerEdited="OnInitializedAsync" BannerDeleted="OnInitializedAsync"/>
     }
 }
 else

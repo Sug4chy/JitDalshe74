@@ -1,6 +1,7 @@
 using Autofac;
 using JitDalshe.Application.Abstractions.ImageStorage;
 using JitDalshe.Application.Abstractions.Repositories;
+using JitDalshe.Application.Admin.UseCases.Banners.CreateBanner;
 using JitDalshe.Application.Admin.UseCases.Events.CreateEvent;
 using JitDalshe.Application.Attributes;
 
@@ -20,7 +21,7 @@ public sealed class AdminApplicationModule : Module
         var useCasesTypes = GetType().Assembly
             .GetTypes()
             .Where(x => x.GetCustomAttributes(typeof(UseCaseAttribute), false).Length != 0)
-            .Except([typeof(CreateEventUseCase)])
+            .Except([typeof(CreateEventUseCase), typeof(CreateBannerUseCase)])
             .ToArray();
 
         builder.RegisterTypes(useCasesTypes)
@@ -30,6 +31,13 @@ public sealed class AdminApplicationModule : Module
         builder.Register(ctx => new CreateEventUseCase(
                 imageStorage: ctx.Resolve<IImageStorage>(),
                 events: ctx.Resolve<IEventsRepository>(),
+                imageUrlTemplate: ImageUrlTemplate))
+            .AsImplementedInterfaces()
+            .InstancePerLifetimeScope();
+
+        builder.Register(ctx => new CreateBannerUseCase(
+                banners: ctx.Resolve<IBannersRepository>(),
+                imageStorage: ctx.Resolve<IImageStorage>(),
                 imageUrlTemplate: ImageUrlTemplate))
             .AsImplementedInterfaces()
             .InstancePerLifetimeScope();

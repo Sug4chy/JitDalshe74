@@ -8,4 +8,7 @@ public interface IBannerService
     Task<PreviewBanner[]> FindPreviewBannersAsync();
     Task<Banner[]> FindAllAsync();
     Task<bool> CreateBannerAsync(CreateBannerRequest request);
+    Task<bool> EditBannerAsync(Guid id, EditBannerRequest request);
+    Task<bool> ReplaceBannerImageAsync(Guid id, ReplaceBannerImageRequest request);
+    Task<bool> DeleteBannerAsync(Guid id);
 }

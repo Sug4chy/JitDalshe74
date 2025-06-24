@@ -1,8 +1,12 @@
+@using JitDalshe.Ui.Admin.Api.Banners.Requests
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
+@using JitDalshe.Ui.Admin.Services.BannerService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IModalService ModalService
+@inject IBannerService BannerService
+@inject IToastService ToastService
 
 <Modal Id="@Id"
        Static="true"
@@ -43,6 +47,7 @@
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required Banner Banner { get; init; }
+    [Parameter] public required EventCallback BannerEdited { get; init; }
 
     private void RefreshFields()
     {
@@ -63,6 +68,30 @@
         await HideModalAsync();
     }
 
-    private static Task SubmitEditBannerAsync() => Task.CompletedTask;
+    private async Task SubmitEditBannerAsync()
+    {
+        var request = new EditBannerRequest(
+            Title: _title,
+            IsClickable: _isClickable,
+            RedirectOnClickUrl: _redirectOnClickUrl,
+            DisplayOrder: _isDisplaying ? _displayingOrder : null);
+
+        if (await BannerService.EditBannerAsync(Banner.Id, request))
+        {
+            if (_imageUrl != Banner.ImageUrl)
+            {
+                await BannerService.ReplaceBannerImageAsync(Banner.Id, new ReplaceBannerImageRequest(_imageUrl));
+            }
+
+            await CloseModalAsync();
+            ToastService.ShowSuccess("Баннер успешно изменён!");
+            await BannerEdited.InvokeAsync();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        RefreshFields();
+    }
 
 }

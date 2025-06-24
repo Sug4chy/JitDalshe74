@@ -79,7 +79,7 @@
             ImageBase64Url: _imageUrl,
             IsClickable: _isClickable,
             RedirectOnClickUrl: _redirectOnClickUrl,
-            DisplayOrder: _displayingOrder);
+            DisplayOrder: _isDisplaying ? _displayingOrder : null);
         if (await BannerService.CreateBannerAsync(request))
         {
             await CloseModalAsync();
