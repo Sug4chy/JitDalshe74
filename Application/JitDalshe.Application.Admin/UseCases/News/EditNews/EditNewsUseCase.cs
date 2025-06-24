@@ -46,13 +46,9 @@ internal sealed class EditNewsUseCase : IEditNewsUseCase
                         Error.Of($"Photo with id: {primaryPhotoId} doesn't exist", ErrorGroup.NotFound));
                 }
 
-                news.PrimaryImage = new NewsPrimaryImage
-                {
-                    NewsId = news.Id,
-                    News = news,
-                    NewsImage = maybeNewPrimaryPhoto.Value,
-                    NewsImageId = primaryPhotoId
-                };
+                news.PrimaryImage = NewsPrimaryImage.Create(
+                    newsId: news.Id,
+                    newsImageId: primaryPhotoId);
             }
 
             news.Text = text;

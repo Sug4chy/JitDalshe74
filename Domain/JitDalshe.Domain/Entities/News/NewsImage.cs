@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using JitDalshe.Domain.Abstractions;
 using JitDalshe.Domain.ValueObjects;
 
@@ -8,13 +9,30 @@ public sealed class NewsImage : AuditableEntity<IdOf<NewsImage>>
     public long ExtId { get; init; }
     public Uri Url { get; init; }
 
-    public IdOf<News> NewsId { get; }
-    public News? News { get; }
+    public IdOf<News> NewsId { get; init; }
+    public News? News { get; init; }
 
-    public NewsPrimaryImage? PrimaryPhoto { get; }
+    public NewsPrimaryImage? PrimaryPhoto { get; init; }
 
-    public NewsImage()
+    private NewsImage(
+        IdOf<NewsImage> id,
+        long extId,
+        Uri url)
     {
-        Id = IdOf<NewsImage>.New();
+        Id = id;
+        ExtId = extId;
+        Url = url;
     }
+
+    public static NewsImage Create(IdOf<NewsImage> id, long extId, Uri url) => new(id, extId, url);
+
+    /// <summary>
+    /// For EF Core
+    /// </summary>
+    [UsedImplicitly]
+#pragma warning disable CS8618
+    private NewsImage()
+    {
+    }
+#pragma warning restore CS8618
 }

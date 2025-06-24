@@ -52,20 +52,17 @@ internal sealed class CreateBannerUseCase : ICreateBannerUseCase
             var imageId = await _imageStorage.SaveImageAsync<BannerImage>(imageBytes, imageContentType, ct);
             var bannerId = IdOf<Banner>.New();
 
-            var image = new BannerImage(imageId)
-            {
-                Url = _imageUrlTemplate.Replace("[id]", bannerId.ToString()).Replace("[entity]", "banners"),
-                BannerId = bannerId,
-                ContentType = imageContentType
-            };
-            var banner = new Banner(bannerId)
-            {
-                Title = title,
-                IsClickable = isClickable,
-                RedirectOnClickUrl = redirectOnClickUrl,
-                DisplayOrder = displayOrder,
-                Image = image
-            };
+            var image = BannerImage.Create(
+                id: imageId,
+                url: _imageUrlTemplate.Replace("[id]", bannerId.ToString()).Replace("[entity]", "banners"),
+                contentType: imageContentType,
+                bannerId: bannerId);
+            var banner = Banner.Create(
+                id: bannerId,
+                title: title,
+                redirectOnClickUrl: redirectOnClickUrl,
+                displayOrder: displayOrder,
+                image: image);
 
             await _banners.AddAsync(banner, ct);
 

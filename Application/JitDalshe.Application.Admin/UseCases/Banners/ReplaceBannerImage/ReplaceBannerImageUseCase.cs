@@ -43,13 +43,12 @@ internal sealed class ReplaceBannerImageUseCase : IReplaceBannerImageUseCase
             await _imageStorage.RemoveImageAsync(banner.Image!.Id, ct);
 
             var newImageId = await _imageStorage.SaveImageAsync<BannerImage>(imageBytes, imageContentType, ct);
-            var newImage = new BannerImage(newImageId)
-            {
-                Url = banner.Image.Url,
-                ContentType = imageContentType,
-                Banner = banner,
-                BannerId = bannerId
-            };
+            var newImage = BannerImage.Create(
+                id: newImageId,
+                url: banner.Image.Url,
+                contentType: imageContentType,
+                bannerId: bannerId,
+                banner: banner);
 
             await _banners.ReplaceBannerImageAsync(banner, newImage, ct);
 
