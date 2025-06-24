@@ -38,19 +38,18 @@ internal sealed class CreateEventUseCase : ICreateEventUseCase
             var imageId = await _imageStorage.SaveImageAsync<EventImage>(imageBytes, imageContentType, ct);
             var eventId = IdOf<Event>.New();
 
-            var eventImage = new EventImage(imageId)
-            {
-                ContentType = imageContentType,
-                Url = _imageUrlTemplate.Replace("[id]", eventId.ToString()).Replace("[entity]", "events")
-            };
-            var @event = new Event(eventId)
-            {
-                Title = title,
-                Description = description,
-                Date = DateOnly.FromDateTime(date),
-                Image = eventImage,
-                IsDisplaying = isDisplaying
-            };
+            var eventImage = EventImage.Create(
+                id: imageId,
+                url: _imageUrlTemplate.Replace("[id]", eventId.ToString()).Replace("[entity]", "events"),
+                contentType: imageContentType,
+                eventId: eventId);
+            var @event = Event.Create(
+                id: eventId,
+                title: title,
+                description: description,
+                date: DateOnly.FromDateTime(date),
+                isDisplaying: isDisplaying,
+                image: eventImage);
 
             await _events.AddAsync(@event, ct);
 

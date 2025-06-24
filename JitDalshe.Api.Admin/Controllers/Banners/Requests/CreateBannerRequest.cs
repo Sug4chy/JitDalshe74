@@ -23,6 +23,8 @@ public sealed class CreateBannerRequestValidator : AbstractValidator<CreateBanne
             .NotNull()
             .When(x => x.IsClickable);
         RuleFor(x => x.DisplayOrder)
-            .Must(x => x is > 0 and < 5 or null);
+            .GreaterThan(0)
+            .LessThanOrEqualTo(5)
+            .When(x => x.DisplayOrder is not null);
     }
 }

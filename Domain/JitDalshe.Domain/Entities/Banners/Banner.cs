@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using JitDalshe.Domain.Abstractions;
 using JitDalshe.Domain.ValueObjects;
 
@@ -7,7 +8,7 @@ public sealed class Banner : AuditableEntity<IdOf<Banner>>
 {
     private int? _displayOrder;
 
-    public required string Title { get; set; }
+    public string Title { get; set; }
     public bool IsClickable { get; set; }
     public string? RedirectOnClickUrl { get; set; }
 
@@ -27,8 +28,36 @@ public sealed class Banner : AuditableEntity<IdOf<Banner>>
 
     public BannerImage? Image { get; init; }
 
-    public Banner(IdOf<Banner> id)
+    private Banner(
+        IdOf<Banner> id,
+        string title,
+        string? redirectOnClickUrl,
+        int? displayOrder,
+        BannerImage? image)
     {
         Id = id;
+        Title = title;
+        IsClickable = redirectOnClickUrl is not null;
+        RedirectOnClickUrl = redirectOnClickUrl;
+        DisplayOrder = displayOrder;
+        Image = image;
     }
+
+    public static Banner Create(
+        IdOf<Banner> id, 
+        string title, 
+        string? redirectOnClickUrl, 
+        int? displayOrder,
+        BannerImage? image) 
+        => new(id, title, redirectOnClickUrl, displayOrder, image);
+
+    /// <summary>
+    /// For EF Core
+    /// </summary>
+    [UsedImplicitly]
+#pragma warning disable CS8618
+    private Banner()
+    {
+    }
+#pragma warning restore CS8618
 }
