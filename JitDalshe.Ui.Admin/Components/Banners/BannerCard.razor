@@ -1,7 +1,10 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Cards
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Services.BannerService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IModalService ModalService
+@inject IBannerService BannerService
+@inject IToastService ToastService
 
 <Card HeaderText="@HeaderText"
       Title="@Banner.Title"
@@ -23,6 +26,8 @@
     private string EditModalId => $"modal_edit_banner_{Banner.Id}";
 
     [Parameter] public required Banner Banner { get; init; }
+    [Parameter] public required EventCallback BannerEdited { get; init; }
+    [Parameter] public required EventCallback BannerDeleted { get; init; }
 
     private Task ShowInfoModalAsync()
         => ModalService.ShowModalAsync($"#{InfoModalId}");
@@ -30,6 +35,13 @@
     private Task ShowEditModalAsync()
         => ModalService.ShowModalAsync($"#{EditModalId}");
 
-    private static Task DeleteBannerAsync() => Task.CompletedTask;
+    private async Task DeleteBannerAsync()
+    {
+        if (await BannerService.DeleteBannerAsync(Banner.Id))
+        {
+            ToastService.ShowSuccess("Баннер успешно удалён!");
+            await BannerDeleted.InvokeAsync();
+        }
+    }
 
 }

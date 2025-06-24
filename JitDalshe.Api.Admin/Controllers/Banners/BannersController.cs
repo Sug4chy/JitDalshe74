@@ -1,4 +1,3 @@
-using System.Net.Mime;
 using JitDalshe.Api.Admin.Controllers.Banners.Requests;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
@@ -41,7 +40,6 @@ public sealed class BannersController : AbstractController
     /// Возвращает изображение для баннера
     /// </summary>
     [HttpGet("{bannerId:guid}/image")]
-    [Produces(MediaTypeNames.Multipart.FormData)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

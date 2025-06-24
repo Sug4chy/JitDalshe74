@@ -1,18 +1,23 @@
 @page "/banners"
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Banners
+@using JitDalshe.Ui.Admin.Services.BannerService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IModalService ModalService
+@inject IBannerService BannerService
 
 <PageTitle>Баннеры</PageTitle>
 
 <h1 class="mb-4">Баннеры</h1>
 
-<h2>Предпросмотр активных баннеров</h2>
+@if (_previewBanners is { Length: > 0 })
+{
+    <h2>Предпросмотр активных баннеров</h2>
 
-<main class="main-slider-container">
-    <BannersSlider Items="_displayingBanners"/>
-</main>
+    <main class="main-slider-container">
+        <BannersSlider Items="@_previewBanners"/>
+    </main>
+}
 
 <div class="topbar-container">
     <h2>Полный список баннеров</h2>
@@ -26,7 +31,7 @@
 {
     @foreach (var banner in _banners)
     {
-        <BannerCard Banner="banner"/>
+        <BannerCard Banner="banner" BannerEdited="OnInitializedAsync" BannerDeleted="OnInitializedAsync"/>
     }
 }
 else
@@ -34,28 +39,38 @@ else
     <p>Loading...</p>
 }
 
-<CreateBannerModal Id="@CreateBannerModalId"/>
+<CreateBannerModal Id="@CreateBannerModalId" BannerCreated="@OnInitializedAsync"/>
 
 @code {
 
     private const string CreateBannerModalId = "modal_create_banner";
 
-    private readonly PreviewBanner[] _displayingBanners =
-    [
-        new("Первый", "https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 1),
-        new("Второй", "https://images.unsplash.com/photo-1566438480900-0609be27a4be?q=80&w=2194&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 2, "https://google.com")
-    ];
+    private PreviewBanner[] _previewBanners = null!;
 
-    private readonly Banner[] _banners =
-    [
-        new(
-            Id: Guid.NewGuid(),
-            Title: "Первый",
-            ImageUrl: "https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            DisplayOrder: 1)
-    ];
+    private Banner[] _banners = null!;
 
     private Task ShowCreateBannerModalAsync()
         => ModalService.ShowModalAsync($"#{CreateBannerModalId}");
+
+    private async Task LoadPreviewBannersAsync()
+    {
+        _previewBanners = await BannerService.FindPreviewBannersAsync();
+    }
+
+    private async Task LoadBannersAsync()
+    {
+        _banners = await BannerService.FindAllAsync();
+    }
+
+    private async Task LoadAllBanners()
+    {
+        await LoadPreviewBannersAsync();
+        await LoadBannersAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAllBanners();
+    }
 
 }

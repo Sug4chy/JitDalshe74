@@ -97,7 +97,7 @@ public sealed class MinioImageStorage : IImageStorage
 
         var newImageId = IdOf<TImage>.New();
         await _minioClient.PutObjectAsync(new PutObjectArgs()
-            .WithBucket(EventImagesBucketName)
+            .WithBucket(bucketName)
             .WithObject(newImageId.ToString())
             .WithObjectSize(imageContent.LongLength)
             .WithStreamData(new MemoryStream(imageContent))
