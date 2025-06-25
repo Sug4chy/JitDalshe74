@@ -1,10 +1,10 @@
-using CSharpFunctionalExtensions;
-using JitDalshe.Application.Errors;
+using JitDalshe.Application.VkCallback.Events;
 
 namespace JitDalshe.Application.VkCallback.Abstractions;
 
-public interface IVkEventHandler<in TEvent>
-    where TEvent : VkEvent
+public interface IVkEventHandler
 {
-    Task<UnitResult<Error>> HandleAsync(TEvent @event, CancellationToken ct);
+    string EventType { get; }
+
+    Task HandleAsync(VkEvent @event, CancellationToken ct = default);
 }
