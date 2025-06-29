@@ -43,7 +43,7 @@
 
 @code {
 
-    private CreateBannerFormModel _formModel = null!;
+    private BannerFormModel _formModel = null!;
     private EditContext? _editContext;
     private FluentValidationValidator? _fluentValidationValidator;
 
@@ -52,7 +52,7 @@
 
     private void RefreshFields(bool isInitializing)
     {
-        _formModel = new CreateBannerFormModel();
+        _formModel = new BannerFormModel();
         _editContext = new EditContext(_formModel);
         if (!isInitializing)
         {

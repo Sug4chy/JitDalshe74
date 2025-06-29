@@ -16,9 +16,8 @@ public sealed class EditBannerRequestValidator : AbstractValidator<EditBannerReq
     public EditBannerRequestValidator()
     {
         RuleFor(x => x.Title).NotEmpty();
-        RuleFor(x => x.IsClickable).NotNull();
         RuleFor(x => x.RedirectOnClickUrl)
-            .NotNull()
+            .NotEmpty()
             .When(x => x.IsClickable);
         RuleFor(x => x.DisplayOrder)
             .Must(x => x is > 0 and < 5 or null);

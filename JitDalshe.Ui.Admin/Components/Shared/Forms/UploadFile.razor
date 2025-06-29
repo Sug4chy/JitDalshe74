@@ -54,6 +54,7 @@
 
         FileUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
         await FileUrlChanged.InvokeAsync(FileUrl);
+        EditContext?.NotifyFieldChanged(_fieldIdentifier);
     }
 
     protected override void OnParametersSet()

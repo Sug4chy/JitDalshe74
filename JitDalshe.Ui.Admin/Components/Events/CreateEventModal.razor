@@ -35,7 +35,7 @@
 
 @code {
 
-    private CreateEventFormModel _formModel = null!;
+    private EventFormModel _formModel = null!;
     private EditContext? _editContext;
     private FluentValidationValidator? _fluentValidationValidator;
 
@@ -44,7 +44,7 @@
 
     private void ClearFields(bool isInitializing)
     {
-        _formModel = new CreateEventFormModel();
+        _formModel = new EventFormModel();
         _editContext = new EditContext(_formModel);
         if (!isInitializing)
         {

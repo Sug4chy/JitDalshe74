@@ -4,11 +4,11 @@ using System.Globalization;
 namespace JitDalshe.Ui.Admin.Models;
 
 [TypeConverter(typeof(GuidReferenceTypeConverter))]
-public sealed class GuidReference
+public sealed class Ref<T> where T : struct
 {
-    public Guid Value { get; set; }
+    public T Value { get; init; }
 
-    public static implicit operator Guid(GuidReference reference) => reference.Value;
+    public static implicit operator T(Ref<T> reference) => reference.Value;
 }
 
 public sealed class GuidReferenceTypeConverter : TypeConverter
@@ -23,7 +23,7 @@ public sealed class GuidReferenceTypeConverter : TypeConverter
             return base.ConvertFrom(context, culture, value);
         }
 
-        return new GuidReference
+        return new Ref<Guid>
         {
             Value = Guid.Parse(stringValue)
         };

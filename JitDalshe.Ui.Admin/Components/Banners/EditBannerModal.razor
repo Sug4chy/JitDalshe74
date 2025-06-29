@@ -2,6 +2,7 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
+@using JitDalshe.Ui.Admin.Models.Forms
 @using JitDalshe.Ui.Admin.Services.BannerService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IModalService ModalService
@@ -16,47 +17,56 @@
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SubmitEditBannerAsync">
 
-    <UploadFile @bind-FileUrl="_imageUrl"/>
+    <EditForm EditContext="@_editContext">
+        <FluentValidationValidator @ref="_fluentValidationValidator"/>
 
-    <TextInput Label="Заголовок" @bind-Value="_title"/>
+        <UploadFile @bind-FileUrl="_formModel.ImageUrl"/>
 
-    <CheckboxInput Label="Отображать на сайте?" @bind-Value="_isDisplaying"/>
+        <TextInput Label="Заголовок" @bind-Value="_formModel.Title"/>
 
-    @if (_isDisplaying)
-    {
-        <NumberInput Label="Порядковый номер отображения" @bind-Value="_displayingOrder"/>
-    }
+        <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsDisplaying"/>
 
-    <CheckboxInput Label="Кликабелен?" @bind-Value="_isClickable"/>
+        @if (_formModel.IsDisplaying)
+        {
+            <NumberInput Label="Порядковый номер отображения" @bind-Value="_formModel.DisplayingOrder"/>
+        }
 
-    @if (_isClickable)
-    {
-        <TextInput Label="Куда переводит?" @bind-Value="_redirectOnClickUrl"/>
-    }
+        <CheckboxInput Label="Кликабелен?" @bind-Value="_formModel.IsClickable"/>
+
+        @if (_formModel.IsClickable)
+        {
+            <TextInput Label="Куда переводит?" @bind-Value="_formModel.RedirectOnClickUrl"/>
+        }
+
+    </EditForm>
 
 </Modal>
 
 @code {
 
-    private string _title = null!;
-    private string _imageUrl = null!;
-    private bool _isDisplaying;
-    private int _displayingOrder;
-    private bool _isClickable;
-    private string? _redirectOnClickUrl;
+    private BannerFormModel _formModel = null!;
+    private EditContext? _editContext;
+    private FluentValidationValidator? _fluentValidationValidator;
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required Banner Banner { get; init; }
     [Parameter] public required EventCallback BannerEdited { get; init; }
 
-    private void RefreshFields()
+    private void RefreshFields(bool isInitializing)
     {
-        _title = Banner.Title;
-        _imageUrl = Banner.ImageUrl;
-        _isDisplaying = Banner.DisplayOrder is not null;
-        _displayingOrder = Banner.DisplayOrder ?? 0;
-        _isClickable = Banner.RedirectOnClickUrl is not null;
-        _redirectOnClickUrl = Banner.RedirectOnClickUrl;
+        _formModel = new BannerFormModel(
+            title: Banner.Title,
+            imageUrl: Banner.ImageUrl,
+            isDisplaying: Banner.DisplayOrder is not null,
+            displayingOrder: Banner.DisplayOrder ?? 0,
+            isClickable: Banner.RedirectOnClickUrl is not null,
+            redirectOnClickUrl: Banner.RedirectOnClickUrl ?? string.Empty
+        );
+        _editContext = new EditContext(_formModel);
+        if (!isInitializing)
+        {
+            StateHasChanged();
+        }
     }
 
     private Task HideModalAsync()
@@ -64,23 +74,30 @@
 
     private async Task CloseModalAsync()
     {
-        RefreshFields();
+        RefreshFields(false);
         await HideModalAsync();
     }
 
     private async Task SubmitEditBannerAsync()
     {
+        if (!await _fluentValidationValidator!.ValidateAsync())
+        {
+            return;
+        }
+
         var request = new EditBannerRequest(
-            Title: _title,
-            IsClickable: _isClickable,
-            RedirectOnClickUrl: _redirectOnClickUrl,
-            DisplayOrder: _isDisplaying ? _displayingOrder : null);
+            Title: _formModel.Title,
+            IsClickable: _formModel.IsClickable,
+            RedirectOnClickUrl: _formModel.IsClickable ? _formModel.RedirectOnClickUrl : null,
+            DisplayOrder: _formModel.IsDisplaying ? _formModel.DisplayingOrder : null);
 
         if (await BannerService.EditBannerAsync(Banner.Id, request))
         {
-            if (_imageUrl != Banner.ImageUrl)
+            if (_formModel.ImageUrl != Banner.ImageUrl)
             {
-                await BannerService.ReplaceBannerImageAsync(Banner.Id, new ReplaceBannerImageRequest(_imageUrl));
+                await BannerService.ReplaceBannerImageAsync(
+                    Banner.Id, new ReplaceBannerImageRequest(_formModel.ImageUrl!)
+                );
             }
 
             await CloseModalAsync();
@@ -91,7 +108,7 @@
 
     protected override void OnInitialized()
     {
-        RefreshFields();
+        RefreshFields(true);
     }
 
 }

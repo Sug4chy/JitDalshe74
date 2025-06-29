@@ -1,9 +1,9 @@
 using FluentValidation;
-using JitDalshe.Ui.Admin.Utils;
+using JetBrains.Annotations;
 
 namespace JitDalshe.Ui.Admin.Models.Forms;
 
-public sealed class CreateBannerFormModel
+public sealed class BannerFormModel()
 {
     public string Title { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
@@ -11,11 +11,28 @@ public sealed class CreateBannerFormModel
     public int DisplayingOrder { get; set; }
     public bool IsClickable { get; set; }
     public string RedirectOnClickUrl { get; set; } = string.Empty;
+
+    public BannerFormModel(
+        string title,
+        string imageUrl,
+        bool isDisplaying,
+        int displayingOrder,
+        bool isClickable,
+        string redirectOnClickUrl) : this()
+    {
+        Title = title;
+        ImageUrl = imageUrl;
+        IsDisplaying = isDisplaying;
+        DisplayingOrder = displayingOrder;
+        IsClickable = isClickable;
+        RedirectOnClickUrl = redirectOnClickUrl;
+    }
 }
 
-public sealed class CreateBannerRequestValidator : AbstractValidator<CreateBannerFormModel>
+[UsedImplicitly]
+public sealed class BannerRequestValidator : AbstractValidator<BannerFormModel>
 {
-    public CreateBannerRequestValidator()
+    public BannerRequestValidator()
     {
         RuleFor(x => x.Title).NotEmpty().WithMessage(ValidationMessages.TitleIsRequired);
         RuleFor(x => x.ImageUrl).NotEmpty().WithMessage(ValidationMessages.ImageIsRequired);
