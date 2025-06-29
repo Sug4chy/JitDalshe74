@@ -2,6 +2,7 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Forms
 @using JitDalshe.Ui.Admin.Services.EventService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IModalService ModalService
@@ -16,36 +17,45 @@
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SubmitEditEventAsync">
 
-    <UploadFile @bind-FileUrl="_currentImageUrl"/>
+    <EditForm EditContext="@_editContext">
+        <FluentValidationValidator @ref="_fluentValidationValidator"/>
 
-    <TextInput Label="Заголовок" @bind-Value="_title"/>
+        <UploadFile @bind-FileUrl="_formModel.UploadedImageUrl"/>
 
-    <TextAreaInput Label="Описание" @bind-Value="_description"/>
+        <TextInput Label="Заголовок" @bind-Value="_formModel.Title"/>
 
-    <DateInput Label="Дата события" @bind-Value="_date"/>
+        <TextAreaInput Label="Описание" @bind-Value="_formModel.Description"/>
 
-    <CheckboxInput Label="Отображать на сайте?" @bind-Value="_isDisplaying"/>
+        <DateInput Label="Дата события" @bind-Value="_formModel.Date"/>
+
+        <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsDisplaying"/>
+    </EditForm>
 
 </Modal>
 
 @code {
-    private string _currentImageUrl = null!;
-    private string _title = null!;
-    private string _description = null!;
-    private DateTime _date;
-    private bool _isDisplaying;
+    private EventFormModel _formModel = null!;
+    private EditContext? _editContext;
+    private FluentValidationValidator? _fluentValidationValidator;
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required Event Event { get; init; }
     [Parameter] public required EventCallback EventEdited { get; init; }
 
-    private void InitializeFields()
+    private void InitializeFields(bool isInitializing)
     {
-        _currentImageUrl = Event.ImageUrl;
-        _title = Event.Title;
-        _description = Event.Description ?? string.Empty;
-        _date = Event.Date.ToDateTime(TimeOnly.MinValue);
-        _isDisplaying = Event.IsDisplaying;
+        _formModel = new EventFormModel(
+            uploadedImageUrl: Event.ImageUrl,
+            title: Event.Title,
+            description: Event.Description ?? string.Empty,
+            date: Event.Date.ToDateTime(TimeOnly.MinValue),
+            isDisplaying: Event.IsDisplaying
+        );
+        _editContext = new EditContext(_formModel);
+        if (!isInitializing)
+        {
+            StateHasChanged();
+        }
     }
 
     private Task HideModalAsync()
@@ -53,35 +63,41 @@
 
     private async Task CloseModalAsync()
     {
-        InitializeFields();
+        InitializeFields(false);
         await HideModalAsync();
     }
 
     private async Task SubmitEditEventAsync()
     {
+        if (!await _fluentValidationValidator!.ValidateAsync())
+        {
+            return;
+        }
+
         var request = new EditEventRequest(
-            Title: _title,
-            Description: _description,
-            Date: _date,
-            ImageBase64Url: _currentImageUrl,
-            IsDisplaying: _isDisplaying);
+            Title: _formModel.Title,
+            Description: _formModel.Description,
+            Date: _formModel.Date,
+            ImageBase64Url: _formModel.UploadedImageUrl!,
+            IsDisplaying: _formModel.IsDisplaying);
         if (await EventService.EditEventAsync(Event.Id, request))
         {
-            if (_currentImageUrl != Event.ImageUrl)
+            if (_formModel.UploadedImageUrl != Event.ImageUrl)
             {
-                await EventService.ReplaceEventImageAsync(Event.Id, new ReplaceEventImageRequest(_currentImageUrl));
+                await EventService.ReplaceEventImageAsync(
+                    Event.Id, new ReplaceEventImageRequest(_formModel.UploadedImageUrl!)
+                );
             }
 
-            await HideModalAsync();
+            await CloseModalAsync();
             ToastService.ShowSuccess("Событие успешно отредактировано");
             await EventEdited.InvokeAsync();
         }
     }
 
-    protected override Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        InitializeFields();
-        return base.OnInitializedAsync();
+        InitializeFields(true);
     }
 
 }

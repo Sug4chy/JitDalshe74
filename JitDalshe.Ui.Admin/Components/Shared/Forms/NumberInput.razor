@@ -1,21 +1,31 @@
+@using System.Linq.Expressions
+
 <div class="form-group">
     <label for="@_id">@Label</label>
     <InputNumber id="@_id" 
-                 class="form-control" 
+                 class="@Style" 
                  TValue="int"
                  Value="@Value"
-                 ValueExpression="@(() => _value)"
+                 ValueExpression="@ValueExpression"
                  ValueChanged="@ValueChangedAsync"/>
+    <ValidationMessage For="@ValueExpression"/>
 </div>
 
 @code {
 
     private readonly string _id = Guid.NewGuid().ToString();
     private int _value;
+    [CascadingParameter] EditContext? EditContext { get; set; }
+    private FieldIdentifier _fieldIdentifier;
+
+    private string Style => EditContext?.GetValidationMessages(_fieldIdentifier).Any() is true
+        ? "form-control is-invalid"
+        : "form-control";
 
     [Parameter] public required string Label { get; init; }
     [Parameter] public int Value { get; set; }
     [Parameter] public EventCallback<int> ValueChanged { get; init; }
+    [Parameter] public Expression<Func<int>> ValueExpression { get; init; } = null!;
 
     private async Task ValueChangedAsync(int newValue)
     {
@@ -29,6 +39,7 @@
     protected override void OnParametersSet()
     {
         _value = Value;
+        _fieldIdentifier = FieldIdentifier.Create(ValueExpression);
     }
 
 }

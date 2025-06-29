@@ -1,6 +1,7 @@
 @using JitDalshe.Ui.Admin.Api.Events.Requests
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models.Forms
 @using JitDalshe.Ui.Admin.Services.EventService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IEventService EventService
@@ -15,58 +16,72 @@
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SubmitCreateEventAsync">
 
-    <UploadFile @bind-FileUrl="_uploadedImageUrl"/>
+    <EditForm EditContext="@_editContext">
+        <FluentValidationValidator @ref="_fluentValidationValidator"/>
 
-    <TextInput Label="Заголовок" @bind-Value="_title"/>
+        <UploadFile @bind-FileUrl="_formModel.UploadedImageUrl"/>
 
-    <TextAreaInput Label="Описание" @bind-Value="_description"/>
+        <TextInput Label="Заголовок" @bind-Value="_formModel.Title"/>
 
-    <DateInput Label="Дата события" @bind-Value="_date"/>
+        <TextAreaInput Label="Описание" @bind-Value="_formModel.Description"/>
 
-    <CheckboxInput Label="Отображать на сайте?" @bind-Value="_isDisplaying"/>
+        <DateInput Label="Дата события" @bind-Value="_formModel.Date"/>
+
+        <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsDisplaying"/>
+
+    </EditForm>
 
 </Modal>
 
 @code {
-    private string? _uploadedImageUrl;
-    private string _title = string.Empty;
-    private string _description = string.Empty;
-    private DateTime _date = DateTime.Today;
-    private bool _isDisplaying;
+
+    private EventFormModel _formModel = null!;
+    private EditContext? _editContext;
+    private FluentValidationValidator? _fluentValidationValidator;
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required EventCallback EventCreated { get; init; }
 
-    private void ClearFields()
+    private void ClearFields(bool isInitializing)
     {
-        _uploadedImageUrl = null;
-        _title = string.Empty;
-        _description = string.Empty;
-        _date = DateTime.Today;
-        _isDisplaying = false;
+        _formModel = new EventFormModel();
+        _editContext = new EditContext(_formModel);
+        if (!isInitializing)
+        {
+            StateHasChanged();
+        }
     }
 
     private Task CloseModalAsync()
     {
-        ClearFields();
+        ClearFields(false);
         return ModalService.HideModalAsync($"#{Id}");
     }
 
     private async Task SubmitCreateEventAsync()
     {
-        if (_uploadedImageUrl is null)
+        if (!await _fluentValidationValidator!.ValidateAsync())
         {
-            ToastService.ShowInfo("Пожалуйста, прикрепите изображение");
             return;
         }
 
-        var request = new CreateEventRequest(_title, _description, _date, _uploadedImageUrl, _isDisplaying);
+        var request = new CreateEventRequest(
+            _formModel.Title, 
+            _formModel.Description, 
+            _formModel.Date, 
+            _formModel.UploadedImageUrl!, 
+            _formModel.IsDisplaying);
         if (await EventService.CreateEventAsync(request))
         {
             await CloseModalAsync();
             ToastService.ShowSuccess("Событие было успешно создано!");
             await EventCreated.InvokeAsync();
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        ClearFields(true);
     }
 
 }

@@ -2,6 +2,7 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Forms
 @using JitDalshe.Ui.Admin.Services.ModalService
 @using JitDalshe.Ui.Admin.Services.NewsService
 @inject IModalService ModalService
@@ -18,56 +19,68 @@
        FooterButtonText="Сохранить"
        OnFooterButtonClick="EditNewsAsync">
 
-    @if (News.Images.Length > 0)
-    {
-        <div class="gap-3 horizontal-scroll">
-            <InputRadioGroup class="mb-4"
-                             TValue="GuidReference"
-                             ValueChanged="e => PrimaryPhotoSelected(e)"
-                             ValueExpression="() => _selectedPhotoId!">
-                @foreach (var photo in News.Images)
-                {
-                    <label
-                        class="image-radio @(photo.Id == _selectedPhotoId! ? "selected" : string.Empty)">
-                        <InputRadio TValue="Guid"
-                                    Value="photo.Id"
-                                    style="display: none"/>
-                        <img src="@photo.Url" class="img-thumbnail rounded" alt=""/>
-                    </label>
-                }
-            </InputRadioGroup>
-        </div>
-    }
+    <EditForm EditContext="@_editContext">
+        <FluentValidationValidator @ref="_fluentValidationValidator"/>
 
-    <TextAreaInput Label="Текст новости" @bind-Value="_currentEnteredText"/>
+        @if (News.Images.Length > 0)
+        {
+            <div class="gap-3 horizontal-scroll">
+                <InputRadioGroup class="mb-4"
+                                 TValue="@(Ref<Guid>)"
+                                 ValueChanged="@(e => PrimaryPhotoSelected(e))"
+                                 ValueExpression="@(() => _formModel.SelectedPhotoId!)">
+                    @foreach (var photo in News.Images)
+                    {
+                        <label
+                            class="image-radio @(photo.Id == _formModel.SelectedPhotoId! ? "selected" : string.Empty)">
+                            <InputRadio TValue="Guid"
+                                        Value="photo.Id"
+                                        style="display: none"/>
+                            <img src="@photo.Url" class="img-thumbnail rounded" alt=""/>
+                        </label>
+                    }
+                </InputRadioGroup>
+            </div>
+        }
 
-    <CheckboxInput Label="Отображать на сайте?" @bind-Value="_isDisplaying"/>
+        <TextAreaInput Label="Текст новости" @bind-Value="_formModel.CurrentEnteredText"/>
+
+        <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsDisplaying"/>
+
+    </EditForm>
 
 </Modal>
 
 @code {
 
-    private GuidReference? _selectedPhotoId;
-    private string _currentEnteredText = null!;
-    private bool _isDisplaying;
+    private NewsFormModel _formModel = null!;
+    private EditContext? _editContext;
+    private FluentValidationValidator? _fluentValidationValidator;
     private string FooterText => $"Опубликовано {News.PublishDate.ToString("dd-MM-yyyy")}";
 
     [Parameter] public required News News { get; init; }
     [Parameter] public required string Id { get; init; }
     [Parameter] public required EventCallback OnNewsEditedCallback { get; init; }
 
-    private void RefreshFormFields()
+    private void RefreshFormFields(bool isInitializing)
     {
-        _currentEnteredText = News.Text;
-        _selectedPhotoId = News.Images.Length > 0
-            ? new GuidReference { Value = News.Images.Single(x => x.IsPrimary).Id }
-            : null;
-        _isDisplaying = News.IsDisplaying;
+        _formModel = new NewsFormModel(
+            selectedPhotoId: News.Images.Length > 0
+                ? new Ref<Guid> { Value = News.Images.Single(x => x.IsPrimary).Id }
+                : null,
+            currentEnteredText: News.Text,
+            isDisplaying: News.IsDisplaying
+        );
+        _editContext = new EditContext(_formModel);
+        if (!isInitializing)
+        {
+            StateHasChanged();
+        }
     }
 
-    private void PrimaryPhotoSelected(GuidReference guid)
+    private void PrimaryPhotoSelected(Ref<Guid> guid)
     {
-        _selectedPhotoId = guid;
+        _formModel.SelectedPhotoId = guid;
     }
 
     private Task HideModalAsync()
@@ -75,30 +88,35 @@
 
     private async Task CloseModalAsync()
     {
-        RefreshFormFields();
+        RefreshFormFields(false);
         await HideModalAsync();
     }
 
     private async Task EditNewsAsync()
     {
+        if (!await _fluentValidationValidator!.ValidateAsync())
+        {
+            return;
+        }
+
         var request = new EditNewsRequest
         {
-            PrimaryPhotoId = _selectedPhotoId?.Value,
-            Text = _currentEnteredText,
-            IsDisplaying = _isDisplaying
+            PrimaryPhotoId = _formModel.SelectedPhotoId?.Value,
+            Text = _formModel.CurrentEnteredText,
+            IsDisplaying = _formModel.IsDisplaying
         };
 
         if (await NewsService.EditAsync(News.Id, request))
         {
             ToastService.ShowSuccess("Новость успешно обновлена!");
-            await HideModalAsync();
+            await CloseModalAsync();
             await OnNewsEditedCallback.InvokeAsync();
         }
     }
 
     protected override void OnInitialized()
     {
-        RefreshFormFields();
+        RefreshFormFields(true);
     }
 
 }

@@ -1,6 +1,7 @@
 @using JitDalshe.Ui.Admin.Api.Banners.Requests
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
+@using JitDalshe.Ui.Admin.Models.Forms
 @using JitDalshe.Ui.Admin.Services.BannerService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IModalService ModalService
@@ -15,46 +16,48 @@
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SubmitCreateBannerAsync">
 
-    <UploadFile @bind-FileUrl="_imageUrl"/>
+    <EditForm EditContext="@_editContext">
+        <FluentValidationValidator @ref="_fluentValidationValidator"/>
 
-    <TextInput Label="Заголовок" @bind-Value="_title"/>
+        <UploadFile @bind-FileUrl="_formModel.ImageUrl"/>
 
-    <CheckboxInput Label="Отображать на сайте?" @bind-Value="_isDisplaying"/>
+        <TextInput Label="Заголовок" @bind-Value="_formModel.Title"/>
 
-    @if (_isDisplaying)
-    {
-        <NumberInput Label="Порядковый номер отображения" @bind-Value="_displayingOrder"/>
-    }
+        <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsDisplaying"/>
 
-    <CheckboxInput Label="Кликабелен?" @bind-Value="_isClickable"/>
+        @if (_formModel.IsDisplaying)
+        {
+            <NumberInput Label="Порядковый номер отображения" @bind-Value="_formModel.DisplayingOrder"/>
+        }
 
-    @if (_isClickable)
-    {
-        <TextInput Label="Куда переводит?" @bind-Value="_redirectOnClickUrl"/>
-    }
+        <CheckboxInput Label="Кликабелен?" @bind-Value="_formModel.IsClickable"/>
+
+        @if (_formModel.IsClickable)
+        {
+            <TextInput Label="Куда переводит?" @bind-Value="_formModel.RedirectOnClickUrl"/>
+        }
+
+    </EditForm>
 
 </Modal>
 
 @code {
 
-    private string _title = null!;
-    private string? _imageUrl;
-    private bool _isDisplaying;
-    private int _displayingOrder;
-    private bool _isClickable;
-    private string? _redirectOnClickUrl;
+    private BannerFormModel _formModel = null!;
+    private EditContext? _editContext;
+    private FluentValidationValidator? _fluentValidationValidator;
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required EventCallback BannerCreated { get; init; }
 
-    private void RefreshFields()
+    private void RefreshFields(bool isInitializing)
     {
-        _title = string.Empty;
-        _imageUrl = string.Empty;
-        _isDisplaying = false;
-        _displayingOrder = 0;
-        _isClickable = false;
-        _redirectOnClickUrl = null;
+        _formModel = new BannerFormModel();
+        _editContext = new EditContext(_formModel);
+        if (!isInitializing)
+        {
+            StateHasChanged();
+        }
     }
 
     private Task HideModalAsync()
@@ -63,29 +66,33 @@
     private async Task CloseModalAsync()
     {
         await HideModalAsync();
-        RefreshFields();
+        RefreshFields(false);
     }
 
     private async Task SubmitCreateBannerAsync()
     {
-        if (_imageUrl is null)
+        if (!await _fluentValidationValidator!.ValidateAsync())
         {
-            ToastService.ShowInfo("Пожалуйста, прикрепите изображение");
             return;
         }
 
         var request = new CreateBannerRequest(
-            Title: _title,
-            ImageBase64Url: _imageUrl,
-            IsClickable: _isClickable,
-            RedirectOnClickUrl: _redirectOnClickUrl,
-            DisplayOrder: _isDisplaying ? _displayingOrder : null);
+            Title: _formModel.Title,
+            ImageBase64Url: _formModel.ImageUrl!,
+            IsClickable: _formModel.IsClickable,
+            RedirectOnClickUrl: _formModel.IsClickable ? _formModel.RedirectOnClickUrl : null,
+            DisplayOrder: _formModel.IsDisplaying ? _formModel.DisplayingOrder : null);
         if (await BannerService.CreateBannerAsync(request))
         {
             await CloseModalAsync();
             ToastService.ShowSuccess("Баннер успешно создан!");
             await BannerCreated.InvokeAsync();
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        RefreshFields(true);
     }
 
 }
