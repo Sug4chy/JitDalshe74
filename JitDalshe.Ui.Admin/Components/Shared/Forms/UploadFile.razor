@@ -1,5 +1,7 @@
+@using System.Linq.Expressions
+
 <div class="image-upload-container">
-    <label class="image-upload-label">
+    <label class="@Style">
         <InputFile accept="image/*" OnChange="HandleFileUploadAsync" style="display: none;"/>
         @if (FileUrl is null)
         {
@@ -21,11 +23,22 @@
         }
     </label>
 </div>
+<div style="display: flex; justify-content: center">
+    <ValidationMessage For="@FileUrlExpression"/>
+</div>
 
 @code {
 
+    [CascadingParameter] EditContext? EditContext { get; set; }
+    private FieldIdentifier _fieldIdentifier;
+
+    private string Style => EditContext?.GetValidationMessages(_fieldIdentifier).Any() is true
+        ? "image-upload-label is-invalid"
+        : "image-upload-label";
+
     [Parameter] public string? FileUrl { get; set; }
     [Parameter] public EventCallback<string?> FileUrlChanged { get; set; }
+    [Parameter] public Expression<Func<string?>> FileUrlExpression { get; set; } = null!;
 
     private async Task HandleFileUploadAsync(InputFileChangeEventArgs args)
     {
@@ -41,6 +54,11 @@
 
         FileUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
         await FileUrlChanged.InvokeAsync(FileUrl);
+    }
+
+    protected override void OnParametersSet()
+    {
+        _fieldIdentifier = FieldIdentifier.Create(FileUrlExpression);
     }
 
 }

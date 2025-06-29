@@ -1,20 +1,29 @@
+@using System.Linq.Expressions
 <div class="form-check">
     <InputCheckbox id="@_id"
-                   class="form-check-input"
+                   class="@Style"
                    Value="@Value"
-                   ValueExpression="@(() => _value)"
+                   ValueExpression="@ValueExpression"
                    ValueChanged="@ValueChangedAsync"/>
     <label for="@_id" class="form-check-label">@Label</label>
+    <ValidationMessage For="@ValueExpression"/>
 </div>
 
 @code {
 
     private readonly string _id = Guid.NewGuid().ToString();
     private bool _value;
+    [CascadingParameter] EditContext? EditContext { get; set; }
+    private FieldIdentifier _fieldIdentifier;
+
+    private string Style => EditContext?.GetValidationMessages(_fieldIdentifier).Any() is true
+        ? "form-check-input is-invalid"
+        : "form-check-input";
 
     [Parameter] public required string Label { get; init; }
     [Parameter] public bool Value { get; set; }
     [Parameter] public EventCallback<bool> ValueChanged { get; init; }
+    [Parameter] public Expression<Func<bool>> ValueExpression { get; set; } = null!;
 
     private async Task ValueChangedAsync(bool newValue)
     {
@@ -28,6 +37,7 @@
     protected override void OnParametersSet()
     {
         _value = Value;
+        _fieldIdentifier = FieldIdentifier.Create(ValueExpression);
     }
 
 }
