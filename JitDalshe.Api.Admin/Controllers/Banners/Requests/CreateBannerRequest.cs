@@ -18,9 +18,8 @@ public sealed class CreateBannerRequestValidator : AbstractValidator<CreateBanne
     {
         RuleFor(x => x.Title).NotEmpty();
         RuleFor(x => x.ImageBase64Url).NotEmpty();
-        RuleFor(x => x.IsClickable).NotNull();
         RuleFor(x => x.RedirectOnClickUrl)
-            .NotNull()
+            .NotEmpty()
             .When(x => x.IsClickable);
         RuleFor(x => x.DisplayOrder)
             .GreaterThan(0)
