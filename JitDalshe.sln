@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Ui.Admin", "JitDa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Infrastructure.Minio", "Infrastructure\JitDalshe.Infrastructure.Minio\JitDalshe.Infrastructure.Minio.csproj", "{A09E8E3F-8F81-49AE-9776-09742D05F75A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.NewsFetcher", "JitDalshe.NewsFetcher\JitDalshe.NewsFetcher.csproj", "{0F86DEE7-A18D-403A-A3EC-CA4EEE2ED18F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{A09E8E3F-8F81-49AE-9776-09742D05F75A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A09E8E3F-8F81-49AE-9776-09742D05F75A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A09E8E3F-8F81-49AE-9776-09742D05F75A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F86DEE7-A18D-403A-A3EC-CA4EEE2ED18F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F86DEE7-A18D-403A-A3EC-CA4EEE2ED18F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F86DEE7-A18D-403A-A3EC-CA4EEE2ED18F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F86DEE7-A18D-403A-A3EC-CA4EEE2ED18F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C6BA5D87-D53F-40F2-8FA4-D84B6AEC2045} = {BE24047B-D681-4DFE-83A1-1E70E0A43F9F}
