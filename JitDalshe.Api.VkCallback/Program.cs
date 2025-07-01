@@ -1,5 +1,6 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using JitDalshe.Api.Extensions;
 using JitDalshe.Application.VkCallback;
 using JitDalshe.Infrastructure.Persistence;
 
@@ -15,12 +16,23 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
         });
     });
 
+builder.Services.AddHealthChecks();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
+builder.Services.AddCors();
+
+builder.Services.AddExceptionHandling();
+
 var app = builder.Build();
 
+app.UseExceptionHandling();
+
+app.MapHealthChecks("/health");
+
+app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 if (!app.Environment.IsProduction())
 {
     app.UseSwagger();
