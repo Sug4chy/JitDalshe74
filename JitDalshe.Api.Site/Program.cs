@@ -32,14 +32,25 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
         });
     });
 
+builder.Services.AddHealthChecks();
+
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddSwaggerGenWithControllerGroups<Program>();
 builder.Services.AddControllers();
 
+builder.Services.AddCors();
+
+builder.Services.AddExceptionHandling();
+
 var app = builder.Build();
 
+app.UseExceptionHandling();
+
+app.MapHealthChecks("/health");
+
+app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 if (!app.Environment.IsProduction())
 {
     app.UseSwagger();
