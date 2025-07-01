@@ -44,6 +44,11 @@
     command: "server --address 0.0.0.0:9000 /data"
     volumes:
       - minio_data:/data
+    healthcheck:
+      test: [ "CMD", "mc", "ready", "local" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
     depends_on:
       news_fetcher:
         condition: service_completed_successfully
@@ -51,16 +56,60 @@
   # Step 5: APIs
   site-api:
     image: sug4chy/jit-dalshe-site-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      Minio__Endpoint: ${Minio__Endpoint}
+      Minio__AccessKey: ${MINIO_ACCESS_KEY}
+      Minio__SecretKey: ${MINIO_SECRET_KEY}
+    depends_on:
+      minio:
+        condition: service_healthy
 
   admin-api:
     image: sug4chy/jit-dalshe-admin-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      Minio__Endpoint: ${Minio__Endpoint}
+      Minio__AccessKey: ${MINIO_ACCESS_KEY}
+      Minio__SecretKey: ${MINIO_SECRET_KEY}
+      CurrentURL: ${ADMIN_API_URL}
+    depends_on:
+      minio:
+        condition: service_healthy
 
   vk-callback-api:
     image: sug4chy/jit-dalshe-vk-callback-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+    depends_on:
+      minio:
+        condition: service_healthy
 
   # Step 6: Admin UI
   admin-ui:
     image: sug4chy/jit-dalshe-admin-ui
+    environment:
+      Api__BaseUrl: ${ADMIN_API_URL}
+    depends_on:
+      admin-api:
+        condition: service_healthy
+
+  # Step 7: Nginx
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./certificates:/certificates
+    depends_on:
+      admin-ui:
+        condition: service_started
+      vk-callback-api:
+        condition: service_healthy
+      site-api:
+        condition: service_healthy
 
 volumes:
   postgres_data:
