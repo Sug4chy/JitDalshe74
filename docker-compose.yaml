@@ -62,6 +62,11 @@
       Minio__Endpoint: ${Minio__Endpoint}
       Minio__AccessKey: ${MINIO_ACCESS_KEY}
       Minio__SecretKey: ${MINIO_SECRET_KEY}
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail http://localhost:8080/health || exit 1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
     depends_on:
       minio:
         condition: service_healthy
@@ -75,6 +80,11 @@
       Minio__AccessKey: ${MINIO_ACCESS_KEY}
       Minio__SecretKey: ${MINIO_SECRET_KEY}
       CurrentURL: ${ADMIN_API_URL}
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail http://localhost:8080/health || exit 1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
     depends_on:
       minio:
         condition: service_healthy
@@ -84,6 +94,11 @@
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --fail http://localhost:8080/health || exit 1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
     depends_on:
       minio:
         condition: service_healthy
