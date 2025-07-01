@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,6 +15,12 @@
       <ProjectReference Include="..\Application\JitDalshe.Application.VkCallback\JitDalshe.Application.VkCallback.csproj" />
       <ProjectReference Include="..\Infrastructure\JitDalshe.Infrastructure.Persistence\JitDalshe.Infrastructure.Persistence.csproj" />
       <ProjectReference Include="..\JitDalshe.Api\JitDalshe.Api.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
