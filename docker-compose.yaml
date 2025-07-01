@@ -1,0 +1,67 @@
+﻿services:
+  # Step 1: DB
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DATABASE: ${POSTGRES_DATABASE}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-d", "postgres" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Step 2: Migrator
+  migrator:
+    image: sug4chy/jit-dalshe-migrator
+    environment:
+      DOTNET_ENVIRONMENT: ${DOTNET_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Step 3: News fetcher
+  news-fetcher:
+    image: sug4chy/jit-dalshe-new-fetcher
+    environment:
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      DOTNET_ENVIRONMENT: ${DOTNET_ENVIRONMENT}
+      VK_API_ACCESS_TOKEN: ${VK_API_ACCESS_TOKEN}
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+
+  # Step 4: MinIO
+  minio:
+    image: minio/minio
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY]
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    command: "server --address 0.0.0.0:9000 /data"
+    volumes:
+      - minio_data:/data
+    depends_on:
+      news_fetcher:
+        condition: service_completed_successfully
+
+  # Step 5: APIs
+  site-api:
+    image: sug4chy/jit-dalshe-site-api
+
+  admin-api:
+    image: sug4chy/jit-dalshe-admin-api
+
+  vk-callback-api:
+    image: sug4chy/jit-dalshe-vk-callback-api
+
+  # Step 6: Admin UI
+  admin-ui:
+    image: sug4chy/jit-dalshe-admin-ui
+
+volumes:
+  postgres_data:
+  minio_data:
