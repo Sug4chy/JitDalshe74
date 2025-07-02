@@ -21,6 +21,7 @@ public sealed class EventService : IEventService
         _runner = runner;
         _eventsApi = eventsApi;
         _toastService = toastService;
+        _runner.ConfigureErrorCallback(_toastService.ShowPermanentError);
     }
 
     private void HandleError(
@@ -49,7 +50,7 @@ public sealed class EventService : IEventService
     }
 
     public Task<Event[]> FindAllAsync()
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.ListEventsAsync();
 
@@ -65,7 +66,7 @@ public sealed class EventService : IEventService
         }, defaultValue: []);
 
     public Task<bool> CreateEventAsync(CreateEventRequest request)
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.CreateEventAsync(request);
 
@@ -82,7 +83,7 @@ public sealed class EventService : IEventService
         });
 
     public Task<bool> EditEventAsync(Guid id, EditEventRequest request)
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.EditEventAsync(id, request);
 
@@ -99,7 +100,7 @@ public sealed class EventService : IEventService
         });
 
     public Task<bool> ReplaceEventImageAsync(Guid eventId, ReplaceEventImageRequest request)
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.ReplaceEventImageAsync(eventId, request);
 
@@ -116,7 +117,7 @@ public sealed class EventService : IEventService
         });
 
     public Task<bool> DeleteEventAsync(Guid eventId)
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.DeleteEventAsync(eventId);
 

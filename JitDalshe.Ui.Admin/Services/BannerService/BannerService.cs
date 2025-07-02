@@ -21,6 +21,7 @@ public sealed class BannerService : IBannerService
         _runner = runner;
         _bannersApi = bannersApi;
         _toastService = toastService;
+        _runner.ConfigureErrorCallback(_toastService.ShowPermanentError);
     }
 
     private void HandleError(
@@ -49,7 +50,7 @@ public sealed class BannerService : IBannerService
     }
 
     public Task<PreviewBanner[]> FindPreviewBannersAsync()
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.GetPreviewBannersAsync();
 
@@ -65,7 +66,7 @@ public sealed class BannerService : IBannerService
         }, defaultValue: []);
 
     public Task<Banner[]> FindAllAsync()
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.ListBannersAsync();
 
@@ -81,7 +82,7 @@ public sealed class BannerService : IBannerService
         }, defaultValue: []);
 
     public Task<bool> CreateBannerAsync(CreateBannerRequest request)
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.CreateBannerAsync(request);
 
@@ -98,7 +99,7 @@ public sealed class BannerService : IBannerService
         });
 
     public Task<bool> EditBannerAsync(Guid id, EditBannerRequest request)
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.EditBannerAsync(id, request);
 
@@ -115,7 +116,7 @@ public sealed class BannerService : IBannerService
         });
 
     public Task<bool> ReplaceBannerImageAsync(Guid id, ReplaceBannerImageRequest request)
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.ReplaceBannerImageAsync(id, request);
 
@@ -132,7 +133,7 @@ public sealed class BannerService : IBannerService
         });
 
     public Task<bool> DeleteBannerAsync(Guid id)
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.DeleteBannerAsync(id);
 

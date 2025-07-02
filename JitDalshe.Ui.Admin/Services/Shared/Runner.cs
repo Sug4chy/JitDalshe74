@@ -1,18 +1,15 @@
-using Blazored.Toast.Services;
-using JitDalshe.Ui.Admin.Extensions;
-
 namespace JitDalshe.Ui.Admin.Services.Shared;
 
 public sealed class Runner
 {
-    private readonly IToastService _toastService;
+    private Action<Exception> _errorCallback = null!;
 
-    public Runner(IToastService toastService)
+    public void ConfigureErrorCallback(Action<Exception> callback)
     {
-        _toastService = toastService;
+        _errorCallback = callback;
     }
 
-    public async Task RunShowingToastOnExceptionAsync(Func<Task> action)
+    public async Task RunCatchingAsync(Func<Task> action)
     {
         try
         {
@@ -20,11 +17,11 @@ public sealed class Runner
         }
         catch (Exception e)
         {
-            _toastService.ShowPermanentError(e);
+            _errorCallback?.Invoke(e);
         }
     }
 
-    public async Task<T> RunShowingToastOnExceptionAsync<T>(Func<Task<T>> action, T defaultValue = default!)
+    public async Task<T> RunCatchingAsync<T>(Func<Task<T>> action, T defaultValue = default!)
     {
         try
         {
@@ -32,7 +29,7 @@ public sealed class Runner
         }
         catch (Exception e)
         {
-            _toastService.ShowPermanentError(e);
+            _errorCallback?.Invoke(e);
             return defaultValue;
         }
     }

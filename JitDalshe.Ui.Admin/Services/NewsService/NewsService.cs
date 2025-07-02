@@ -20,10 +20,11 @@ public sealed class NewsService : INewsService
         _toastService = toastService;
         _newsApi = newsApi;
         _runner = runner;
+        _runner.ConfigureErrorCallback(_toastService.ShowPermanentError);
     }
 
     public Task<News[]> FindAllAsync()
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _newsApi.ListNewsAsync();
 
@@ -39,7 +40,7 @@ public sealed class NewsService : INewsService
         }, defaultValue: []);
 
     public Task<bool> EditAsync(Guid id, EditNewsRequest request)
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _newsApi.EditNewsAsync(id, request);
             ApiError error;
@@ -64,7 +65,7 @@ public sealed class NewsService : INewsService
         });
 
     public Task<bool> DeleteAsync(Guid id)
-        => _runner.RunShowingToastOnExceptionAsync(async () =>
+        => _runner.RunCatchingAsync(async () =>
         {
             var response = await _newsApi.DeleteNewsByIdAsync(id);
             ApiError error;
