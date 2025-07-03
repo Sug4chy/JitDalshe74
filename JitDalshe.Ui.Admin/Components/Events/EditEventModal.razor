@@ -67,6 +67,15 @@
         await HideModalAsync();
     }
 
+    private EditEventRequest BuildEditEventRequest()
+        => new(
+            Title: _formModel.Title,
+            Description: _formModel.Description,
+            Date: _formModel.Date,
+            ImageBase64Url: _formModel.UploadedImageUrl!,
+            IsDisplaying: _formModel.IsDisplaying
+        );
+
     private async Task SubmitEditEventAsync()
     {
         if (!await _fluentValidationValidator!.ValidateAsync())
@@ -74,25 +83,22 @@
             return;
         }
 
-        var request = new EditEventRequest(
-            Title: _formModel.Title,
-            Description: _formModel.Description,
-            Date: _formModel.Date,
-            ImageBase64Url: _formModel.UploadedImageUrl!,
-            IsDisplaying: _formModel.IsDisplaying);
-        if (await EventService.EditEventAsync(Event.Id, request))
-        {
-            if (_formModel.UploadedImageUrl != Event.ImageUrl)
+        await EventService.EditEventAsync(
+            id: Event.Id,
+            request: BuildEditEventRequest(),
+            onSuccess: async () =>
             {
-                await EventService.ReplaceEventImageAsync(
-                    Event.Id, new ReplaceEventImageRequest(_formModel.UploadedImageUrl!)
-                );
-            }
+                if (_formModel.UploadedImageUrl != Event.ImageUrl)
+                {
+                    await EventService.ReplaceEventImageAsync(
+                        Event.Id, new ReplaceEventImageRequest(_formModel.UploadedImageUrl!)
+                    );
+                }
 
-            await CloseModalAsync();
-            ToastService.ShowSuccess("Событие успешно отредактировано");
-            await EventEdited.InvokeAsync();
-        }
+                await CloseModalAsync();
+                ToastService.ShowSuccess("Событие успешно отредактировано");
+                await EventEdited.InvokeAsync();
+            });
     }
 
     protected override void OnInitialized()

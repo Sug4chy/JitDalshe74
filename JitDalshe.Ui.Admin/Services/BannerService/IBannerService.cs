@@ -7,8 +7,8 @@ public interface IBannerService
 {
     Task<PreviewBanner[]> FindPreviewBannersAsync();
     Task<Banner[]> FindAllAsync();
-    Task<bool> CreateBannerAsync(CreateBannerRequest request);
-    Task<bool> EditBannerAsync(Guid id, EditBannerRequest request);
-    Task<bool> ReplaceBannerImageAsync(Guid id, ReplaceBannerImageRequest request);
-    Task<bool> DeleteBannerAsync(Guid id);
+    Task CreateBannerAsync(CreateBannerRequest request, Func<Task>? onSuccess = null);
+    Task EditBannerAsync(Guid id, EditBannerRequest request, Func<Task>? onSuccess = null);
+    Task ReplaceBannerImageAsync(Guid id, ReplaceBannerImageRequest request, Func<Task>? onSuccess = null);
+    Task DeleteBannerAsync(Guid id, Func<Task>? onSuccess = null);
 }

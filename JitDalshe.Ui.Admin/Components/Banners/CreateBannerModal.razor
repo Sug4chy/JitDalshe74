@@ -69,6 +69,15 @@
         RefreshFields(false);
     }
 
+    private CreateBannerRequest BuildRequest()
+        => new(
+            Title: _formModel.Title,
+            ImageBase64Url: _formModel.ImageUrl!,
+            IsClickable: _formModel.IsClickable,
+            RedirectOnClickUrl: _formModel.IsClickable ? _formModel.RedirectOnClickUrl : null,
+            DisplayOrder: _formModel.IsDisplaying ? _formModel.DisplayingOrder : null
+        );
+
     private async Task SubmitCreateBannerAsync()
     {
         if (!await _fluentValidationValidator!.ValidateAsync())
@@ -76,18 +85,14 @@
             return;
         }
 
-        var request = new CreateBannerRequest(
-            Title: _formModel.Title,
-            ImageBase64Url: _formModel.ImageUrl!,
-            IsClickable: _formModel.IsClickable,
-            RedirectOnClickUrl: _formModel.IsClickable ? _formModel.RedirectOnClickUrl : null,
-            DisplayOrder: _formModel.IsDisplaying ? _formModel.DisplayingOrder : null);
-        if (await BannerService.CreateBannerAsync(request))
-        {
-            await CloseModalAsync();
-            ToastService.ShowSuccess("Баннер успешно создан!");
-            await BannerCreated.InvokeAsync();
-        }
+        await BannerService.CreateBannerAsync(
+            request: BuildRequest(),
+            onSuccess: async () =>
+            {
+                await CloseModalAsync();
+                ToastService.ShowSuccess("Баннер успешно создан!");
+                await BannerCreated.InvokeAsync();
+            });
     }
 
     protected override void OnInitialized()

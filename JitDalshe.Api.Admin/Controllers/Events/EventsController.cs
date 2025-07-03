@@ -113,7 +113,9 @@ public sealed class EventsController : AbstractController
     /// Изменение изображения, которое прикреплено к событию
     /// </summary>
     [HttpPatch("{id:guid}/image")]
+    [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ReplaceEventImage(

@@ -38,5 +38,6 @@ builder.Services.AddSwiperService();
 builder.Services.AddNewsService();
 builder.Services.AddEventService();
 builder.Services.AddBannerService();
+builder.Services.AddCommonErrorHandlers();
 
 await builder.Build().RunAsync();

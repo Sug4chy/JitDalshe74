@@ -1,12 +1,11 @@
 using System.Net;
 using Blazored.Toast.Services;
-using JitDalshe.Ui.Admin.Api.Errors;
 using JitDalshe.Ui.Admin.Api.Events;
 using JitDalshe.Ui.Admin.Api.Events.Requests;
 using JitDalshe.Ui.Admin.Extensions;
 using JitDalshe.Ui.Admin.Models;
+using JitDalshe.Ui.Admin.Services.ErrorHandlers;
 using JitDalshe.Ui.Admin.Services.Shared;
-using Refit;
 
 namespace JitDalshe.Ui.Admin.Services.EventService;
 
@@ -14,39 +13,18 @@ public sealed class EventService : IEventService
 {
     private readonly Runner _runner;
     private readonly IEventsApiClient _eventsApi;
-    private readonly IToastService _toastService;
+    private readonly CommonErrorHandlers _commonErrorHandlers;
 
-    public EventService(Runner runner, IEventsApiClient eventsApi, IToastService toastService)
+    public EventService(
+        Runner runner, 
+        IEventsApiClient eventsApi, 
+        IToastService toastService, 
+        CommonErrorHandlers commonErrorHandlers)
     {
         _runner = runner;
         _eventsApi = eventsApi;
-        _toastService = toastService;
-        _runner.ConfigureErrorCallback(_toastService.ShowPermanentError);
-    }
-
-    private void HandleError(
-        HttpStatusCode statusCode,
-        ApiException apiError)
-    {
-        ApiError error;
-
-        switch ((int)statusCode / 100)
-        {
-            case 4 when statusCode is HttpStatusCode.BadRequest:
-            {
-                var validationError = apiError.DeserializeValidationError();
-                _toastService.ShowWarning(validationError.Errors.First().Value.First());
-                return;
-            }
-            case 4:
-                error = apiError.DeserializeError();
-                _toastService.ShowWarning(error.Message);
-                return;
-            case 5:
-                error = apiError.DeserializeError();
-                _toastService.ShowError(error.Message);
-                return;
-        }
+        _commonErrorHandlers = commonErrorHandlers;
+        _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
     public Task<Event[]> FindAllAsync()
@@ -58,14 +36,15 @@ public sealed class EventService : IEventService
             {
                 case HttpStatusCode.OK:
                     return response.Content!;
-                default:
-                    var error = response.Error!.DeserializeError();
-                    _toastService.ShowError(error.Message);
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
                     return [];
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }, defaultValue: []);
 
-    public Task<bool> CreateEventAsync(CreateEventRequest request)
+    public Task CreateEventAsync(CreateEventRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.CreateEventAsync(request);
@@ -73,16 +52,20 @@ public sealed class EventService : IEventService
             switch (response.StatusCode)
             {
                 case HttpStatusCode.Created:
-                    return true;
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
+                case HttpStatusCode.BadRequest:
+                    _commonErrorHandlers.HandleBadRequest(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    break;
                 default:
-                    HandleError(
-                        statusCode: response.StatusCode,
-                        apiError: response.Error!);
-                    return false;
+                    throw new ArgumentOutOfRangeException();
             }
         });
 
-    public Task<bool> EditEventAsync(Guid id, EditEventRequest request)
+    public Task EditEventAsync(Guid id, EditEventRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.EditEventAsync(id, request);
@@ -90,16 +73,23 @@ public sealed class EventService : IEventService
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return true;
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
+                case HttpStatusCode.BadRequest:
+                    _commonErrorHandlers.HandleBadRequest(response.Error!);
+                    break;
+                case HttpStatusCode.NotFound:
+                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    break;
                 default:
-                    HandleError(
-                        statusCode: response.StatusCode,
-                        apiError: response.Error!);
-                    return false;
+                    throw new ArgumentOutOfRangeException();
             }
         });
 
-    public Task<bool> ReplaceEventImageAsync(Guid eventId, ReplaceEventImageRequest request)
+    public Task ReplaceEventImageAsync(Guid eventId, ReplaceEventImageRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.ReplaceEventImageAsync(eventId, request);
@@ -107,16 +97,23 @@ public sealed class EventService : IEventService
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return true;
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
+                case HttpStatusCode.BadRequest:
+                    _commonErrorHandlers.HandleBadRequest(response.Error!);
+                    break;
+                case HttpStatusCode.NotFound:
+                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    break;
                 default:
-                    HandleError(
-                        statusCode: response.StatusCode,
-                        apiError: response.Error!);
-                    return false;
+                    throw new ArgumentOutOfRangeException();
             }
         });
 
-    public Task<bool> DeleteEventAsync(Guid eventId)
+    public Task DeleteEventAsync(Guid eventId, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.DeleteEventAsync(eventId);
@@ -124,12 +121,16 @@ public sealed class EventService : IEventService
             switch (response.StatusCode)
             {
                 case HttpStatusCode.NoContent:
-                    return true;
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
+                case HttpStatusCode.NotFound:
+                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    break;
                 default:
-                    HandleError(
-                        statusCode: response.StatusCode,
-                        apiError: response.Error!);
-                    return false;
+                    throw new ArgumentOutOfRangeException();
             }
         });
 }

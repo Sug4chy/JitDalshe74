@@ -58,6 +58,15 @@
         return ModalService.HideModalAsync($"#{Id}");
     }
 
+    private CreateEventRequest BuildCreateEventRequest()
+        => new(
+            _formModel.Title,
+            _formModel.Description,
+            _formModel.Date,
+            _formModel.UploadedImageUrl!,
+            _formModel.IsDisplaying
+        );
+
     private async Task SubmitCreateEventAsync()
     {
         if (!await _fluentValidationValidator!.ValidateAsync())
@@ -65,18 +74,14 @@
             return;
         }
 
-        var request = new CreateEventRequest(
-            _formModel.Title, 
-            _formModel.Description, 
-            _formModel.Date, 
-            _formModel.UploadedImageUrl!, 
-            _formModel.IsDisplaying);
-        if (await EventService.CreateEventAsync(request))
-        {
-            await CloseModalAsync();
-            ToastService.ShowSuccess("Событие было успешно создано!");
-            await EventCreated.InvokeAsync();
-        }
+        await EventService.CreateEventAsync(
+            request: BuildCreateEventRequest(),
+            onSuccess: async () =>
+            {
+                await CloseModalAsync();
+                ToastService.ShowSuccess("Событие было успешно создано!");
+                await EventCreated.InvokeAsync();
+            });
     }
 
     protected override void OnInitialized()

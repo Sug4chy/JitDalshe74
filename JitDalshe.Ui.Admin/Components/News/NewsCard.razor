@@ -34,11 +34,13 @@
 
     private async Task DeleteNewsAsync()
     {
-        if (await NewsService.DeleteAsync(News.Id))
-        {
-            ToastService.ShowSuccess("Новость успешно удалена!");
-            await OnNewsDeletedCallback.InvokeAsync();
-        }
+        await NewsService.DeleteAsync(
+            id: News.Id,
+            onSuccess: async () =>
+            {
+                ToastService.ShowSuccess("Новость успешно удалена!");
+                await OnNewsDeletedCallback.InvokeAsync();
+            });
     }
 
 }
