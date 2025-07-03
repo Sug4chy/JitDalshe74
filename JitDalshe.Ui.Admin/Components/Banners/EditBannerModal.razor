@@ -78,6 +78,14 @@
         await HideModalAsync();
     }
 
+    private EditBannerRequest BuildEditBannerRequest()
+        => new(
+            Title: _formModel.Title,
+            IsClickable: _formModel.IsClickable,
+            RedirectOnClickUrl: _formModel.IsClickable ? _formModel.RedirectOnClickUrl : null,
+            DisplayOrder: _formModel.IsDisplaying ? _formModel.DisplayingOrder : null
+        );
+
     private async Task SubmitEditBannerAsync()
     {
         if (!await _fluentValidationValidator!.ValidateAsync())
@@ -85,25 +93,22 @@
             return;
         }
 
-        var request = new EditBannerRequest(
-            Title: _formModel.Title,
-            IsClickable: _formModel.IsClickable,
-            RedirectOnClickUrl: _formModel.IsClickable ? _formModel.RedirectOnClickUrl : null,
-            DisplayOrder: _formModel.IsDisplaying ? _formModel.DisplayingOrder : null);
-
-        if (await BannerService.EditBannerAsync(Banner.Id, request))
-        {
-            if (_formModel.ImageUrl != Banner.ImageUrl)
+        await BannerService.EditBannerAsync(
+            id: Banner.Id,
+            request: BuildEditBannerRequest(),
+            onSuccess: async () =>
             {
-                await BannerService.ReplaceBannerImageAsync(
-                    Banner.Id, new ReplaceBannerImageRequest(_formModel.ImageUrl!)
-                );
-            }
+                if (_formModel.ImageUrl != Banner.ImageUrl)
+                {
+                    await BannerService.ReplaceBannerImageAsync(
+                        Banner.Id, new ReplaceBannerImageRequest(_formModel.ImageUrl!)
+                    );
+                }
 
-            await CloseModalAsync();
-            ToastService.ShowSuccess("Баннер успешно изменён!");
-            await BannerEdited.InvokeAsync();
-        }
+                await CloseModalAsync();
+                ToastService.ShowSuccess("Баннер успешно изменён!");
+                await BannerEdited.InvokeAsync();
+            });
     }
 
     protected override void OnInitialized()

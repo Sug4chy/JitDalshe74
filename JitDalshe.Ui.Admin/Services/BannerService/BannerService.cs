@@ -2,11 +2,9 @@ using System.Net;
 using Blazored.Toast.Services;
 using JitDalshe.Ui.Admin.Api.Banners;
 using JitDalshe.Ui.Admin.Api.Banners.Requests;
-using JitDalshe.Ui.Admin.Api.Errors;
 using JitDalshe.Ui.Admin.Extensions;
 using JitDalshe.Ui.Admin.Models;
 using JitDalshe.Ui.Admin.Services.Shared;
-using Refit;
 
 namespace JitDalshe.Ui.Admin.Services.BannerService;
 
@@ -14,39 +12,18 @@ public sealed class BannerService : IBannerService
 {
     private readonly Runner _runner;
     private readonly IBannersApiClient _bannersApi;
-    private readonly IToastService _toastService;
+    private readonly CommonErrorHandlers _commonErrorHandlers;
 
-    public BannerService(Runner runner, IBannersApiClient bannersApi, IToastService toastService)
+    public BannerService(
+        Runner runner, 
+        IBannersApiClient bannersApi, 
+        IToastService toastService, 
+        CommonErrorHandlers commonErrorHandlers)
     {
         _runner = runner;
         _bannersApi = bannersApi;
-        _toastService = toastService;
-        _runner.ConfigureErrorCallback(_toastService.ShowPermanentError);
-    }
-
-    private void HandleError(
-        HttpStatusCode statusCode,
-        ApiException apiError)
-    {
-        ApiError error;
-
-        switch ((int)statusCode / 100)
-        {
-            case 4 when statusCode is HttpStatusCode.BadRequest:
-            {
-                var validationError = apiError.DeserializeValidationError();
-                _toastService.ShowWarning(validationError.Errors.First().Value.First());
-                return;
-            }
-            case 4:
-                error = apiError.DeserializeError();
-                _toastService.ShowWarning(error.Message);
-                return;
-            case 5:
-                error = apiError.DeserializeError();
-                _toastService.ShowError(error.Message);
-                return;
-        }
+        _commonErrorHandlers = commonErrorHandlers;
+        _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
     public Task<PreviewBanner[]> FindPreviewBannersAsync()
@@ -58,10 +35,11 @@ public sealed class BannerService : IBannerService
             {
                 case HttpStatusCode.OK:
                     return response.Content!;
-                default:
-                    var error = response.Error!.DeserializeError();
-                    _toastService.ShowError(error.Message);
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
                     return [];
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }, defaultValue: []);
 
@@ -74,14 +52,15 @@ public sealed class BannerService : IBannerService
             {
                 case HttpStatusCode.OK:
                     return response.Content!;
-                default:
-                    var error = response.Error!.DeserializeError();
-                    _toastService.ShowError(error.Message);
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
                     return [];
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }, defaultValue: []);
 
-    public Task<bool> CreateBannerAsync(CreateBannerRequest request)
+    public Task CreateBannerAsync(CreateBannerRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.CreateBannerAsync(request);
@@ -89,16 +68,20 @@ public sealed class BannerService : IBannerService
             switch (response.StatusCode)
             {
                 case HttpStatusCode.Created:
-                    return true;
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
+                case HttpStatusCode.BadRequest:
+                    _commonErrorHandlers.HandleBadRequest(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    break;
                 default:
-                    HandleError(
-                        statusCode: response.StatusCode,
-                        apiError: response.Error!);
-                    return false;
+                    throw new ArgumentOutOfRangeException();
             }
         });
 
-    public Task<bool> EditBannerAsync(Guid id, EditBannerRequest request)
+    public Task EditBannerAsync(Guid id, EditBannerRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.EditBannerAsync(id, request);
@@ -106,16 +89,23 @@ public sealed class BannerService : IBannerService
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return true;
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
+                case HttpStatusCode.BadRequest:
+                    _commonErrorHandlers.HandleBadRequest(response.Error!);
+                    break;
+                case HttpStatusCode.NotFound:
+                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    break;
                 default:
-                    HandleError(
-                        statusCode: response.StatusCode,
-                        apiError: response.Error!);
-                    return false;
+                    throw new ArgumentOutOfRangeException();
             }
         });
 
-    public Task<bool> ReplaceBannerImageAsync(Guid id, ReplaceBannerImageRequest request)
+    public Task ReplaceBannerImageAsync(Guid id, ReplaceBannerImageRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.ReplaceBannerImageAsync(id, request);
@@ -123,16 +113,23 @@ public sealed class BannerService : IBannerService
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return true;
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
+                case HttpStatusCode.BadRequest:
+                    _commonErrorHandlers.HandleBadRequest(response.Error!);
+                    break;
+                case HttpStatusCode.NotFound:
+                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    break;
                 default:
-                    HandleError(
-                        statusCode: response.StatusCode,
-                        apiError: response.Error!);
-                    return false;
+                    throw new ArgumentOutOfRangeException();
             }
         });
 
-    public Task<bool> DeleteBannerAsync(Guid id)
+    public Task DeleteBannerAsync(Guid id, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.DeleteBannerAsync(id);
@@ -140,12 +137,16 @@ public sealed class BannerService : IBannerService
             switch (response.StatusCode)
             {
                 case HttpStatusCode.NoContent:
-                    return true;
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
+                case HttpStatusCode.NotFound:
+                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    break;
                 default:
-                    HandleError(
-                        statusCode: response.StatusCode,
-                        apiError: response.Error!);
-                    return false;
+                    throw new ArgumentOutOfRangeException();
             }
         });
 }

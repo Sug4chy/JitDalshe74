@@ -35,13 +35,13 @@
     private Task ShowEditModalAsync()
         => ModalService.ShowModalAsync($"#{EditModalId}");
 
-    private async Task DeleteBannerAsync()
-    {
-        if (await BannerService.DeleteBannerAsync(Banner.Id))
-        {
-            ToastService.ShowSuccess("Баннер успешно удалён!");
-            await BannerDeleted.InvokeAsync();
-        }
-    }
+    private Task DeleteBannerAsync()
+        => BannerService.DeleteBannerAsync(
+            id: Banner.Id,
+            onSuccess: async () =>
+            {
+                ToastService.ShowSuccess("Баннер успешно удалён!");
+                await BannerDeleted.InvokeAsync();
+            });
 
 }
