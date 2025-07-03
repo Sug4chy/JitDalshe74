@@ -32,13 +32,13 @@
     private Task ShowEditEventModalAsync()
         => ModalService.ShowModalAsync($"#{EditEventModalId}");
 
-    private async Task DeleteEventAsync()
-    {
-        if (await EventService.DeleteEventAsync(Event.Id))
-        {
-            ToastService.ShowSuccess("Событие успешно удалено");
-            await OnEventDeletedCallback.InvokeAsync();
-        }
-    }
+    private Task DeleteEventAsync() 
+        => EventService.DeleteEventAsync(
+            eventId: Event.Id,
+            onSuccess: async () =>
+            {
+                ToastService.ShowSuccess("Событие успешно удалено");
+                await OnEventDeletedCallback.InvokeAsync();
+            });
 
 }

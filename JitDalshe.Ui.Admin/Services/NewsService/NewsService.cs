@@ -1,10 +1,10 @@
 using System.Net;
 using Blazored.Toast.Services;
-using JitDalshe.Ui.Admin.Api.Errors;
 using JitDalshe.Ui.Admin.Api.News;
 using JitDalshe.Ui.Admin.Api.News.Requests;
 using JitDalshe.Ui.Admin.Extensions;
 using JitDalshe.Ui.Admin.Models;
+using JitDalshe.Ui.Admin.Services.ErrorHandlers;
 using JitDalshe.Ui.Admin.Services.Shared;
 
 namespace JitDalshe.Ui.Admin.Services.NewsService;
@@ -12,15 +12,19 @@ namespace JitDalshe.Ui.Admin.Services.NewsService;
 public sealed class NewsService : INewsService
 {
     private readonly INewsApiClient _newsApi;
-    private readonly IToastService _toastService;
     private readonly Runner _runner;
+    private readonly CommonErrorHandlers _commonErrorHandlers;
 
-    public NewsService(IToastService toastService, INewsApiClient newsApi, Runner runner)
+    public NewsService(
+        IToastService toastService, 
+        INewsApiClient newsApi, 
+        Runner runner, 
+        CommonErrorHandlers commonErrorHandlers)
     {
-        _toastService = toastService;
         _newsApi = newsApi;
         _runner = runner;
-        _runner.ConfigureErrorCallback(_toastService.ShowPermanentError);
+        _commonErrorHandlers = commonErrorHandlers;
+        _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
     public Task<News[]> FindAllAsync()
@@ -32,56 +36,55 @@ public sealed class NewsService : INewsService
             {
                 case HttpStatusCode.OK:
                     return response.Content!;
-                default:
-                    var error = response.Error!.DeserializeError();
-                    _toastService.ShowError(error.Message);
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
                     return [];
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }, defaultValue: []);
 
-    public Task<bool> EditAsync(Guid id, EditNewsRequest request)
+    public Task EditAsync(Guid id, EditNewsRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _newsApi.EditNewsAsync(id, request);
-            ApiError error;
-
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return true;
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
                 case HttpStatusCode.BadRequest:
-                    var validationError = response.Error!.DeserializeValidationError();
-                    _toastService.ShowWarning(validationError.Errors.First().Value.First());
-                    return false;
+                    _commonErrorHandlers.HandleBadRequest(response.Error!);
+                    break;
                 case HttpStatusCode.NotFound:
-                    error = response.Error!.DeserializeError();
-                    _toastService.ShowWarning(error.Message);
-                    return false;
+                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    break;
                 default:
-                    error = response.Error!.DeserializeError();
-                    _toastService.ShowError(error.Message);
-                    return false;
+                    throw new ArgumentOutOfRangeException();
             }
         });
 
-    public Task<bool> DeleteAsync(Guid id)
+    public Task DeleteAsync(Guid id, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _newsApi.DeleteNewsByIdAsync(id);
-            ApiError error;
 
             switch (response.StatusCode)
             {
                 case HttpStatusCode.NoContent:
-                    return true;
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
                 case HttpStatusCode.NotFound:
-                    error = response.Error!.DeserializeError();
-                    _toastService.ShowWarning(error.Message);
-                    return false;
+                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    break;
                 default:
-                    error = response.Error!.DeserializeError();
-                    _toastService.ShowError(error.Message);
-                    return false;
+                    throw new ArgumentOutOfRangeException();
             }
         });
 }

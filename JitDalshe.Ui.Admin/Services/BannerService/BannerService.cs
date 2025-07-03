@@ -4,6 +4,7 @@ using JitDalshe.Ui.Admin.Api.Banners;
 using JitDalshe.Ui.Admin.Api.Banners.Requests;
 using JitDalshe.Ui.Admin.Extensions;
 using JitDalshe.Ui.Admin.Models;
+using JitDalshe.Ui.Admin.Services.ErrorHandlers;
 using JitDalshe.Ui.Admin.Services.Shared;
 
 namespace JitDalshe.Ui.Admin.Services.BannerService;
@@ -12,17 +13,17 @@ public sealed class BannerService : IBannerService
 {
     private readonly Runner _runner;
     private readonly IBannersApiClient _bannersApi;
-    private readonly CommonErrorHandlers _commonErrorHandlers;
+    private readonly IErrorHandlers _errorHandlers;
 
     public BannerService(
         Runner runner, 
         IBannersApiClient bannersApi, 
         IToastService toastService, 
-        CommonErrorHandlers commonErrorHandlers)
+        IErrorHandlers errorHandlers)
     {
         _runner = runner;
         _bannersApi = bannersApi;
-        _commonErrorHandlers = commonErrorHandlers;
+        _errorHandlers = errorHandlers;
         _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
@@ -36,7 +37,7 @@ public sealed class BannerService : IBannerService
                 case HttpStatusCode.OK:
                     return response.Content!;
                 case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    _errorHandlers.HandleInternalServerError(response.Error!);
                     return [];
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -53,7 +54,7 @@ public sealed class BannerService : IBannerService
                 case HttpStatusCode.OK:
                     return response.Content!;
                 case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    _errorHandlers.HandleInternalServerError(response.Error!);
                     return [];
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -71,10 +72,10 @@ public sealed class BannerService : IBannerService
                     await (onSuccess?.Invoke() ?? Task.CompletedTask);
                     break;
                 case HttpStatusCode.BadRequest:
-                    _commonErrorHandlers.HandleBadRequest(response.Error!);
+                    _errorHandlers.HandleBadRequest(response.Error!);
                     break;
                 case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    _errorHandlers.HandleInternalServerError(response.Error!);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -92,13 +93,13 @@ public sealed class BannerService : IBannerService
                     await (onSuccess?.Invoke() ?? Task.CompletedTask);
                     break;
                 case HttpStatusCode.BadRequest:
-                    _commonErrorHandlers.HandleBadRequest(response.Error!);
+                    _errorHandlers.HandleBadRequest(response.Error!);
                     break;
                 case HttpStatusCode.NotFound:
-                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    _errorHandlers.HandleNotFound(response.Error!);
                     break;
                 case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    _errorHandlers.HandleInternalServerError(response.Error!);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -116,13 +117,13 @@ public sealed class BannerService : IBannerService
                     await (onSuccess?.Invoke() ?? Task.CompletedTask);
                     break;
                 case HttpStatusCode.BadRequest:
-                    _commonErrorHandlers.HandleBadRequest(response.Error!);
+                    _errorHandlers.HandleBadRequest(response.Error!);
                     break;
                 case HttpStatusCode.NotFound:
-                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    _errorHandlers.HandleNotFound(response.Error!);
                     break;
                 case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    _errorHandlers.HandleInternalServerError(response.Error!);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -140,10 +141,10 @@ public sealed class BannerService : IBannerService
                     await (onSuccess?.Invoke() ?? Task.CompletedTask);
                     break;
                 case HttpStatusCode.NotFound:
-                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    _errorHandlers.HandleNotFound(response.Error!);
                     break;
                 case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    _errorHandlers.HandleInternalServerError(response.Error!);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

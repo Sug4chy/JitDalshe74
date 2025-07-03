@@ -2,9 +2,9 @@ using Blazored.Toast.Services;
 using JitDalshe.Ui.Admin.Extensions;
 using Refit;
 
-namespace JitDalshe.Ui.Admin.Services.Shared;
+namespace JitDalshe.Ui.Admin.Services.ErrorHandlers;
 
-public sealed class CommonErrorHandlers
+public sealed class CommonErrorHandlers : IErrorHandlers
 {
     private readonly IToastService _toastService;
 

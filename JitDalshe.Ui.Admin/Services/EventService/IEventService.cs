@@ -6,8 +6,8 @@ namespace JitDalshe.Ui.Admin.Services.EventService;
 public interface IEventService
 {
     Task<Event[]> FindAllAsync();
-    Task<bool> CreateEventAsync(CreateEventRequest request);
-    Task<bool> EditEventAsync(Guid id, EditEventRequest request);
-    Task<bool> ReplaceEventImageAsync(Guid eventId, ReplaceEventImageRequest request);
-    Task<bool> DeleteEventAsync(Guid eventId);
+    Task CreateEventAsync(CreateEventRequest request, Func<Task>? onSuccess = null);
+    Task EditEventAsync(Guid id, EditEventRequest request, Func<Task>? onSuccess = null);
+    Task ReplaceEventImageAsync(Guid eventId, ReplaceEventImageRequest request, Func<Task>? onSuccess = null);
+    Task DeleteEventAsync(Guid eventId, Func<Task>? onSuccess = null);
 }

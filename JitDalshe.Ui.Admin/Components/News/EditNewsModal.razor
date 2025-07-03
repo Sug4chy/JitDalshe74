@@ -92,6 +92,14 @@
         await HideModalAsync();
     }
 
+    private EditNewsRequest BuildEditNewsRequest()
+        => new()
+        {
+            PrimaryPhotoId = _formModel.SelectedPhotoId?.Value,
+            Text = _formModel.CurrentEnteredText,
+            IsDisplaying = _formModel.IsDisplaying
+        };
+
     private async Task EditNewsAsync()
     {
         if (!await _fluentValidationValidator!.ValidateAsync())
@@ -99,19 +107,15 @@
             return;
         }
 
-        var request = new EditNewsRequest
-        {
-            PrimaryPhotoId = _formModel.SelectedPhotoId?.Value,
-            Text = _formModel.CurrentEnteredText,
-            IsDisplaying = _formModel.IsDisplaying
-        };
-
-        if (await NewsService.EditAsync(News.Id, request))
-        {
-            ToastService.ShowSuccess("Новость успешно обновлена!");
-            await CloseModalAsync();
-            await OnNewsEditedCallback.InvokeAsync();
-        }
+        await NewsService.EditAsync(
+            id: News.Id,
+            request: BuildEditNewsRequest(),
+            onSuccess: async () =>
+            {
+                ToastService.ShowSuccess("Новость успешно обновлена!");
+                await CloseModalAsync();
+                await OnNewsEditedCallback.InvokeAsync();
+            });
     }
 
     protected override void OnInitialized()

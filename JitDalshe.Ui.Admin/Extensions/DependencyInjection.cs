@@ -1,4 +1,5 @@
 using JitDalshe.Ui.Admin.Services.BannerService;
+using JitDalshe.Ui.Admin.Services.ErrorHandlers;
 using JitDalshe.Ui.Admin.Services.EventService;
 using JitDalshe.Ui.Admin.Services.ModalService;
 using JitDalshe.Ui.Admin.Services.NewsService;
@@ -26,4 +27,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddBannerService(this IServiceCollection services)
         => services.AddScoped<IBannerService, BannerService>();
+
+    public static IServiceCollection AddCommonErrorHandlers(this IServiceCollection services)
+        => services.AddScoped<IErrorHandlers, CommonErrorHandlers>();
 }
