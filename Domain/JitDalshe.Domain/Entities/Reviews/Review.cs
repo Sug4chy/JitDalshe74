@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using JitDalshe.Domain.Abstractions;
 using JitDalshe.Domain.ValueObjects;
 
@@ -27,4 +28,14 @@ public sealed class Review : AuditableEntity<IdOf<Review>>
         string text,
         bool isModerated)
         => new(reviewerName, reviewerAge, reviewerStatus, text, isModerated);
+
+    /// <summary>
+    /// For EF Core
+    /// </summary>
+    [UsedImplicitly]
+#pragma warning disable CS8618
+    private Review()
+    {
+    }
+#pragma warning restore CS8618
 }
