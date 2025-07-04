@@ -6,7 +6,7 @@ using JitDalshe.Application.Errors;
 using JitDalshe.Application.Site.Dto;
 using JitDalshe.Application.Site.Extensions;
 
-namespace JitDalshe.Application.Site.UseCases.ListEvents;
+namespace JitDalshe.Application.Site.UseCases.Events.ListEvents;
 
 [UseCase]
 internal sealed class ListEventsUseCase : IListEventsUseCase

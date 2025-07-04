@@ -1,4 +1,4 @@
-namespace JitDalshe.Application.Site.UseCases.ListReviews;
+namespace JitDalshe.Application.Site.UseCases.Reviews.ListReviews;
 
 public interface IListReviewsUseCase
 {

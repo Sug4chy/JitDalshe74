@@ -2,5 +2,5 @@ using FluentValidation;
 
 namespace JitDalshe.Api.Attributes;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Struct |  AttributeTargets.Class)]
 public class ValidatorAttribute<TValidator> : Attribute where TValidator : IValidator;

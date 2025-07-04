@@ -1,12 +1,12 @@
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
-using JitDalshe.Application.Site.Extensions;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
 using JitDalshe.Application.Site.Dto;
+using JitDalshe.Application.Site.Extensions;
 
-namespace JitDalshe.Application.Site.UseCases.ListNews;
+namespace JitDalshe.Application.Site.UseCases.News.ListNews;
 
 [UseCase]
 internal sealed class ListNewsUseCase : IListNewsUseCase

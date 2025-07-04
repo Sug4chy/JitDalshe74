@@ -1,7 +1,7 @@
 using JitDalshe.Application.Site.Dto;
 using OneOf;
 
-namespace JitDalshe.Application.Site.UseCases.ListReviews;
+namespace JitDalshe.Application.Site.UseCases.Reviews.ListReviews;
 
 [GenerateOneOf]
 public sealed partial class ListReviewsResult : OneOfBase<ListReviewsResult.Found,  ListReviewsResult.Error>

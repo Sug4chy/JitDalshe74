@@ -1,7 +1,7 @@
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Api.Site.Requests;
-using JitDalshe.Application.Site.UseCases.ListNews;
+using JitDalshe.Application.Site.UseCases.News.ListNews;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Site.Controllers.News;

@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 using JitDalshe.Application.Errors;
 using JitDalshe.Application.Site.Dto;
 
-namespace JitDalshe.Application.Site.UseCases.ListNews;
+namespace JitDalshe.Application.Site.UseCases.News.ListNews;
 
 public interface IListNewsUseCase
 {

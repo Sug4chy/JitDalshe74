@@ -4,7 +4,7 @@ using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
 using JitDalshe.Application.Site.Extensions;
 
-namespace JitDalshe.Application.Site.UseCases.ListReviews;
+namespace JitDalshe.Application.Site.UseCases.Reviews.ListReviews;
 
 [UseCase]
 internal sealed class ListReviewsUseCase : IListReviewsUseCase
@@ -16,7 +16,7 @@ internal sealed class ListReviewsUseCase : IListReviewsUseCase
         _reviews = reviews;
     }
 
-    public async Task<ListReviewsResult> ListAsync(int pageNumber, int pageSize, CancellationToken ct = default)
+    public async Task<Reviews.ListReviews.ListReviewsResult> ListAsync(int pageNumber, int pageSize, CancellationToken ct = default)
     {
         try
         {
@@ -28,7 +28,7 @@ internal sealed class ListReviewsUseCase : IListReviewsUseCase
                 sortingOrder: SortingOrder.Descending,
                 ct: ct);
 
-            return ListReviewsResult.Success(
+            return Reviews.ListReviews.ListReviewsResult.Success(
                 foundReviews
                     .Select(x => x.ToDto())
                     .ToArray()
@@ -36,7 +36,7 @@ internal sealed class ListReviewsUseCase : IListReviewsUseCase
         }
         catch (Exception e)
         {
-            return ListReviewsResult.Failure(Error.Of(e.Message));
+            return Reviews.ListReviews.ListReviewsResult.Failure(Error.Of(e.Message));
         }
     }
 }
