@@ -277,6 +277,50 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
                     b.ToTable("news_primary_image", (string)null);
                 });
 
+            modelBuilder.Entity("JitDalshe.Domain.Entities.Reviews.Review", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsModerated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_moderated");
+
+                    b.Property<int>("ReviewerAge")
+                        .HasColumnType("integer")
+                        .HasColumnName("reviewer_age");
+
+                    b.Property<string>("ReviewerName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("reviewer_name");
+
+                    b.Property<int>("ReviewerStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("reviewer_status");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("review", (string)null);
+                });
+
             modelBuilder.Entity("JitDalshe.Domain.Entities.Banners.BannerImage", b =>
                 {
                     b.HasOne("JitDalshe.Domain.Entities.Banners.Banner", "Banner")
