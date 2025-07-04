@@ -13,4 +13,6 @@ public interface IReviewsRepository
         Expression<Func<Review, TOrderKey>>? orderByExpression = null,
         SortingOrder sortingOrder = SortingOrder.Ascending,
         CancellationToken ct = default);
+
+    Task AddAsync(Review review, CancellationToken ct = default);
 }

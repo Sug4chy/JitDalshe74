@@ -1,8 +1,10 @@
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Models;
+using JitDalshe.Api.Site.Controllers.Reviews.Requests;
 using JitDalshe.Api.Site.Requests;
 using JitDalshe.Application.Site.Dto;
-using JitDalshe.Application.Site.UseCases.ListReviews;
+using JitDalshe.Application.Site.UseCases.Reviews.LeaveReview;
+using JitDalshe.Application.Site.UseCases.Reviews.ListReviews;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Site.Controllers.Reviews;
@@ -28,5 +30,25 @@ public sealed class ReviewsController : ControllerBase
         return result.Match(
             found => Ok(found.Reviews),
             error => StatusCode(StatusCodes.Status500InternalServerError, ApiError.From(error.InternalError)));
+    }
+
+    [HttpPost]
+    [ValidateRequest]
+    public async Task<IActionResult> LeaveReview(
+        [FromBody] LeaveReviewRequest request,
+        [FromServices] ILeaveReviewUseCase leaveReview,
+        CancellationToken ct = default)
+    {
+        var result = await leaveReview.LeaveAsync(
+            reviewerName: request.ReviewerName,
+            reviewerAge: request.ReviewerAge,
+            reviewerStatus: request.ReviewerStatus,
+            text: request.Text,
+            ct: ct);
+
+        return result.Match(
+            _ => Created(),
+            error => StatusCode(StatusCodes.Status500InternalServerError, ApiError.From(error.Message))
+        );
     }
 }

@@ -50,4 +50,10 @@ internal sealed class ReviewsRepository : IReviewsRepository
 
         return query.ToArrayAsync(ct);
     }
+
+    public async Task AddAsync(Review review, CancellationToken ct = default)
+    {
+        _dbContext.Reviews.Add(review);
+        await _dbContext.SaveChangesAsync(ct);
+    }
 }
