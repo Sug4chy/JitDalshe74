@@ -10,10 +10,11 @@ public sealed class Review : AuditableEntity<IdOf<Review>>
     public int ReviewerAge { get; init; }
     public ReviewerStatus ReviewerStatus { get; init; }
     public string Text { get; init; }
-    public bool IsModerated { get; init; }
+    public bool IsModerated { get; set; }
 
     private Review(string reviewerName, int reviewerAge, ReviewerStatus reviewerStatus, string text, bool isModerated)
     {
+        Id = IdOf<Review>.New();
         ReviewerName = reviewerName;
         ReviewerAge = reviewerAge;
         ReviewerStatus = reviewerStatus;
