@@ -1,9 +1,12 @@
 using System.Linq.Expressions;
+using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Enums;
 using JitDalshe.Domain.Entities.Reviews;
+using JitDalshe.Domain.ValueObjects;
 using JitDalshe.Infrastructure.Persistence.Attributes;
 using JitDalshe.Infrastructure.Persistence.Context;
+using JitDalshe.Infrastructure.Persistence.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace JitDalshe.Infrastructure.Persistence.Repositories;
@@ -51,9 +54,19 @@ internal sealed class ReviewsRepository : IReviewsRepository
         return query.ToArrayAsync(ct);
     }
 
+    public Task<Maybe<Review>> FindByIdAsync(IdOf<Review> id, CancellationToken ct = default)
+        => _dbContext.Reviews
+            .TryFirstAsync(x => x.Id == id, ct);
+
     public async Task AddAsync(Review review, CancellationToken ct = default)
     {
         _dbContext.Reviews.Add(review);
+        await _dbContext.SaveChangesAsync(ct);
+    }
+
+    public async Task EditAsync(Review review, CancellationToken ct = default)
+    {
+        _dbContext.Reviews.Update(review);
         await _dbContext.SaveChangesAsync(ct);
     }
 }
