@@ -1,6 +1,8 @@
 @page "/reviews"
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Reviews
+@using JitDalshe.Ui.Admin.Services.ReviewService
+@inject IReviewService ReviewService
 
 <PageTitle>Отзывы</PageTitle>
 
@@ -10,7 +12,7 @@
 {
     @foreach (var review in _reviews)
     {
-        <ReviewCard Review="review"/>
+        <ReviewCard Review="review" OnReviewModerated="@LoadReviewsAsync" OnReviewDeleted="@LoadReviewsAsync"/>
     }
 }
 else
@@ -20,9 +22,14 @@ else
 
 @code {
 
-    private readonly UnmoderatedReview[] _reviews =
-    [
-        new(Guid.NewGuid(), "Степан", 21, ReviewerStatus.Patient, "Кайфарик", DateOnly.FromDateTime(DateTime.Today))
-    ];
+    private UnmoderatedReview[] _reviews = null!;
+
+    private async Task LoadReviewsAsync()
+    {
+        _reviews = await ReviewService.FindAllUnmoderatedReviewsAsync();
+    }
+
+    protected override Task OnInitializedAsync()
+        => LoadReviewsAsync();
 
 }

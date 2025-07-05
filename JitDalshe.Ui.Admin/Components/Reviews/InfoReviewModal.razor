@@ -1,5 +1,10 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Services.ModalService
+@using JitDalshe.Ui.Admin.Services.ReviewService
+@inject IModalService ModalService
+@inject IToastService ToastService
+@inject IReviewService ReviewService
 
 <Modal Id="@Id"
        Title="Новый отзыв"
@@ -20,6 +25,16 @@
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required UnmoderatedReview Review { get; init; }
+    [Parameter] public required EventCallback OnReviewModerated { get; init; }
 
-    private Task ApproveReviewAsync() => Task.CompletedTask;
+    private Task ApproveReviewAsync()
+        => ReviewService.ModerateReviewAsync(
+            reviewId: Review.Id,
+            onSuccess: async () =>
+            {
+                ToastService.ShowSuccess("Отзыв успешно подтверждён!");
+                await ModalService.HideModalAsync($"#{Id}");
+                await OnReviewModerated.InvokeAsync();
+            });
+
 }

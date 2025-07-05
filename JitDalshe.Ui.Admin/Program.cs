@@ -3,6 +3,7 @@ using JitDalshe.Ui.Admin;
 using JitDalshe.Ui.Admin.Api.Banners;
 using JitDalshe.Ui.Admin.Api.Events;
 using JitDalshe.Ui.Admin.Api.News;
+using JitDalshe.Ui.Admin.Api.Reviews;
 using JitDalshe.Ui.Admin.Extensions;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -31,6 +32,10 @@ builder.Services
     .AddRefitClient<IBannersApiClient>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/banners"));
 
+builder.Services
+    .AddRefitClient<IReviewsApiClient>()
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/reviews"));
+
 builder.Services.AddBlazoredToast();
 builder.Services.AddRunner();
 builder.Services.AddModalService();
@@ -39,5 +44,6 @@ builder.Services.AddNewsService();
 builder.Services.AddEventService();
 builder.Services.AddBannerService();
 builder.Services.AddCommonErrorHandlers();
+builder.Services.AddReviewService();
 
 await builder.Build().RunAsync();

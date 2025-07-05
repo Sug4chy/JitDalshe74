@@ -16,7 +16,7 @@ public sealed class ReviewsController : ControllerBase
     /// <summary>
     /// Получить все непромодерированные отзывы
     /// </summary>
-    [HttpGet]
+    [HttpGet("unmoderated")]
     [ProducesResponseType(typeof(UnmoderatedReviewDto[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListUnmoderatedReviews(

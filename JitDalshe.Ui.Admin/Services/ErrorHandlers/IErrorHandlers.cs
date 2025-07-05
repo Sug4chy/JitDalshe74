@@ -6,5 +6,6 @@ public interface IErrorHandlers
 {
     void HandleBadRequest(ApiException exception);
     void HandleNotFound(ApiException exception);
+    void HandleConflict(ApiException exception);
     void HandleInternalServerError(ApiException exception);
 }
