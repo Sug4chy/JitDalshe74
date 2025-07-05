@@ -14,7 +14,7 @@ namespace JitDalshe.Api.Site.Controllers.Reviews;
 public sealed class ReviewsController : ControllerBase
 {
     /// <summary>
-    /// Получение отзывов по страницам (от новых к старым)
+    /// Получить отзывы по страницам (от новых к старым)
     /// </summary>
     [HttpGet]
     [ValidateRequest]
@@ -32,8 +32,14 @@ public sealed class ReviewsController : ControllerBase
             error => StatusCode(StatusCodes.Status500InternalServerError, ApiError.From(error.InternalError)));
     }
 
+    /// <summary>
+    /// Оставить отзыв
+    /// </summary>
     [HttpPost]
     [ValidateRequest]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> LeaveReview(
         [FromBody] LeaveReviewRequest request,
         [FromServices] ILeaveReviewUseCase leaveReview,

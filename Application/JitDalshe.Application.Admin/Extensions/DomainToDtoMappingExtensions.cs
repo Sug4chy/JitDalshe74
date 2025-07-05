@@ -2,6 +2,7 @@ using JitDalshe.Application.Admin.Dto;
 using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.Entities.News;
+using JitDalshe.Domain.Entities.Reviews;
 
 namespace JitDalshe.Application.Admin.Extensions;
 
@@ -36,10 +37,19 @@ public static class DomainToDtoMappingExtensions
 
     public static BannerDto ToDto(this Banner banner)
         => new(
-            Id:  banner.Id,
+            Id: banner.Id,
             Title: banner.Title,
             RedirectOnClickUrl: banner.RedirectOnClickUrl,
             DisplayOrder: banner.DisplayOrder,
             ImageUrl: banner.Image!.Url
+        );
+
+    public static UnmoderatedReviewDto ToDto(this Review review)
+        => new(
+            Id: review.Id,
+            ReviewerName: review.ReviewerName,
+            ReviewerAge: review.ReviewerAge,
+            ReviewerStatus: review.ReviewerStatus,
+            Text: review.Text
         );
 }
