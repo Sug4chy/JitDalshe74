@@ -69,4 +69,10 @@ internal sealed class ReviewsRepository : IReviewsRepository
         _dbContext.Reviews.Update(review);
         await _dbContext.SaveChangesAsync(ct);
     }
+
+    public async Task RemoveAsync(Review review, CancellationToken ct = default)
+    {
+        _dbContext.Reviews.Remove(review);
+        await _dbContext.SaveChangesAsync(ct);
+    }
 }

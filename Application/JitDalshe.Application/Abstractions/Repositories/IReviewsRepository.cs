@@ -19,4 +19,5 @@ public interface IReviewsRepository
     Task<Maybe<Review>> FindByIdAsync(IdOf<Review> id, CancellationToken ct = default);
     Task AddAsync(Review review, CancellationToken ct = default);
     Task EditAsync(Review review, CancellationToken ct = default);
+    Task RemoveAsync(Review review, CancellationToken ct = default);
 }
