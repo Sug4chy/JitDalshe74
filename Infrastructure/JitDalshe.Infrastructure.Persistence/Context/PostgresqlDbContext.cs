@@ -1,6 +1,7 @@
 using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.Entities.News;
+using JitDalshe.Domain.Entities.Reviews;
 using Microsoft.EntityFrameworkCore;
 
 namespace JitDalshe.Infrastructure.Persistence.Context;
@@ -14,6 +15,7 @@ public sealed class PostgresqlDbContext(DbContextOptions<PostgresqlDbContext> op
     public DbSet<EventImage> EventImages { get; init; }
     public DbSet<Banner> Banners { get; init; }
     public DbSet<BannerImage> BannerImages { get; init; }
+    public DbSet<Review> Reviews { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

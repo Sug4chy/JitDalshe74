@@ -1,0 +1,40 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Services.ModalService
+@using JitDalshe.Ui.Admin.Services.ReviewService
+@inject IModalService ModalService
+@inject IToastService ToastService
+@inject IReviewService ReviewService
+
+<Modal Id="@Id"
+       Title="Новый отзыв"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Подтвердить"
+       OnFooterButtonClick="@ApproveReviewAsync">
+
+    <p class="h5 mb-4">Имя: @Review.ReviewerName</p>
+    <p class="h5 mb-4">Возраст: @Review.ReviewerAgeString</p>
+    <p class="h5 mb-4">Статус: @Review.ReviewerStatusString</p>
+    <p class="h5 mb-4">Оставлен @Review.Date.ToString("dd-MM-yyyy")</p>
+    <p class="h5">Отзыв:</p>
+    <p class="h5">@((MarkupString)Review.Text.Replace("\n", "<br/>"))</p>
+
+</Modal>
+
+@code {
+
+    [Parameter] public required string Id { get; init; }
+    [Parameter] public required UnmoderatedReview Review { get; init; }
+    [Parameter] public required EventCallback OnReviewModerated { get; init; }
+
+    private Task ApproveReviewAsync()
+        => ReviewService.ModerateReviewAsync(
+            reviewId: Review.Id,
+            onSuccess: async () =>
+            {
+                ToastService.ShowSuccess("Отзыв успешно подтверждён!");
+                await ModalService.HideModalAsync($"#{Id}");
+                await OnReviewModerated.InvokeAsync();
+            });
+
+}

@@ -3,6 +3,7 @@ using JitDalshe.Ui.Admin.Services.ErrorHandlers;
 using JitDalshe.Ui.Admin.Services.EventService;
 using JitDalshe.Ui.Admin.Services.ModalService;
 using JitDalshe.Ui.Admin.Services.NewsService;
+using JitDalshe.Ui.Admin.Services.ReviewService;
 using JitDalshe.Ui.Admin.Services.Shared;
 using JitDalshe.Ui.Admin.Services.SwiperService;
 
@@ -30,4 +31,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddCommonErrorHandlers(this IServiceCollection services)
         => services.AddScoped<IErrorHandlers, CommonErrorHandlers>();
+
+    public static IServiceCollection AddReviewService(this IServiceCollection services)
+        => services.AddScoped<IReviewService, ReviewService>();
 }

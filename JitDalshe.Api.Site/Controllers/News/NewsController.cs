@@ -1,7 +1,7 @@
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
-using JitDalshe.Api.Site.Controllers.News.Requests;
-using JitDalshe.Application.Site.UseCases.ListNews;
+using JitDalshe.Api.Site.Requests;
+using JitDalshe.Application.Site.UseCases.News.ListNews;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Site.Controllers.News;
@@ -19,7 +19,7 @@ public sealed class NewsController : AbstractController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListNews(
-        [FromQuery] ListNewsRequest request,
+        [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListNewsUseCase useCase,
         CancellationToken ct = default)
     {

@@ -1,8 +1,8 @@
 using System.Net.Mime;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
-using JitDalshe.Api.Site.Controllers.Events.Requests;
-using JitDalshe.Application.Site.UseCases.ListEvents;
+using JitDalshe.Api.Site.Requests;
+using JitDalshe.Application.Site.UseCases.Events.ListEvents;
 using JitDalshe.Application.UseCases.Events.GetEventImage;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +22,7 @@ public sealed class EventsController : AbstractController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListEvents(
-        [FromQuery] ListEventsRequest request,
+        [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListEventsUseCase listEvents,
         CancellationToken ct = default)
     {

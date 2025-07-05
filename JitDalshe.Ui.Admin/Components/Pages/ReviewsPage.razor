@@ -1,0 +1,35 @@
+@page "/reviews"
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Components.Reviews
+@using JitDalshe.Ui.Admin.Services.ReviewService
+@inject IReviewService ReviewService
+
+<PageTitle>Отзывы</PageTitle>
+
+<h1>Отзывы на модерацию</h1>
+
+@if (_reviews is not null)
+{
+    @foreach (var review in _reviews)
+    {
+        <ReviewCard Review="review" OnReviewModerated="@LoadReviewsAsync" OnReviewDeleted="@LoadReviewsAsync"/>
+    }
+}
+else
+{
+    <p>Загрузка...</p>
+}
+
+@code {
+
+    private UnmoderatedReview[] _reviews = null!;
+
+    private async Task LoadReviewsAsync()
+    {
+        _reviews = await ReviewService.FindAllUnmoderatedReviewsAsync();
+    }
+
+    protected override Task OnInitializedAsync()
+        => LoadReviewsAsync();
+
+}

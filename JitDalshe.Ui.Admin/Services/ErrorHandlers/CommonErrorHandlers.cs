@@ -25,6 +25,12 @@ public sealed class CommonErrorHandlers : IErrorHandlers
         _toastService.ShowWarning(error.Message);
     }
 
+    public void HandleConflict(ApiException exception)
+    {
+        var error = exception.DeserializeError();
+        _toastService.ShowWarning(error.Message);
+    }
+
     public void HandleInternalServerError(ApiException exception)
     {
         var error = exception.DeserializeError();

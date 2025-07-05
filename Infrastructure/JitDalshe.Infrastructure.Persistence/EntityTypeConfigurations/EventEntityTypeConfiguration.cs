@@ -7,32 +7,32 @@ namespace JitDalshe.Infrastructure.Persistence.EntityTypeConfigurations;
 
 public sealed class EventEntityTypeConfiguration : IEntityTypeConfiguration<Event>
 {
-    public void Configure(EntityTypeBuilder<Event> builder)
+    public void Configure(EntityTypeBuilder<Event> entity)
     {
-        builder.ToTable(nameof(Event).ToSnakeCase());
+        entity.ToTable(nameof(Event).ToSnakeCase());
 
-        builder.HasId();
+        entity.HasId();
 
-        builder.Property(x => x.Title)
+        entity.Property(x => x.Title)
             .IsRequired()
             .HasColumnName(nameof(Event.Title).ToSnakeCase());
 
-        builder.Property(x => x.Description)
+        entity.Property(x => x.Description)
             .HasColumnName(nameof(Event.Description).ToSnakeCase());
 
-        builder.Property(x => x.Date)
+        entity.Property(x => x.Date)
             .IsRequired()
             .HasColumnType("date")
             .HasColumnName(nameof(Event.Date).ToSnakeCase());
 
-        builder.Property(x => x.IsDisplaying)
+        entity.Property(x => x.IsDisplaying)
             .IsRequired()
             .HasDefaultValue(false)
             .HasColumnName(nameof(Event.IsDisplaying).ToSnakeCase());
 
-        builder.HasAudits();
+        entity.HasAudits();
 
-        builder.HasOne(x => x.Image)
+        entity.HasOne(x => x.Image)
             .WithOne(x => x.Event)
             .HasForeignKey<EventImage>(x => x.EventId);
     }

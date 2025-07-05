@@ -7,27 +7,27 @@ namespace JitDalshe.Infrastructure.Persistence.EntityTypeConfigurations;
 
 public sealed class BannerImageEntityTypeConfiguration : IEntityTypeConfiguration<BannerImage>
 {
-    public void Configure(EntityTypeBuilder<BannerImage> builder)
+    public void Configure(EntityTypeBuilder<BannerImage> entity)
     {
-        builder.ToTable(nameof(BannerImage).ToSnakeCase());
+        entity.ToTable(nameof(BannerImage).ToSnakeCase());
 
-        builder.HasId();
+        entity.HasId();
 
-        builder.Property(x => x.Url)
+        entity.Property(x => x.Url)
             .IsRequired()
             .HasColumnName(nameof(BannerImage.Url).ToSnakeCase());
 
-        builder.Property(x => x.ContentType)
+        entity.Property(x => x.ContentType)
             .IsRequired()
             .HasColumnName(nameof(BannerImage.ContentType).ToSnakeCase());
 
-        builder.Property(x => x.BannerId)
+        entity.Property(x => x.BannerId)
             .IsRequired()
             .HasColumnName(nameof(BannerImage.BannerId).ToSnakeCase());
 
-        builder.HasAudits();
+        entity.HasAudits();
 
-        builder.HasOne(x => x.Banner)
+        entity.HasOne(x => x.Banner)
             .WithOne(x => x.Image)
             .HasForeignKey<BannerImage>(x => x.BannerId);
     }
