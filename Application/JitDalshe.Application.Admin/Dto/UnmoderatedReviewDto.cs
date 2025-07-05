@@ -7,5 +7,6 @@ public readonly record struct UnmoderatedReviewDto(
     string ReviewerName,
     int ReviewerAge,
     ReviewerStatus ReviewerStatus,
-    string Text
+    string Text,
+    DateOnly Date
 );

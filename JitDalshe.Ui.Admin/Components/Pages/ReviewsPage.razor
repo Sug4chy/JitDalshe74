@@ -1,0 +1,28 @@
+@page "/reviews"
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Components.Reviews
+
+<PageTitle>Отзывы</PageTitle>
+
+<h1>Отзывы на модерацию</h1>
+
+@if (_reviews is not null)
+{
+    @foreach (var review in _reviews)
+    {
+        <ReviewCard Review="review"/>
+    }
+}
+else
+{
+    <p>Загрузка...</p>
+}
+
+@code {
+
+    private readonly UnmoderatedReview[] _reviews =
+    [
+        new(Guid.NewGuid(), "Степан", 21, ReviewerStatus.Patient, "Кайфарик", DateOnly.FromDateTime(DateTime.Today))
+    ];
+
+}

@@ -1,0 +1,25 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models
+
+<Modal Id="@Id"
+       Title="Новый отзыв"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Подтвердить"
+       OnFooterButtonClick="@ApproveReviewAsync">
+
+    <p class="h5 mb-4">Имя: @Review.ReviewerName</p>
+    <p class="h5 mb-4">Возраст: @Review.ReviewerAgeString</p>
+    <p class="h5 mb-4">Статус: @Review.ReviewerStatusString</p>
+    <p class="h5 mb-4">Оставлен @Review.Date.ToString("dd-MM-yyyy")</p>
+    <p class="h5">Отзыв:</p>
+    <p class="h5">@((MarkupString)Review.Text.Replace("\n", "<br/>"))</p>
+
+</Modal>
+
+@code {
+
+    [Parameter] public required string Id { get; init; }
+    [Parameter] public required UnmoderatedReview Review { get; init; }
+
+    private Task ApproveReviewAsync() => Task.CompletedTask;
+}

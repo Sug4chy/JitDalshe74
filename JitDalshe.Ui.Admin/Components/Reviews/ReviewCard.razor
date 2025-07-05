@@ -1,0 +1,26 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Cards
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
+
+<Card HeaderText="@CardHeaderText"
+      Title="@CardTitle"
+      Buttons="Card.Button.Info | Card.Button.Delete"
+      OnInfoButtonClick="@ShowInfoModalAsync"
+      OnDeleteButtonClick="@DeleteReviewAsync"/>
+
+<InfoReviewModal Id="@InfoModalId" Review="@Review"/>
+
+@code {
+
+    private string CardHeaderText => $"Оставлен {Review.Date.ToString("dd-MM-yyyy")}";
+    private string CardTitle => $"Отзыв от {Review.ReviewerName}, {Review.ReviewerAgeString}";
+    private string InfoModalId => $"modal_info_review_{Review.Id}";
+
+    [Parameter] public required UnmoderatedReview Review { get; init; }
+
+    private Task ShowInfoModalAsync()
+        => ModalService.ShowModalAsync($"#{InfoModalId}");
+
+    private Task DeleteReviewAsync() => Task.CompletedTask;
+}

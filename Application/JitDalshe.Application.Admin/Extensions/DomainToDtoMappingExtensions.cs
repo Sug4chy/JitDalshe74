@@ -50,6 +50,7 @@ public static class DomainToDtoMappingExtensions
             ReviewerName: review.ReviewerName,
             ReviewerAge: review.ReviewerAge,
             ReviewerStatus: review.ReviewerStatus,
-            Text: review.Text
+            Text: review.Text,
+            Date: DateOnly.FromDateTime(review.CreatedAt)
         );
 }
