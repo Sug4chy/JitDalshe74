@@ -8,12 +8,13 @@ public sealed class TelegramChat : AuditableEntity<IdOf<TelegramChat>>
 {
     public long ExtId { get; }
 
-    private TelegramChat(long extId)
+    private TelegramChat(IdOf<TelegramChat> id, long extId)
     {
+        Id = id;
         ExtId = extId;
     }
 
-    public static TelegramChat Create(long extId) => new(extId);
+    public static TelegramChat Create(IdOf<TelegramChat> id, long extId) => new(id, extId);
 
     /// <summary>
     /// For EF Core
