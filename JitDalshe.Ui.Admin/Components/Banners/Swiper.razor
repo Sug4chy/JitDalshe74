@@ -9,17 +9,15 @@
             if (item.RedirectOnClickUrl is not null)
             {
                 <a class="swiper-slide"
-                   style="@Style(item)"
                    href="@item.RedirectOnClickUrl"
                    target="_blank">
-                    <h2 class="slide-text">@item.Title</h2>
+                    <img src="@item.ImageUrl" alt="@item.Title">
                 </a>
             }
             else
             {
-                <div class="swiper-slide"
-                     style="@Style(item)">
-                    <h2 class="slide-text">@item.Title</h2>
+                <div class="swiper-slide">
+                    <img src="@item.ImageUrl" alt="@item.Title">
                 </div>
             }
         }
@@ -32,10 +30,6 @@
 
 @code {
     [Parameter] public required PreviewBanner[] Items { get; init; } = [];
-
-    private static string Style(PreviewBanner item)
-        => $"background-image: url({item.ImageUrl}); " +
-           $"{(item.RedirectOnClickUrl is not null ? "cursor: pointer;" : null)}";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
