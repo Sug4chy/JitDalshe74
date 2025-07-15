@@ -27,6 +27,11 @@ public sealed class ConsultationRequestEntityTypeConfiguration : IEntityTypeConf
         entity.Property(x => x.PatientEmail)
             .HasColumnName(nameof(ConsultationRequest.PatientEmail).ToSnakeCase());
 
+        entity.Property(x => x.IsHandled)
+            .IsRequired()
+            .HasDefaultValue(false)
+            .HasColumnName(nameof(ConsultationRequest.IsHandled).ToSnakeCase());
+
         entity.Property(x => x.CommunicationMethods)
             .HasColumnName(nameof(ConsultationRequest.CommunicationMethods).ToSnakeCase());
 

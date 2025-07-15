@@ -10,6 +10,7 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
     public int PatientAge { get; init; }
     public string? PatientPhoneNumber { get; init; }
     public string? PatientEmail { get; init; }
+    public bool IsHandled { get; init; }
     public PatientCommunicationMethod CommunicationMethods { get; init; }
 
     private ConsultationRequest(
@@ -18,6 +19,7 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
         int patientAge,
         string? patientPhoneNumber,
         string? patientEmail,
+        bool isHandled,
         PatientCommunicationMethod communicationMethods)
     {
         Id = id;
@@ -25,6 +27,7 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
         PatientAge = patientAge;
         PatientPhoneNumber = patientPhoneNumber;
         PatientEmail = patientEmail;
+        IsHandled = isHandled;
         CommunicationMethods = communicationMethods;
     }
 
@@ -34,8 +37,9 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
         int patientAge,
         string? patientPhoneNumber,
         string? patientEmail,
+        bool isHandled,
         PatientCommunicationMethod communicationMethods)
-        => new(id, patientName, patientAge, patientPhoneNumber, patientEmail, communicationMethods);
+        => new(id, patientName, patientAge, patientPhoneNumber, patientEmail, isHandled, communicationMethods);
 
     /// <summary>
     /// For EF Core
