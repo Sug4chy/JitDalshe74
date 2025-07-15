@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Api.TelegramBot",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Application.TelegramBot", "Application\JitDalshe.Application.TelegramBot\JitDalshe.Application.TelegramBot.csproj", "{4024A0A9-18DE-450E-BDE7-9870712D7B46}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Infrastructure.Telegram", "Infrastructure\JitDalshe.Infrastructure.Telegram\JitDalshe.Infrastructure.Telegram.csproj", "{70780374-FFEF-4D22-ABAF-14A580C22353}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,6 +120,10 @@ Global
 		{4024A0A9-18DE-450E-BDE7-9870712D7B46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4024A0A9-18DE-450E-BDE7-9870712D7B46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4024A0A9-18DE-450E-BDE7-9870712D7B46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70780374-FFEF-4D22-ABAF-14A580C22353}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70780374-FFEF-4D22-ABAF-14A580C22353}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70780374-FFEF-4D22-ABAF-14A580C22353}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70780374-FFEF-4D22-ABAF-14A580C22353}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C6BA5D87-D53F-40F2-8FA4-D84B6AEC2045} = {BE24047B-D681-4DFE-83A1-1E70E0A43F9F}
@@ -134,5 +140,6 @@ Global
 		{A09E8E3F-8F81-49AE-9776-09742D05F75A} = {5CA6597C-D611-4989-911F-BED2C7B43019}
 		{0941831F-9D79-4CB0-A57D-94F17663EEE8} = {B959C0F8-5C9F-4A20-92BF-4DEE693DEB80}
 		{4024A0A9-18DE-450E-BDE7-9870712D7B46} = {63602280-1B62-4476-9D64-C9A930222BB6}
+		{70780374-FFEF-4D22-ABAF-14A580C22353} = {5CA6597C-D611-4989-911F-BED2C7B43019}
 	EndGlobalSection
 EndGlobal

@@ -2,6 +2,7 @@ using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Entities;
 using JitDalshe.Domain.ValueObjects;
 using Microsoft.Extensions.Logging;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -11,11 +12,16 @@ public sealed class UpdatesHandler
 {
     private readonly ILogger<UpdatesHandler> _logger;
     private readonly ITelegramChatsRepository _telegramChats;
+    private readonly ITelegramBotClient _telegramBot;
 
-    public UpdatesHandler(ILogger<UpdatesHandler> logger, ITelegramChatsRepository telegramChats)
+    public UpdatesHandler(
+        ILogger<UpdatesHandler> logger,
+        ITelegramChatsRepository telegramChats,
+        ITelegramBotClient telegramBot)
     {
         _logger = logger;
         _telegramChats = telegramChats;
+        _telegramBot = telegramBot;
     }
 
     public async Task HandleAsync(Update update, CancellationToken ct = default)
@@ -36,6 +42,8 @@ public sealed class UpdatesHandler
             }
 
             await _telegramChats.AddAsync(TelegramChat.Create(IdOf<TelegramChat>.New(), update.Message.Chat.Id), ct);
+            await _telegramBot.SendMessage(update.Message.Chat.Id, "Чат успешно сохранён!", cancellationToken: ct);
+
             _logger.LogInformation("Saved new chat with ID {ID}", update.Message.Chat.Id);
         }
         catch (Exception e)

@@ -13,6 +13,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Application\JitDalshe.Application.TelegramBot\JitDalshe.Application.TelegramBot.csproj" />
       <ProjectReference Include="..\Infrastructure\JitDalshe.Infrastructure.Persistence\JitDalshe.Infrastructure.Persistence.csproj" />
+      <ProjectReference Include="..\Infrastructure\JitDalshe.Infrastructure.Telegram\JitDalshe.Infrastructure.Telegram.csproj" />
       <ProjectReference Include="..\JitDalshe.Api\JitDalshe.Api.csproj" />
     </ItemGroup>
 
