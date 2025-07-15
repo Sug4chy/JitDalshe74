@@ -1,3 +1,4 @@
+using JitDalshe.Application.Entities;
 using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.Entities.News;
@@ -16,6 +17,7 @@ public sealed class PostgresqlDbContext(DbContextOptions<PostgresqlDbContext> op
     public DbSet<Banner> Banners { get; init; }
     public DbSet<BannerImage> BannerImages { get; init; }
     public DbSet<Review> Reviews { get; init; }
+    public DbSet<TelegramChat> TelegramChats { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
