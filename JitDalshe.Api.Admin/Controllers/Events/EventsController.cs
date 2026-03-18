@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace JitDalshe.Api.Admin.Controllers.Events;
 
 [ApiController]
-[Route("/admin-api/v1/[controller]")]
+[Route("/api-admin/v1/[controller]")]
 public sealed class EventsController : AbstractController
 {
     /// <summary>

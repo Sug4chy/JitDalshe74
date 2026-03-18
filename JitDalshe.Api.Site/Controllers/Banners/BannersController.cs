@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace JitDalshe.Api.Site.Controllers.Banners;
 
 [ApiController]
-[Route("/api/v1/[controller]")]
+[Route("/api-site/v1/[controller]")]
 public sealed class BannersController : AbstractController
 {
     /// <summary>
