@@ -16,7 +16,6 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 string? apiBaseUrl = builder.Configuration["Api:BaseUrl"];
-string? apiAdminBaseUrl = $"{apiBaseUrl}/admin";
 if (apiBaseUrl is null)
 {
     Console.WriteLine("API base url is empty");
@@ -24,23 +23,22 @@ if (apiBaseUrl is null)
 }
 
 Console.WriteLine($"[DEBUG] Api:BaseUrl = '{apiBaseUrl}'");
-Console.WriteLine($"[DEBUG] apiAdminBaseUrl = '{apiAdminBaseUrl}'");
 
 builder.Services
     .AddRefitClient<INewsApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiAdminBaseUrl}/news"));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/news"));
 
 builder.Services
     .AddRefitClient<IEventsApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiAdminBaseUrl}/events"));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/events"));
 
 builder.Services
     .AddRefitClient<IBannersApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiAdminBaseUrl}/banners"));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/banners"));
 
 builder.Services
     .AddRefitClient<IReviewsApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiAdminBaseUrl}/reviews"));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/reviews"));
 
 builder.Services.AddBlazoredToast();
 builder.Services.AddRunner();
