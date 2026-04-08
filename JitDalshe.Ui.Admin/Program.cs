@@ -15,7 +15,15 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+
+string? serverIp = Environment.GetEnvironmentVariable("SERVER_IP");
+
+
 string? apiBaseUrl = builder.Configuration["Api:BaseUrl"];
+string? finalApiUrl = !string.IsNullOrEmpty(serverIp) 
+    ? $"http://{serverIp}{apiBaseUrl}" 
+    : $"http://localhost:8080{apiBaseUrl}";
+
 if (apiBaseUrl is null)
 {
     Console.WriteLine("API base url is empty");
@@ -23,22 +31,23 @@ if (apiBaseUrl is null)
 }
 
 Console.WriteLine($"[DEBUG] Api:BaseUrl = '{apiBaseUrl}'");
+Console.WriteLine($"[DEBUG] final:BaseUrl = '{finalApiUrl}'");
 
 builder.Services
     .AddRefitClient<INewsApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/news"));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{finalApiUrl}/news"));
 
 builder.Services
     .AddRefitClient<IEventsApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/events"));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{finalApiUrl}/events"));
 
 builder.Services
     .AddRefitClient<IBannersApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/banners"));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{finalApiUrl}/banners"));
 
 builder.Services
     .AddRefitClient<IReviewsApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{apiBaseUrl}/reviews"));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri($"{finalApiUrl}/reviews"));
 
 builder.Services.AddBlazoredToast();
 builder.Services.AddRunner();
