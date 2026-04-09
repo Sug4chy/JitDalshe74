@@ -58,7 +58,9 @@
 
   # Step 5: APIs
   api-site:
-    image: soniccooles/jit-dalshe-api-site
+    build:
+      context: .
+      dockerfile: JitDalshe.Api.Site/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
