@@ -1,11 +1,13 @@
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
+using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Errors;
 using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.ValueObjects;
 
 namespace JitDalshe.Application.Admin.UseCases.Consultations.ChangeStatus;
 
+[UseCase]
 public class ChangeConsultationRequestStatusUseCase : IChangeConsultationRequestStatusUseCase
 {
     private readonly IConsultationRequestsRepository _requests;

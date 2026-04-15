@@ -3,11 +3,13 @@ using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Admin.Dto;
 using JitDalshe.Application.Admin.Extensions;
+using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
 
 namespace JitDalshe.Application.Admin.UseCases.Consultations.ListRequests;
 
+[UseCase]
 public class ListConsultationRequestsUseCase : IListConsultationRequestsUseCase
 {
     private readonly IConsultationRequestsRepository _requests;
