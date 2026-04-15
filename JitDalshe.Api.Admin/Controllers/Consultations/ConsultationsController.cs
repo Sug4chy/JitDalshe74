@@ -7,7 +7,7 @@ using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
-namespace JitDalshe.Api.Admin.Controllers.Consultations.Requests;
+namespace JitDalshe.Api.Admin.Controllers.Consultations;
 
 [ApiController]
 [Route("/api-admin/v1/[controller]")]
