@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace JitDalshe.Api.Site.Controllers.Events;
 
 [ApiController]
-[Route("/api/v1/[controller]")]
+[Route("/api-site/v1/[controller]")]
 public sealed class EventsController : AbstractController
 {
     /// <summary>

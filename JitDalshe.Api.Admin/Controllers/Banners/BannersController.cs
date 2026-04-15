@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace JitDalshe.Api.Admin.Controllers.Banners;
 
 [ApiController]
-[Route("/admin-api/v1/[controller]")]
+[Route("/api-admin/v1/[controller]")]
 public sealed class BannersController : AbstractController
 {
     /// <summary>

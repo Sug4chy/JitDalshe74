@@ -9,13 +9,10 @@ COPY ["JitDalshe.Ui.Admin/JitDalshe.Ui.Admin.csproj", "JitDalshe.Ui.Admin/"]
 RUN dotnet restore "JitDalshe.Ui.Admin/JitDalshe.Ui.Admin.csproj"
 COPY . .
 WORKDIR "/src/JitDalshe.Ui.Admin"
-RUN dotnet build "./JitDalshe.Ui.Admin.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet publish "./JitDalshe.Ui.Admin.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./JitDalshe.Ui.Admin.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "JitDalshe.Ui.Admin.dll"]
+FROM nginx:alpine AS final
+COPY --from=build /app/publish/wwwroot /usr/share/nginx/html
+COPY JitDalshe.Ui.Admin/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

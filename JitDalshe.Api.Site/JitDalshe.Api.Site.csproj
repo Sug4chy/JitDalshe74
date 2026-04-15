@@ -10,6 +10,8 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0"/>
+        <PackageReference Include="OneOf" Version="3.0.271" />
+        <PackageReference Include="OneOf.SourceGenerator" Version="3.0.271" />
     </ItemGroup>
 
     <ItemGroup>
