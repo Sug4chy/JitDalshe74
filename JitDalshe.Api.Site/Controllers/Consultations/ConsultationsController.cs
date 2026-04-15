@@ -24,7 +24,7 @@ public sealed class ConsultationsController : ControllerBase
             patientName: request.PatientName,
             patientAge: request.PatientAge,
             patientPhoneNumber: request.PatientPhoneNumber,
-            patientEmail: request.PatientPhoneNumber,
+            patientEmail: request.PatientEmail,
             communicationMethod: request.CommunicationMethod,
             ct: ct);
 
