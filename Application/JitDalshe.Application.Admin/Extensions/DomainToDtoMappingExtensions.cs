@@ -1,5 +1,6 @@
 using JitDalshe.Application.Admin.Dto;
 using JitDalshe.Domain.Entities.Banners;
+using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.Entities.Reviews;
@@ -52,5 +53,17 @@ public static class DomainToDtoMappingExtensions
             ReviewerStatus: review.ReviewerStatus,
             Text: review.Text,
             Date: DateOnly.FromDateTime(review.CreatedAt)
+        );
+    
+    public static ConsultationRequestDto ToDto(this ConsultationRequest request)
+        => new(
+            Id: request.Id,
+            PatientName: request.PatientName,
+            PatientAge: request.PatientAge,
+            PatientPhoneNumber: request.PatientPhoneNumber,
+            PatientEmail: request.PatientEmail,
+            IsHandled: request.IsHandled,
+            CommunicationMethods: request.CommunicationMethods,
+            Date: DateOnly.FromDateTime(request.CreatedAt)
         );
 }
