@@ -1,0 +1,42 @@
+using CSharpFunctionalExtensions;
+using JitDalshe.Application.Abstractions.Repositories;
+using JitDalshe.Application.Errors;
+using JitDalshe.Domain.Entities.Consultations;
+using JitDalshe.Domain.ValueObjects;
+
+namespace JitDalshe.Application.Admin.UseCases.Consultations.ChangeStatus;
+
+public class ChangeConsultationRequestStatusUseCase : IChangeConsultationRequestStatusUseCase
+{
+    private readonly IConsultationRequestsRepository _requests;
+
+    public ChangeConsultationRequestStatusUseCase(IConsultationRequestsRepository requests)
+    {
+        _requests = requests;
+    }
+    
+    public async Task<UnitResult<Error>> EditAsync(IdOf<ConsultationRequest> requestId, CancellationToken ct = default)
+        
+    {
+        try
+        {
+            var maybeRequest = await _requests.FindByIdAsync(requestId, ct);
+            if (maybeRequest.HasNoValue)
+            {
+                return UnitResult.Failure(Error.Of("Заявка не найдена", ErrorGroup.NotFound));
+            }
+
+            var request = maybeRequest.Value;
+            
+            request.ToggleHandledStatus();
+            
+            await _requests.EditAsync(request, ct);
+            
+            return UnitResult.Success<Error>();
+        }
+        catch (Exception e)
+        {
+            return UnitResult.Failure(Error.Of(e.Message));
+        }
+    }
+}

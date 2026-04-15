@@ -10,9 +10,9 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
     public int PatientAge { get; init; }
     public string? PatientPhoneNumber { get; init; }
     public string? PatientEmail { get; init; }
-    public bool IsHandled { get; init; }
+    public bool IsHandled { get; private set; }
     public PatientCommunicationMethod CommunicationMethods { get; init; }
-
+    
     private ConsultationRequest(
         IdOf<ConsultationRequest> id,
         string patientName,
@@ -41,6 +41,11 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
         PatientCommunicationMethod communicationMethods)
         => new(id, patientName, patientAge, patientPhoneNumber, patientEmail, isHandled, communicationMethods);
 
+    public void ToggleHandledStatus()
+    {
+        IsHandled = !IsHandled;
+    }
+    
     /// <summary>
     /// For EF Core
     /// </summary>
