@@ -1,4 +1,5 @@
 using JitDalshe.Ui.Admin.Services.BannerService;
+using JitDalshe.Ui.Admin.Services.ConsultationService;
 using JitDalshe.Ui.Admin.Services.ErrorHandlers;
 using JitDalshe.Ui.Admin.Services.EventService;
 using JitDalshe.Ui.Admin.Services.ModalService;
@@ -34,4 +35,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddReviewService(this IServiceCollection services)
         => services.AddScoped<IReviewService, ReviewService>();
+
+    public static IServiceCollection AddConsultationService(this IServiceCollection services)
+        => services.AddScoped<IConsultationService, ConsultationService>();
 }
