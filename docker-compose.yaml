@@ -16,7 +16,9 @@
 
   # Step 2: Migrator
   migrator:
-    image: soniccooles/jit-dalshe-migrator
+    build:
+      context: .
+      dockerfile: JitDalshe.Migrator/Dockerfile
     environment:
       DOTNET_ENVIRONMENT: ${DOTNET_ENVIRONMENT}
       ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
@@ -77,7 +79,9 @@
         condition: service_healthy
 
   api-admin:
-    image: soniccooles/jit-dalshe-api-admin
+    build:
+      context: .
+      dockerfile: JitDalshe.Api.Admin/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
