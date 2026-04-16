@@ -10,14 +10,15 @@ namespace JitDalshe.Application.Site.UseCases.Consultations;
 internal sealed class SignUpForConsultationUseCase : ISignUpForConsultationUseCase
 {
     private readonly IConsultationRequestsRepository _consultationRequests;
-    private readonly INotificationsSender _notifications;
+    // private readonly INotificationsSender _notifications;
 
     public SignUpForConsultationUseCase(
-        IConsultationRequestsRepository consultationRequests, 
-        INotificationsSender notifications)
+        IConsultationRequestsRepository consultationRequests
+        // INotificationsSender notifications
+        )
     {
         _consultationRequests = consultationRequests;
-        _notifications = notifications;
+        // _notifications = notifications;
     }
 
     public async Task<SignUpForConsultationResult> SignUpAsync(
@@ -40,7 +41,7 @@ internal sealed class SignUpForConsultationUseCase : ISignUpForConsultationUseCa
                 communicationMethods: communicationMethod);
 
             await _consultationRequests.AddAsync(request, ct);
-            await _notifications.SendAsync("Поступила новая заявка на запись на консультацию", ct);
+            // await _notifications.SendAsync("Поступила новая заявка на запись на консультацию", ct);
 
             return SignUpForConsultationResult.Success();
         }
