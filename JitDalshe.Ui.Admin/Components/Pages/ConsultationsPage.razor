@@ -1,0 +1,37 @@
+@page "/consultations"
+@using JitDalshe.Ui.Admin.Components.Consultations
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Services.ConsultationService
+@inject IConsultationService ConsultationService
+
+<PageTitle>Заявки на консультацию</PageTitle>
+<div class="topbar-container">
+    <h1>Заявки на консультацию</h1>
+</div>
+
+@if (_requests is not null)
+{
+    @foreach (var request in _requests)
+    {
+        <ConsultationCard Request="request" OnStatusChanged="LoadRequests"/>
+    }
+}
+else
+{
+    <SpinnerLoader/>
+}
+
+@code {
+    private ConsultationRequest[]? _requests;
+
+    private async Task LoadRequests()
+    {
+        _requests = await ConsultationService.ListAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRequests();
+    }
+
+}

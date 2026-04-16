@@ -1,0 +1,28 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Cards
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Services.ConsultationService
+@inject IConsultationService ConsultationService
+@inject IToastService ToastService
+
+<Card HeaderText="@HeaderText" 
+      Title="@CardTitle"
+      Buttons="Card.Button.Edit"
+      OnEditButtonClick="@ToggleStatusAsync"
+/>
+      
+@code {
+    [Parameter] public required ConsultationRequest Request { get; init; }
+    [Parameter] public required EventCallback OnStatusChanged { get; init; }
+    
+    private string HeaderText => $"{Request.Date.ToString("dd.MM.yyyy")} - {Request.StatusString}";
+    private string CardTitle => $"{Request.PatientName} ({Request.PatientAge} лет)";
+
+    private async Task ToggleStatusAsync()
+    {
+        await ConsultationService.ToggleStatusAsync(Request.Id, async () =>
+        {
+            ToastService.ShowSuccess("Статус заявки изменен");
+            await OnStatusChanged.InvokeAsync();
+        });
+    }
+}
