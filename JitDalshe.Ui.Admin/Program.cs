@@ -1,6 +1,7 @@
 using Blazored.Toast;
 using JitDalshe.Ui.Admin;
 using JitDalshe.Ui.Admin.Api.Banners;
+using JitDalshe.Ui.Admin.Api.Consultations;
 using JitDalshe.Ui.Admin.Api.Events;
 using JitDalshe.Ui.Admin.Api.News;
 using JitDalshe.Ui.Admin.Api.Reviews;
@@ -33,7 +34,7 @@ RegisterRefitClient<INewsApiClient>("news");
 RegisterRefitClient<IBannersApiClient>("banners");
 RegisterRefitClient<IEventsApiClient>("events");
 RegisterRefitClient<IReviewsApiClient>("reviews");
-
+RegisterRefitClient<IConsultationsApiClient>("consultations");
 builder.Services.AddBlazoredToast();
 builder.Services.AddRunner();
 builder.Services.AddModalService();
@@ -43,6 +44,8 @@ builder.Services.AddEventService();
 builder.Services.AddBannerService();
 builder.Services.AddCommonErrorHandlers();
 builder.Services.AddReviewService();
+builder.Services.AddConsultationService();
+
 builder.Services.AddScoped<NewsService>();
 builder.Services.AddScoped<CommonErrorHandlers>();
 
