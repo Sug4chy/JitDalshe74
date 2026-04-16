@@ -16,9 +16,7 @@
 
   # Step 2: Migrator
   migrator:
-    build:
-      context: .
-      dockerfile: JitDalshe.Migrator/Dockerfile
+    image: soniccooles/jit-dalshe-migrator:latest
     environment:
       DOTNET_ENVIRONMENT: ${DOTNET_ENVIRONMENT}
       ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
@@ -60,9 +58,7 @@
 
   # Step 5: APIs
   api-site:
-    build:
-      context: .
-      dockerfile: JitDalshe.Api.Site/Dockerfile
+    image: soniccooles/jit-dalshe-api-site:latest
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
@@ -79,9 +75,7 @@
         condition: service_healthy
 
   api-admin:
-    build:
-      context: .
-      dockerfile: JitDalshe.Api.Admin/Dockerfile
+    image: soniccooles/jit-dalshe-api-admin:latest
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
@@ -113,18 +107,14 @@
 
   # Step 6: Admin UI
   admin-ui:
-    build:
-      context: .
-      dockerfile: JitDalshe.Ui.Admin/Dockerfile
+    image: soniccooles/jit-dalshe-ui-admin:latest
     depends_on:
       api-admin:
         condition: service_started
 
   # Step 6: Client UI
   client-ui:
-    build:
-      context: ./oncology_web
-      dockerfile: Dockerfile
+    image: soniccooles/jit-dalshe-client-ui:latest
     restart: always
   
   
