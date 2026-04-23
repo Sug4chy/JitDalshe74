@@ -1,28 +1,33 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Cards
 @using JitDalshe.Ui.Admin.Models
-@using JitDalshe.Ui.Admin.Services.ConsultationService
-@inject IConsultationService ConsultationService
-@inject IToastService ToastService
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
 
 <Card HeaderText="@HeaderText" 
       Title="@CardTitle"
       Buttons="Card.Button.Edit"
-      OnEditButtonClick="@ToggleStatusAsync"
+      OnEditButtonClick="@ShowEditModalAsync"
 />
-      
+
+<EditConsultationModal Id="@EditModalId" 
+                         Request="@Request" 
+                         OnStatusChanged="@OnStatusChanged"/>
+
 @code {
     [Parameter] public required ConsultationRequest Request { get; init; }
     [Parameter] public required EventCallback OnStatusChanged { get; init; }
-    
-    private string HeaderText => $"{Request.Date.ToString("dd.MM.yyyy")} - {Request.StatusString}";
+    private string HeaderText => $"{Request.Date.ToString("dd.MM.yyyy")} - {StatusToString(Request.ConsultationRequestStatus)}";
     private string CardTitle => $"{Request.PatientName} ({Request.PatientAge} лет)";
-
-    private async Task ToggleStatusAsync()
+    private string EditModalId => $"modal_edit_consultation_{Request.Id}";
+    
+    private Task ShowEditModalAsync()
+        => ModalService.ShowModalAsync($"#{EditModalId}");
+    
+    private static string StatusToString(ConsultationRequestStatus s) => s switch
     {
-        await ConsultationService.ToggleStatusAsync(Request.Id, async () =>
-        {
-            ToastService.ShowSuccess("Статус заявки изменен");
-            await OnStatusChanged.InvokeAsync();
-        });
-    }
+        ConsultationRequestStatus.New => "Новая",
+        ConsultationRequestStatus.InProgress => "В обработке",
+        ConsultationRequestStatus.Completed => "Обработана",
+        _ => s.ToString()
+    };
 }

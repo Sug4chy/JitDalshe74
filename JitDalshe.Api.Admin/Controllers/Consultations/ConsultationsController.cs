@@ -1,3 +1,4 @@
+using JitDalshe.Api.Admin.Controllers.Consultations.Requests;
 using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Api.Models;
 using JitDalshe.Application.Admin.Dto;
@@ -36,10 +37,11 @@ public class ConsultationsController : AbstractController
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditConsultationRequest(
         [FromRoute] Guid id, 
+        [FromBody] ChangeConsultationRequestStatusRequest request,
         [FromServices] IChangeConsultationRequestStatusUseCase changeRequestStatus,
         CancellationToken ct = default)
     {
-        var result = await changeRequestStatus.EditAsync(IdOf<ConsultationRequest>.From(id), ct);
+        var result = await changeRequestStatus.EditAsync(IdOf<ConsultationRequest>.From(id), request.Status, ct);
         return result.IsSuccess
             ? Ok()
             : Error(result.Error);

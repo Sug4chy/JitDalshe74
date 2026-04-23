@@ -33,6 +33,15 @@
                     Удалить
                 </button>
             }
+            
+            @if (Buttons.HasFlag(Button.Save))
+            {
+                <button type="button"
+                        class="btn btn-success"
+                        @onclick="OnSaveButtonClick">
+                    Сохранить
+                </button>
+            }
         </div>
     </div>
 </div>
@@ -42,16 +51,19 @@
     [Parameter] public required string HeaderText { get; init; }
     [Parameter] public required string Title { get; init; }
     [Parameter] public Button Buttons { get; init; }
+    
     [Parameter] public EventCallback OnInfoButtonClick { get; init; } = EventCallback.Empty;
     [Parameter] public EventCallback OnEditButtonClick { get; init; } = EventCallback.Empty;
     [Parameter] public EventCallback OnDeleteButtonClick { get; init; } = EventCallback.Empty;
-
+    [Parameter] public EventCallback OnSaveButtonClick { get; init; } = EventCallback.Empty;
+    
     [Flags]
     public enum Button
     {
         Info = 1,
         Edit = 2,
-        Delete = 4
+        Delete = 4,
+        Save = 8,
     }
 
 }

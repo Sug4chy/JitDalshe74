@@ -6,13 +6,11 @@ public sealed record ConsultationRequest(
     int PatientAge,
     string? PatientPhoneNumber,
     string? PatientEmail,
-    bool IsHandled,
+    ConsultationRequestStatus ConsultationRequestStatus,
     PatientCommunicationMethod CommunicationMethods,
     DateOnly Date
 )
 {
-    public string StatusString => IsHandled ? "Обработана" : "Новая";
-    
     public string CommunicationMethodsString
     {
         get
@@ -43,4 +41,11 @@ public enum PatientCommunicationMethod
     WhatsApp = 2,
     Telegram = 4,
     Email = 8
+}
+
+public enum ConsultationRequestStatus
+{
+    New = 0,
+    InProgress = 1,
+    Completed = 2
 }

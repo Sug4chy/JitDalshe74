@@ -17,7 +17,7 @@ public class ChangeConsultationRequestStatusUseCase : IChangeConsultationRequest
         _requests = requests;
     }
     
-    public async Task<UnitResult<Error>> EditAsync(IdOf<ConsultationRequest> requestId, CancellationToken ct = default)
+    public async Task<UnitResult<Error>> EditAsync(IdOf<ConsultationRequest> requestId, ConsultationRequestStatus newStatus, CancellationToken ct = default)
         
     {
         try
@@ -30,7 +30,7 @@ public class ChangeConsultationRequestStatusUseCase : IChangeConsultationRequest
 
             var request = maybeRequest.Value;
             
-            request.ToggleHandledStatus();
+            request.ChangeStatus(newStatus);
             
             await _requests.EditAsync(request, ct);
             

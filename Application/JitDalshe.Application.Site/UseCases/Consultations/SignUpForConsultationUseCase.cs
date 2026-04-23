@@ -37,7 +37,6 @@ internal sealed class SignUpForConsultationUseCase : ISignUpForConsultationUseCa
                 patientAge: patientAge,
                 patientPhoneNumber: patientPhoneNumber,
                 patientEmail: patientEmail,
-                isHandled: false,
                 communicationMethods: communicationMethod);
 
             await _consultationRequests.AddAsync(request, ct);

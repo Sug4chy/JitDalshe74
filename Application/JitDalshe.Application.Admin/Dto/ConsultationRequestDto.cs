@@ -8,7 +8,7 @@ public readonly record struct ConsultationRequestDto(
     int PatientAge,
     string? PatientPhoneNumber,
     string? PatientEmail,
-    bool IsHandled,
+    ConsultationRequestStatus ConsultationRequestStatus,
     PatientCommunicationMethod CommunicationMethods,
     DateOnly Date
 );

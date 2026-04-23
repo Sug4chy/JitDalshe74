@@ -5,5 +5,5 @@ namespace JitDalshe.Ui.Admin.Services.ConsultationService;
 public interface IConsultationService
 {
     Task<ConsultationRequest[]> ListAsync();
-    Task ToggleStatusAsync(Guid id, Func<Task>? onSuccess = null);
+    Task<bool> ChangeStatusAsync(Guid id, ConsultationRequestStatus status, CancellationToken ct = default);
 }

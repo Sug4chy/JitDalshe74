@@ -10,7 +10,7 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
     public int PatientAge { get; init; }
     public string? PatientPhoneNumber { get; init; }
     public string? PatientEmail { get; init; }
-    public bool IsHandled { get; private set; }
+    public ConsultationRequestStatus ConsultationRequestStatus { get; private set; }
     public PatientCommunicationMethod CommunicationMethods { get; init; }
     
     private ConsultationRequest(
@@ -19,7 +19,7 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
         int patientAge,
         string? patientPhoneNumber,
         string? patientEmail,
-        bool isHandled,
+        ConsultationRequestStatus consultationRequestStatus,
         PatientCommunicationMethod communicationMethods)
     {
         Id = id;
@@ -27,7 +27,7 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
         PatientAge = patientAge;
         PatientPhoneNumber = patientPhoneNumber;
         PatientEmail = patientEmail;
-        IsHandled = isHandled;
+        ConsultationRequestStatus = consultationRequestStatus;
         CommunicationMethods = communicationMethods;
     }
 
@@ -37,13 +37,12 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
         int patientAge,
         string? patientPhoneNumber,
         string? patientEmail,
-        bool isHandled,
         PatientCommunicationMethod communicationMethods)
-        => new(id, patientName, patientAge, patientPhoneNumber, patientEmail, isHandled, communicationMethods);
+        => new(id, patientName, patientAge, patientPhoneNumber, patientEmail, ConsultationRequestStatus.New, communicationMethods);
 
-    public void ToggleHandledStatus()
+    public void ChangeStatus(ConsultationRequestStatus newStatus)
     {
-        IsHandled = !IsHandled;
+        ConsultationRequestStatus = newStatus;
     }
     
     /// <summary>

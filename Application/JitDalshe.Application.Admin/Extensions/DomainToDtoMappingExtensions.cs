@@ -62,7 +62,7 @@ public static class DomainToDtoMappingExtensions
             PatientAge: request.PatientAge,
             PatientPhoneNumber: request.PatientPhoneNumber,
             PatientEmail: request.PatientEmail,
-            IsHandled: request.IsHandled,
+            ConsultationRequestStatus: request.ConsultationRequestStatus,
             CommunicationMethods: request.CommunicationMethods,
             Date: DateOnly.FromDateTime(request.CreatedAt)
         );

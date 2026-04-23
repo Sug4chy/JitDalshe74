@@ -1,6 +1,7 @@
 using System.Net;
 using Blazored.Toast.Services;
 using JitDalshe.Ui.Admin.Api.Consultations;
+using JitDalshe.Ui.Admin.Api.Consultations.Requests;
 using JitDalshe.Ui.Admin.Extensions;
 using JitDalshe.Ui.Admin.Models;
 using JitDalshe.Ui.Admin.Services.ErrorHandlers;
@@ -23,7 +24,6 @@ public sealed class ConsultationService : IConsultationService
         _runner = runner;
         _consultationsApi = consultationsApi;
         _commonErrorHandlers = commonErrorHandlers;
-        // Настройка тостов для вывода ошибок из Runner
         _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
@@ -44,24 +44,24 @@ public sealed class ConsultationService : IConsultationService
             }
         }, defaultValue: []);
 
-    public Task ToggleStatusAsync(Guid id, Func<Task>? onSuccess = null)
+    public Task<bool> ChangeStatusAsync(Guid id, ConsultationRequestStatus status, CancellationToken ct = default) 
         => _runner.RunCatchingAsync(async () =>
         {
-            var response = await _consultationsApi.ChangeStatusAsync(id);
+            var request = new ChangeConsultationRequestStatusRequest(status);
+            var response = await _consultationsApi.ChangeStatusAsync(id, request, ct);
 
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    if (onSuccess != null) await onSuccess.Invoke();
-                    break;
+                    return true;
                 case HttpStatusCode.NotFound:
                     _commonErrorHandlers.HandleNotFound(response.Error!);
-                    break;
+                    return false;
                 case HttpStatusCode.InternalServerError:
                     _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    break;
+                    return false;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        });
+        }, defaultValue: false);
 }

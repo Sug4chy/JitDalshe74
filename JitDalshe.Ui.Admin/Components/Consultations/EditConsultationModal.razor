@@ -1,0 +1,55 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Services.ConsultationService
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
+@inject IConsultationService ConsultationService
+@inject IToastService ToastService
+
+<Modal Id="@Id"
+       Title="Изменение статуса заявки"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Сохранить"
+       OnFooterButtonClick="@SaveStatusAsync">
+
+    <p class="h5 mb-3">Пациент: @Request.PatientName (@Request.PatientAge лет)</p>
+    <p class="h5 mb-3">Дата: @Request.Date.ToString("dd.MM.yyyy")</p>
+    
+    <div class="mb-3">
+        <label class="form-label">Статус заявки:</label>
+        <InputSelect class="form-select" @bind-Value="_selectedStatus">
+            <option value="@ConsultationRequestStatus.New">Новая</option>
+            <option value="@ConsultationRequestStatus.InProgress">В обработке</option>
+            <option value="@ConsultationRequestStatus.Completed">Обработана</option>
+        </InputSelect>
+    </div>
+
+</Modal>
+
+@code {
+    [Parameter] public required string Id { get; init; }
+    [Parameter] public required ConsultationRequest Request { get; init; }
+    [Parameter] public required EventCallback OnStatusChanged { get; init; }
+
+    private ConsultationRequestStatus _selectedStatus;
+
+    protected override void OnParametersSet() 
+        => _selectedStatus = Request.ConsultationRequestStatus;
+
+    private async Task SaveStatusAsync()
+    {
+        if (_selectedStatus == Request.ConsultationRequestStatus)
+        {
+            await ModalService.HideModalAsync($"#{Id}");
+            return;
+        }
+
+        var success = await ConsultationService.ChangeStatusAsync(Request.Id, _selectedStatus);
+        if (success)
+        {
+            ToastService.ShowSuccess("Статус заявки успешно обновлён");
+            await ModalService.HideModalAsync($"#{Id}");
+            await OnStatusChanged.InvokeAsync();
+        }
+    }
+}

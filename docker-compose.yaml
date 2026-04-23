@@ -107,7 +107,7 @@
 
   # Step 6: Admin UI
   admin-ui:
-    image: soniccooles/jit-dalshe-ui-admin:latest
+    image: soniccooles/jit-dalshe-admin-ui:latest
     depends_on:
       api-admin:
         condition: service_started

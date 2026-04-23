@@ -132,15 +132,13 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("communication_methods");
 
+                    b.Property<int>("ConsultationRequestStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("consultation_request_status");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
-
-                    b.Property<bool>("IsHandled")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_handled");
 
                     b.Property<int>("PatientAge")
                         .HasColumnType("integer")
