@@ -128,6 +128,9 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
                     b.Property<int>("CommunicationMethods")
                         .HasColumnType("integer")
                         .HasColumnName("communication_methods");

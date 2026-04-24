@@ -64,6 +64,7 @@ public static class DomainToDtoMappingExtensions
             PatientEmail: request.PatientEmail,
             ConsultationRequestStatus: request.ConsultationRequestStatus,
             CommunicationMethods: request.CommunicationMethods,
-            Date: DateOnly.FromDateTime(request.CreatedAt)
+            Date: DateOnly.FromDateTime(request.CreatedAt),
+            Comment: request.Comment
         );
 }

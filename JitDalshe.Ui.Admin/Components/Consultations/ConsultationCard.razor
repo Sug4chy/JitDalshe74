@@ -5,6 +5,7 @@
 
 <Card HeaderText="@HeaderText" 
       Title="@CardTitle"
+      Comment="@Comment"
       Buttons="Card.Button.Edit"
       OnEditButtonClick="@ShowEditModalAsync"
 />
@@ -19,6 +20,11 @@
     private string HeaderText => $"{Request.Date.ToString("dd.MM.yyyy")} - {StatusToString(Request.ConsultationRequestStatus)}";
     private string CardTitle => $"{Request.PatientName} ({Request.PatientAge} лет)";
     private string EditModalId => $"modal_edit_consultation_{Request.Id}";
+    
+    private string? Comment => string.IsNullOrWhiteSpace(Request.Comment) 
+        ? null 
+        : Request.Comment;
+    
     
     private Task ShowEditModalAsync()
         => ModalService.ShowModalAsync($"#{EditModalId}");

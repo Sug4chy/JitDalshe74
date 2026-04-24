@@ -10,7 +10,7 @@ using JitDalshe.Application.Errors;
 namespace JitDalshe.Application.Admin.UseCases.Consultations.ListRequests;
 
 [UseCase]
-public class ListConsultationRequestsUseCase : IListConsultationRequestsUseCase
+public sealed class ListConsultationRequestsUseCase : IListConsultationRequestsUseCase
 {
     private readonly IConsultationRequestsRepository _requests;
 

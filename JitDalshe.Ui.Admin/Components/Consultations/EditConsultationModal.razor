@@ -7,7 +7,7 @@
 @inject IToastService ToastService
 
 <Modal Id="@Id"
-       Title="Изменение статуса заявки"
+       Title="Изменение статуса и комментария заявки"
        Footer="Modal.FooterType.Button"
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SaveStatusAsync">
@@ -23,33 +23,58 @@
             <option value="@ConsultationRequestStatus.Completed">Обработана</option>
         </InputSelect>
     </div>
-
+    
+    <div class="mb-3">
+        <label class="form-label">Комментарий:</label>
+        <InputTextArea class="form-control" 
+                       @bind-Value="_comment" 
+                       rows="4" 
+                       placeholder="Ваш комментарий..." />
+    </div>
 </Modal>
 
 @code {
     [Parameter] public required string Id { get; init; }
     [Parameter] public required ConsultationRequest Request { get; init; }
     [Parameter] public required EventCallback OnStatusChanged { get; init; }
-
+    
     private ConsultationRequestStatus _selectedStatus;
+    private string? _comment;
 
-    protected override void OnParametersSet() 
-        => _selectedStatus = Request.ConsultationRequestStatus;
+    protected override void OnParametersSet()
+    {
+        _selectedStatus = Request.ConsultationRequestStatus;
+        _comment = Request.Comment;
+    }
 
     private async Task SaveStatusAsync()
     {
-        if (_selectedStatus == Request.ConsultationRequestStatus)
+        bool statusChanged = _selectedStatus != Request.ConsultationRequestStatus;
+        bool commentChanged = _comment != Request.Comment;
+        
+        if (!statusChanged && !commentChanged)
         {
             await ModalService.HideModalAsync($"#{Id}");
             return;
         }
-
-        var success = await ConsultationService.ChangeStatusAsync(Request.Id, _selectedStatus);
-        if (success)
+        
+        bool success = true;
+        
+        if (statusChanged)
         {
-            ToastService.ShowSuccess("Статус заявки успешно обновлён");
-            await ModalService.HideModalAsync($"#{Id}");
-            await OnStatusChanged.InvokeAsync();
+            success = await ConsultationService.ChangeStatusAsync(Request.Id, _selectedStatus);
+            if (!success) return;
+            ToastService.ShowSuccess("Статус успешно изменён!");
         }
+        
+        if (commentChanged)
+        {
+            success = await ConsultationService.UpdateCommentAsync(Request.Id, _comment);
+            if (!success) return;
+            ToastService.ShowSuccess("Комментарий успешно обновлён!");
+        }
+        
+        await ModalService.HideModalAsync($"#{Id}");
+        await OnStatusChanged.InvokeAsync();
     }
 }

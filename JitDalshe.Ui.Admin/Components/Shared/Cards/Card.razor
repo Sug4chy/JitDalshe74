@@ -4,6 +4,13 @@
     </div>
     <div class="card-body">
         <h5 class="card-title">@Title</h5>
+        
+        @if (!string.IsNullOrWhiteSpace(Comment))
+        {
+            <span class="text-muted d-block mb-2 fw-medium">Комментарий:</span>
+            <span class="text-dark">@Comment</span>
+        }
+        
     </div>
     <div class="card-footer">
         <div class="d-flex card-footer-buttons">
@@ -49,6 +56,7 @@
 @code {
 
     [Parameter] public required string HeaderText { get; init; }
+    [Parameter] public string? Comment { get; init; }
     [Parameter] public required string Title { get; init; }
     [Parameter] public Button Buttons { get; init; }
     

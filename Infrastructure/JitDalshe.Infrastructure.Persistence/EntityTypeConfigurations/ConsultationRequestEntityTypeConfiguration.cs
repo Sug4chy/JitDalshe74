@@ -33,7 +33,10 @@ public sealed class ConsultationRequestEntityTypeConfiguration : IEntityTypeConf
 
         entity.Property(x => x.CommunicationMethods)
             .HasColumnName(nameof(ConsultationRequest.CommunicationMethods).ToSnakeCase());
-
+        
+        entity.Property(x => x.Comment)
+            .HasColumnName(nameof(ConsultationRequest.Comment).ToSnakeCase());
+        
         entity.HasAudits();
     }
 }

@@ -13,6 +13,8 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
     public ConsultationRequestStatus ConsultationRequestStatus { get; private set; }
     public PatientCommunicationMethod CommunicationMethods { get; init; }
     
+    public string? Comment { get; private set; }
+    
     private ConsultationRequest(
         IdOf<ConsultationRequest> id,
         string patientName,
@@ -20,7 +22,8 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
         string? patientPhoneNumber,
         string? patientEmail,
         ConsultationRequestStatus consultationRequestStatus,
-        PatientCommunicationMethod communicationMethods)
+        PatientCommunicationMethod communicationMethods,
+        string? comment = null)
     {
         Id = id;
         PatientName = patientName;
@@ -29,6 +32,7 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
         PatientEmail = patientEmail;
         ConsultationRequestStatus = consultationRequestStatus;
         CommunicationMethods = communicationMethods;
+        Comment = comment;
     }
 
     public static ConsultationRequest Create(
@@ -43,6 +47,11 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
     public void ChangeStatus(ConsultationRequestStatus newStatus)
     {
         ConsultationRequestStatus = newStatus;
+    }
+    
+    public void UpdateComment(string comment)
+    {
+        Comment = comment;    
     }
     
     /// <summary>

@@ -64,4 +64,26 @@ public sealed class ConsultationService : IConsultationService
                     throw new ArgumentOutOfRangeException();
             }
         }, defaultValue: false);
+    
+    public Task<bool> UpdateCommentAsync(Guid id, string? comment, CancellationToken ct = default)
+        => _runner.RunCatchingAsync(async () =>
+        {
+            var request = new UpdateConsultationCommentRequest(comment);
+            var response = await _consultationsApi.UpdateCommentAsync(id, request, ct);
+            
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return true;
+                case HttpStatusCode.NotFound:
+                    _commonErrorHandlers.HandleNotFound(response.Error!);
+                    return false;
+                case HttpStatusCode.InternalServerError:
+                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
+                    return false;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+        }, defaultValue: false);
 }

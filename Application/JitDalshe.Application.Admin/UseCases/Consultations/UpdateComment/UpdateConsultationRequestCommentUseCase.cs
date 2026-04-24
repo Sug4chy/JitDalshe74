@@ -5,20 +5,24 @@ using JitDalshe.Application.Errors;
 using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.ValueObjects;
 
-namespace JitDalshe.Application.Admin.UseCases.Consultations.ChangeStatus;
+namespace JitDalshe.Application.Admin.UseCases.Consultations.UpdateComment;
+
 
 [UseCase]
-public sealed class ChangeConsultationRequestStatusUseCase : IChangeConsultationRequestStatusUseCase
+public sealed class UpdateConsultationRequestCommentUseCase : IUpdateConsultationRequestCommentUseCase
 {
     private readonly IConsultationRequestsRepository _requests;
-
-    public ChangeConsultationRequestStatusUseCase(IConsultationRequestsRepository requests)
+    
+    public UpdateConsultationRequestCommentUseCase(IConsultationRequestsRepository requests)
     {
         _requests = requests;
     }
-    
-    public async Task<UnitResult<Error>> EditAsync(IdOf<ConsultationRequest> requestId, ConsultationRequestStatus newStatus, CancellationToken ct = default)
-        
+
+    public async Task<UnitResult<Error>> UpdateAsync(
+        IdOf<ConsultationRequest> requestId,
+        string? comment,
+        CancellationToken ct = default
+        )
     {
         try
         {
@@ -29,16 +33,15 @@ public sealed class ChangeConsultationRequestStatusUseCase : IChangeConsultation
             }
 
             var request = maybeRequest.Value;
-            
-            request.ChangeStatus(newStatus);
-            
+            request.UpdateComment(comment);
+
             await _requests.EditAsync(request, ct);
-            
+
             return UnitResult.Success<Error>();
         }
         catch (Exception e)
         {
-            return UnitResult.Failure(Error.Of(e.Message));
+            return UnitResult.Failure<Error>(Error.Of(e.Message));
         }
     }
 }

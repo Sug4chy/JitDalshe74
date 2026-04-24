@@ -13,4 +13,6 @@ public interface IConsultationsApiClient
     [Patch("/{id}/status")]
     Task<ApiResponse<IApiResponse>> ChangeStatusAsync(Guid id, ChangeConsultationRequestStatusRequest request, CancellationToken ct = default); 
 
+    [Patch("/{id}/comment")]
+    Task<ApiResponse<IApiResponse>> UpdateCommentAsync(Guid id, UpdateConsultationCommentRequest request, CancellationToken ct = default);
 }

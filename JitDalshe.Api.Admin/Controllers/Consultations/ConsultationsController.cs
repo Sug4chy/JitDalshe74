@@ -1,9 +1,11 @@
 using JitDalshe.Api.Admin.Controllers.Consultations.Requests;
+using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Api.Models;
 using JitDalshe.Application.Admin.Dto;
 using JitDalshe.Application.Admin.UseCases.Consultations.ChangeStatus;
 using JitDalshe.Application.Admin.UseCases.Consultations.ListRequests;
+using JitDalshe.Application.Admin.UseCases.Consultations.UpdateComment;
 using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +44,26 @@ public class ConsultationsController : AbstractController
         CancellationToken ct = default)
     {
         var result = await changeRequestStatus.EditAsync(IdOf<ConsultationRequest>.From(id), request.Status, ct);
+        return result.IsSuccess
+            ? Ok()
+            : Error(result.Error);
+    }
+    
+    [HttpPatch("{id:guid}/comment")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateConsultationComment(
+        [FromRoute] Guid id,
+        [FromBody] UpdateConsultationCommentRequest request,
+        [FromServices] IUpdateConsultationRequestCommentUseCase updateComment,
+        CancellationToken ct = default)
+    {
+        var result = await updateComment.UpdateAsync(
+            IdOf<ConsultationRequest>.From(id), 
+            request.Comment, 
+            ct);
+    
         return result.IsSuccess
             ? Ok()
             : Error(result.Error);

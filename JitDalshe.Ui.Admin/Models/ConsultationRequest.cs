@@ -8,7 +8,8 @@ public sealed record ConsultationRequest(
     string? PatientEmail,
     ConsultationRequestStatus ConsultationRequestStatus,
     PatientCommunicationMethod CommunicationMethods,
-    DateOnly Date
+    DateOnly Date,
+    string? Comment
 )
 {
     public string CommunicationMethodsString

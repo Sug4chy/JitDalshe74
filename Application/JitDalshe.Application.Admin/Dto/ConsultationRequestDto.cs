@@ -10,5 +10,6 @@ public readonly record struct ConsultationRequestDto(
     string? PatientEmail,
     ConsultationRequestStatus ConsultationRequestStatus,
     PatientCommunicationMethod CommunicationMethods,
-    DateOnly Date
+    DateOnly Date,
+    string? Comment
 );
