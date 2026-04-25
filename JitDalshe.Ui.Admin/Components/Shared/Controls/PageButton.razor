@@ -1,0 +1,13 @@
+<button
+    class="btn btn-outline-secondary"
+    @onclick="OnButtonClick"
+    disabled="@Disabled">
+    
+    @Text
+</button>
+
+@code {
+    [Parameter] public required string Text { get; init; }
+    [Parameter] public required bool Disabled { get; init; }
+    [Parameter] public required EventCallback OnButtonClick { get; init; }
+}

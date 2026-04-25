@@ -27,22 +27,22 @@ public sealed class ConsultationService : IConsultationService
         _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
-    public Task<ConsultationRequest[]> ListAsync()
+    public Task<PagedResult<ConsultationRequest>?> ListAsync(int pageNumber, int pageSize, CancellationToken ct = default)
         => _runner.RunCatchingAsync(async () =>
         {
-            var response = await _consultationsApi.ListAsync();
+            var response = await _consultationsApi.ListAsync(pageNumber, pageSize, ct);
 
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return response.Content!;
+                    return response.Content;
                 case HttpStatusCode.InternalServerError:
                     _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    return [];
+                    return null;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }, defaultValue: []);
+        }, defaultValue: null);
 
     public Task<bool> ChangeStatusAsync(Guid id, ConsultationRequestStatus status, CancellationToken ct = default) 
         => _runner.RunCatchingAsync(async () =>

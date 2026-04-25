@@ -6,6 +6,7 @@ using JitDalshe.Application.Admin.Extensions;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
+using JitDalshe.Application.Models;
 
 namespace JitDalshe.Application.Admin.UseCases.Consultations.ListRequests;
 
@@ -19,24 +20,33 @@ public sealed class ListConsultationRequestsUseCase : IListConsultationRequestsU
         _requests = requests;
     }
 
-    public async Task<Result<ConsultationRequestDto[], Error>> ListAsync(CancellationToken ct = default)
+    public async Task<Result<PagedResult<ConsultationRequestDto>, Error>> ListAsync(int pageNumber, int pageSize, CancellationToken ct = default)
     {
         try
         {
             var requests = await _requests.FindAllAsync(
+                pageNumber: pageNumber,
+                pageSize: pageSize,
                 orderByExpression: x => x.CreatedAt,
                 sortingOrder: SortingOrder.Descending,
                 ct: ct);
 
-            return Result.Success<ConsultationRequestDto[], Error>(
-                requests
-                    .Select(x => x.ToDto())
-                    .ToArray()
+            var totalCount = await _requests.CountAsync(null, ct);
+
+            var dtos = requests.Select(x => x.ToDto()).ToArray();
+            
+            var pagedResult = new PagedResult<ConsultationRequestDto>(
+                Items: dtos,
+                TotalCount: totalCount,
+                PageNumber: pageNumber,
+                PageSize: pageSize
             );
+            
+            return Result.Success<PagedResult<ConsultationRequestDto>, Error>(pagedResult);
         }
         catch (Exception e)
         {
-            return Result.Failure<ConsultationRequestDto[], Error>(Error.Of(e.Message));
+            return Result.Failure<PagedResult<ConsultationRequestDto>, Error>(Error.Of(e.Message));
         }
     }
 }

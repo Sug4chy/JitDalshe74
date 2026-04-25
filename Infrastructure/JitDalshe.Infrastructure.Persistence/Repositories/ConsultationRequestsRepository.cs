@@ -61,4 +61,17 @@ internal sealed class ConsultationRequestsRepository : IConsultationRequestsRepo
         _db.ConsultationRequests.Update(request);
         await _db.SaveChangesAsync(ct);
     }
+
+    public async Task<int> CountAsync(Expression<Func<ConsultationRequest, bool>>? filteringExpression = null,
+        CancellationToken ct = default)
+    {
+        var query = _db.Set<ConsultationRequest>().AsQueryable();
+
+        if (filteringExpression is not null)
+        {
+            query = query.Where(filteringExpression);
+        }
+        
+        return await query.CountAsync(ct);
+    }
 }

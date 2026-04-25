@@ -49,7 +49,7 @@ public sealed class ConsultationRequest : AuditableEntity<IdOf<ConsultationReque
         ConsultationRequestStatus = newStatus;
     }
     
-    public void UpdateComment(string comment)
+    public void UpdateComment(string? comment)
     {
         Comment = comment;    
     }

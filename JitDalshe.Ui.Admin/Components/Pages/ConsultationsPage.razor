@@ -1,5 +1,7 @@
 @page "/consultations"
 @using JitDalshe.Ui.Admin.Components.Consultations
+@using JitDalshe.Ui.Admin.Components.Shared.Controls
+@using JitDalshe.Ui.Admin.Components.Shared.States
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Services.ConsultationService
 @inject IConsultationService ConsultationService
@@ -9,29 +11,72 @@
     <h1>Заявки на консультацию</h1>
 </div>
 
-@if (_requests is not null)
-{
-    @foreach (var request in _requests)
-    {
-        <ConsultationCard Request="request" OnStatusChanged="LoadRequests"/>
-    }
-}
-else
+@if (_isLoading)
 {
     <SpinnerLoader/>
 }
+@if (_pagedResult is null || _pagedResult.Items.Length == 0)
+{
+    <EmptyState Message="Заявок пока нет" />
+}
+else
+{
+    @foreach (var request in _pagedResult.Items)
+    {
+        <ConsultationCard Request="@request" OnStatusChanged="@LoadCurrentPage"/>
+    }
+    
+    <PaginationControls
+        CurrentPage="@_currentPage"
+        TotalPages="@_totalPages"
+        OnPrevButtonClicked="@LoadPrevPage"
+        OnNextButtonClicked="@LoadNextPage"
+        />
+}
 
 @code {
-    private ConsultationRequest[]? _requests;
-
-    private async Task LoadRequests()
-    {
-        _requests = await ConsultationService.ListAsync();
-    }
-
+    private PagedResult<ConsultationRequest>? _pagedResult;
+    private int _currentPage = 1;
+    private int _totalPages = 1;
+    private bool _isLoading;
+    private const int _pageSize = 10;
+    
     protected override async Task OnInitializedAsync()
+        => await LoadCurrentPage();
+    
+    private async Task LoadCurrentPage()
     {
-        await LoadRequests();
+        _isLoading = true;
+        StateHasChanged();
+
+        var result = await ConsultationService.ListAsync(_currentPage, _pageSize);
+
+        if (result is not null)
+        {
+            _pagedResult = result;
+            _totalPages = result.TotalPages;
+        }
+
+        _isLoading = false;
+        StateHasChanged();
     }
 
+    private async Task LoadPrevPage()
+    {
+        if (_currentPage > 1)
+        {
+            _currentPage--;
+            await LoadCurrentPage();
+        }
+    }
+
+    private async Task LoadNextPage()
+    {
+        if (_currentPage < _totalPages)
+        {
+            _currentPage++;
+            await LoadCurrentPage();
+        }
+    }
+    
 }

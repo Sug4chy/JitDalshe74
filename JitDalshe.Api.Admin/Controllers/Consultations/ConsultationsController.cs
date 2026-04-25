@@ -1,4 +1,5 @@
 using JitDalshe.Api.Admin.Controllers.Consultations.Requests;
+using JitDalshe.Api.Admin.Requests;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Api.Models;
@@ -6,6 +7,7 @@ using JitDalshe.Application.Admin.Dto;
 using JitDalshe.Application.Admin.UseCases.Consultations.ChangeStatus;
 using JitDalshe.Application.Admin.UseCases.Consultations.ListRequests;
 using JitDalshe.Application.Admin.UseCases.Consultations.UpdateComment;
+using JitDalshe.Application.Models;
 using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -20,13 +22,16 @@ public class ConsultationsController : AbstractController
     /// Получение полного списка заявок на консультацию (от новых к старым)
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(ConsultationRequestDto[]),StatusCodes.Status200OK)]
+    [ValidateRequest]
+    [ProducesResponseType(typeof(PagedResult<ConsultationRequestDto>),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListConsultationRequests(
+        [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListConsultationRequestsUseCase listRequests,
         CancellationToken ct = default)
     {
-        var result = await listRequests.ListAsync(ct);
+        var result = await listRequests.ListAsync(request.PageNumber, request.PageSize, ct);
 
         return result.IsSuccess
             ? Ok(result.Value)

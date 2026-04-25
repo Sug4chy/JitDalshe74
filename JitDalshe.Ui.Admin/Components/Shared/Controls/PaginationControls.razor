@@ -1,0 +1,29 @@
+
+
+@if (TotalPages > 1)
+{
+    <div class="d-flex justify-content-center align-items-center gap-3 my-4">
+        <PageButton 
+            Text="← Назад" 
+            Disabled="@(CurrentPage <= 1)" 
+            OnButtonClick="@OnPrevButtonClicked" />
+        
+        <span class="text-muted">
+            Страница @CurrentPage из @TotalPages
+        </span>
+        
+        <PageButton 
+            Text="Вперёд →" 
+            Disabled="@(CurrentPage >= TotalPages)" 
+            OnButtonClick="@OnNextButtonClicked" />
+    </div>
+}
+
+
+
+@code {
+    [Parameter] public required int CurrentPage { get; init; }
+    [Parameter] public required int TotalPages { get; init; }
+    [Parameter] public required EventCallback OnPrevButtonClicked { get; init; }
+    [Parameter] public required EventCallback OnNextButtonClicked { get; init; }
+}

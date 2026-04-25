@@ -21,4 +21,6 @@ public interface IConsultationRequestsRepository
     Task AddAsync(ConsultationRequest request, CancellationToken ct = default);
     
     Task EditAsync(ConsultationRequest request, CancellationToken ct = default);
+    
+    Task<int> CountAsync(Expression<Func<ConsultationRequest, bool>>? filteringExpression = null, CancellationToken ct = default);
 }
