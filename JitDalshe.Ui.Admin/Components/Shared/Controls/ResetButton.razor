@@ -1,0 +1,13 @@
+<div class="mt-3">
+    <button type="button" 
+            class="btn btn-link btn-sm p-0 @Class" 
+            @onclick="OnClick">
+        @Text
+    </button>
+</div>
+
+@code {
+    [Parameter] public string Text { get; set; } = "Сбросить фильтры";
+    [Parameter] public string? Class { get; init; }
+    [Parameter] public EventCallback OnClick { get; init; }
+}

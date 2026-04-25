@@ -27,10 +27,16 @@ public sealed class ConsultationService : IConsultationService
         _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
-    public Task<PagedResult<ConsultationRequest>?> ListAsync(int pageNumber, int pageSize, CancellationToken ct = default)
-        => _runner.RunCatchingAsync(async () =>
-        {
-            var response = await _consultationsApi.ListAsync(pageNumber, pageSize, ct);
+    public Task<PagedResult<ConsultationRequest>?> ListAsync(
+        int pageNumber, 
+        int pageSize, 
+        ConsultationRequestStatus? status = null,
+        DateOnly? startDate = null,
+        DateOnly? endDate = null,
+        CancellationToken ct = default
+        ) => _runner.RunCatchingAsync(async () =>
+    {
+        var response = await _consultationsApi.ListAsync(pageNumber, pageSize, status, startDate, endDate, ct);
 
             switch (response.StatusCode)
             {

@@ -1,4 +1,5 @@
 
+using System.Linq.Expressions;
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Admin.Dto;
@@ -7,6 +8,7 @@ using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
 using JitDalshe.Application.Models;
+using JitDalshe.Domain.Entities.Consultations;
 
 namespace JitDalshe.Application.Admin.UseCases.Consultations.ListRequests;
 
@@ -20,18 +22,35 @@ public sealed class ListConsultationRequestsUseCase : IListConsultationRequestsU
         _requests = requests;
     }
 
-    public async Task<Result<PagedResult<ConsultationRequestDto>, Error>> ListAsync(int pageNumber, int pageSize, CancellationToken ct = default)
+    public async Task<Result<PagedResult<ConsultationRequestDto>, Error>> ListAsync(
+        int pageNumber, 
+        int pageSize, 
+        ConsultationRequestStatus? status = null,
+        DateOnly? startDate = null,
+        DateOnly? endDate = null,
+        CancellationToken ct = default)
     {
         try
         {
+            Expression<Func<ConsultationRequest, bool>>? filteringExpression = null;
+            
+            if (status.HasValue || startDate.HasValue || endDate.HasValue)
+            {
+                filteringExpression = x =>
+                    (!status.HasValue || x.ConsultationRequestStatus == status.Value) &&
+                    (!startDate.HasValue || DateOnly.FromDateTime(x.CreatedAt) >= startDate.Value) &&
+                    (!endDate.HasValue || DateOnly.FromDateTime(x.CreatedAt.Date) <= endDate.Value);
+            }
+            
             var requests = await _requests.FindAllAsync(
                 pageNumber: pageNumber,
                 pageSize: pageSize,
+                filteringExpression: filteringExpression,
                 orderByExpression: x => x.CreatedAt,
                 sortingOrder: SortingOrder.Descending,
                 ct: ct);
 
-            var totalCount = await _requests.CountAsync(null, ct);
+            var totalCount = await _requests.CountAsync(filteringExpression, ct);
 
             var dtos = requests.Select(x => x.ToDto()).ToArray();
             

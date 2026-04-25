@@ -29,9 +29,19 @@ public class ConsultationsController : AbstractController
     public async Task<IActionResult> ListConsultationRequests(
         [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListConsultationRequestsUseCase listRequests,
+        [FromQuery] ConsultationRequestStatus? status = null,
+        [FromQuery] DateOnly? startDate = null,
+        [FromQuery] DateOnly? endDate = null,
         CancellationToken ct = default)
     {
-        var result = await listRequests.ListAsync(request.PageNumber, request.PageSize, ct);
+        var result = await listRequests.ListAsync(
+            request.PageNumber,
+            request.PageSize,
+            status, 
+            startDate, 
+            endDate, 
+            ct);
+
 
         return result.IsSuccess
             ? Ok(result.Value)

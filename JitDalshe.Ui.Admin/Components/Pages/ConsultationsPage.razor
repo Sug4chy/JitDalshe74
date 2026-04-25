@@ -4,11 +4,16 @@
 @using JitDalshe.Ui.Admin.Components.Shared.States
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Services.ConsultationService
+@using JitDalshe.Ui.Admin.Services.ModalService
 @inject IConsultationService ConsultationService
+@inject IModalService ModalService
 
 <PageTitle>Заявки на консультацию</PageTitle>
 <div class="topbar-container">
     <h1>Заявки на консультацию</h1>
+    <button class="btn btn-primary fw-semibold" @onclick='() => ModalService.ShowModalAsync($"#{FilterModalId}")'>
+        Фильтр
+    </button>
 </div>
 
 @if (_isLoading)
@@ -28,20 +33,32 @@ else
     
     <PaginationControls
         CurrentPage="@_currentPage"
-        TotalPages="@_totalPages"
+        TotalPages="@_pagedResult.TotalPages"
         OnPrevButtonClicked="@LoadPrevPage"
         OnNextButtonClicked="@LoadNextPage"
         />
 }
 
+<FilterConsultationsModal
+    Id="@FilterModalId"
+    CurrentStatus="@_filterStatus"
+    CurrentStartDate="@_filterStartDate"
+    CurrentEndDate="@_filterEndDate"
+    OnFilterApplied="@ApplyFilters" />
+
+
 @code {
     private PagedResult<ConsultationRequest>? _pagedResult;
     private int _currentPage = 1;
-    private int _totalPages = 1;
     private bool _isLoading;
-    private const int _pageSize = 10;
+    private const int PageSize = 10;
+    private string FilterModalId { get; init; } = "modal_filter_consultations";
     
-    protected override async Task OnInitializedAsync()
+    private ConsultationRequestStatus? _filterStatus;
+    private DateOnly? _filterStartDate;
+    private DateOnly? _filterEndDate;
+    
+    protected override async Task OnInitializedAsync() 
         => await LoadCurrentPage();
     
     private async Task LoadCurrentPage()
@@ -49,12 +66,11 @@ else
         _isLoading = true;
         StateHasChanged();
 
-        var result = await ConsultationService.ListAsync(_currentPage, _pageSize);
+        var result = await ConsultationService.ListAsync(_currentPage, PageSize, _filterStatus, _filterStartDate, _filterEndDate);
 
         if (result is not null)
         {
             _pagedResult = result;
-            _totalPages = result.TotalPages;
         }
 
         _isLoading = false;
@@ -63,7 +79,7 @@ else
 
     private async Task LoadPrevPage()
     {
-        if (_currentPage > 1)
+        if (_pagedResult?.HasPreviousPage == true)
         {
             _currentPage--;
             await LoadCurrentPage();
@@ -72,11 +88,19 @@ else
 
     private async Task LoadNextPage()
     {
-        if (_currentPage < _totalPages)
+        if (_pagedResult?.HasNextPage == true)
         {
             _currentPage++;
             await LoadCurrentPage();
         }
     }
     
+    private async Task ApplyFilters((ConsultationRequestStatus? Status, DateOnly? Start, DateOnly? End) filters)
+    {
+        _filterStatus = filters.Status;
+        _filterStartDate = filters.Start;
+        _filterEndDate = filters.End;
+        _currentPage = 1; // Всегда сбрасываем на 1 страницу при фильтрации
+        await LoadCurrentPage();
+    }
 }
