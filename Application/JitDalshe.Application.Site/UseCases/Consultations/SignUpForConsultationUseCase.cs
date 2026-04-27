@@ -1,6 +1,7 @@
 using JitDalshe.Application.Abstractions.Notifications;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Attributes;
+using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.ValueObjects;
 
@@ -9,15 +10,15 @@ namespace JitDalshe.Application.Site.UseCases.Consultations;
 [UseCase]
 internal sealed class SignUpForConsultationUseCase : ISignUpForConsultationUseCase
 {
-    private readonly IConsultationRequestsRepository _consultationRequests;
+    private readonly IConsultationRequestsRepository _consultationRepository;
     // private readonly INotificationsSender _notifications;
 
     public SignUpForConsultationUseCase(
-        IConsultationRequestsRepository consultationRequests
+        IConsultationRequestsRepository consultationRepository
         // INotificationsSender notifications
         )
     {
-        _consultationRequests = consultationRequests;
+        _consultationRepository = consultationRepository;
         // _notifications = notifications;
     }
 
@@ -26,7 +27,7 @@ internal sealed class SignUpForConsultationUseCase : ISignUpForConsultationUseCa
         int patientAge, 
         string? patientPhoneNumber, 
         string? patientEmail,
-        PatientCommunicationMethod communicationMethod, 
+        CommunicationMethod communicationMethod, 
         CancellationToken ct = default)
     {
         try
@@ -39,7 +40,7 @@ internal sealed class SignUpForConsultationUseCase : ISignUpForConsultationUseCa
                 patientEmail: patientEmail,
                 communicationMethods: communicationMethod);
 
-            await _consultationRequests.AddAsync(request, ct);
+            await _consultationRepository.AddAsync(request, ct);
             // await _notifications.SendAsync("Поступила новая заявка на запись на консультацию", ct);
 
             return SignUpForConsultationResult.Success();

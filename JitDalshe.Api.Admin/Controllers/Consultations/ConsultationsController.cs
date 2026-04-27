@@ -8,6 +8,7 @@ using JitDalshe.Application.Admin.UseCases.Consultations.ChangeStatus;
 using JitDalshe.Application.Admin.UseCases.Consultations.ListRequests;
 using JitDalshe.Application.Admin.UseCases.Consultations.UpdateComment;
 using JitDalshe.Application.Models;
+using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,7 @@ public class ConsultationsController : AbstractController
     public async Task<IActionResult> ListConsultationRequests(
         [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListConsultationRequestsUseCase listRequests,
-        [FromQuery] ConsultationRequestStatus? status = null,
+        [FromQuery] RequestStatus? status = null,
         [FromQuery] DateOnly? startDate = null,
         [FromQuery] DateOnly? endDate = null,
         CancellationToken ct = default)

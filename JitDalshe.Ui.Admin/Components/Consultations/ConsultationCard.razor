@@ -1,5 +1,6 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Cards
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Common
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IModalService ModalService
 
@@ -17,7 +18,7 @@
 @code {
     [Parameter] public required ConsultationRequest Request { get; init; }
     [Parameter] public required EventCallback OnStatusChanged { get; init; }
-    private string HeaderText => $"{Request.Date.ToString("dd.MM.yyyy")} - {StatusToString(Request.ConsultationRequestStatus)}";
+    private string HeaderText => $"{Request.Date.ToString("dd.MM.yyyy")} - {StatusToString(Request.Status)}";
     private string CardTitle => $"{Request.PatientName} ({Request.PatientAge} лет)";
     private string EditModalId => $"modal_edit_consultation_{Request.Id}";
     
@@ -29,11 +30,11 @@
     private Task ShowEditModalAsync()
         => ModalService.ShowModalAsync($"#{EditModalId}");
     
-    private static string StatusToString(ConsultationRequestStatus s) => s switch
+    private static string StatusToString(RequestStatus s) => s switch
     {
-        ConsultationRequestStatus.New => "Новая",
-        ConsultationRequestStatus.InProgress => "В обработке",
-        ConsultationRequestStatus.Completed => "Обработана",
+        RequestStatus.New => "Новая",
+        RequestStatus.InProgress => "В обработке",
+        RequestStatus.Completed => "Обработана",
         _ => s.ToString()
     };
 }

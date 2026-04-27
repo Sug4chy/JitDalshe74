@@ -1,0 +1,40 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Cards
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Common
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
+
+<Card HeaderText="@HeaderText" 
+      Title="@CardTitle"
+      Comment="@Comment"
+      Buttons="Card.Button.Edit"
+      OnEditButtonClick="@ShowEditModalAsync"
+/>
+
+<EditVolunteerModal Id="@EditModalId" 
+                       Request="@Request" 
+                       OnStatusChanged="@OnStatusChanged"/>
+
+@code {
+    [Parameter] public required VolunteerRequest Request { get; init; }
+    [Parameter] public required EventCallback OnStatusChanged { get; init; }
+    private string HeaderText => $"{Request.Date.ToString("dd.MM.yyyy")} - {StatusToString(Request.Status)}";
+    private string CardTitle => $"{Request.ApplicantName} ({Request.ApplicantAge} лет)";
+    private string EditModalId => $"modal_edit_volunteer_{Request.Id}";
+    
+    private string? Comment => string.IsNullOrWhiteSpace(Request.Comment) 
+        ? null 
+        : Request.Comment;
+    
+    
+    private Task ShowEditModalAsync()
+        => ModalService.ShowModalAsync($"#{EditModalId}");
+    
+    private static string StatusToString(RequestStatus s) => s switch
+    {
+        RequestStatus.New => "Новая",
+        RequestStatus.InProgress => "В обработке",
+        RequestStatus.Completed => "Обработана",
+        _ => s.ToString()
+    };
+}

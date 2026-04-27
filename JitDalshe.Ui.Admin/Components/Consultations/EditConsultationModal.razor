@@ -1,5 +1,6 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Common
 @using JitDalshe.Ui.Admin.Services.ConsultationService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IModalService ModalService
@@ -18,9 +19,9 @@
     <div class="mb-3">
         <label class="form-label">Статус заявки:</label>
         <InputSelect class="form-select" @bind-Value="_selectedStatus">
-            <option value="@ConsultationRequestStatus.New">Новая</option>
-            <option value="@ConsultationRequestStatus.InProgress">В обработке</option>
-            <option value="@ConsultationRequestStatus.Completed">Обработана</option>
+            <option value="@RequestStatus.New">Новая</option>
+            <option value="@RequestStatus.InProgress">В обработке</option>
+            <option value="@RequestStatus.Completed">Обработана</option>
         </InputSelect>
     </div>
     
@@ -38,18 +39,18 @@
     [Parameter] public required ConsultationRequest Request { get; init; }
     [Parameter] public required EventCallback OnStatusChanged { get; init; }
     
-    private ConsultationRequestStatus _selectedStatus;
+    private RequestStatus _selectedStatus;
     private string? _comment;
 
     protected override void OnParametersSet()
     {
-        _selectedStatus = Request.ConsultationRequestStatus;
+        _selectedStatus = Request.Status;
         _comment = Request.Comment;
     }
 
     private async Task SaveStatusAsync()
     {
-        bool statusChanged = _selectedStatus != Request.ConsultationRequestStatus;
+        bool statusChanged = _selectedStatus != Request.Status;
         bool commentChanged = _comment != Request.Comment;
         
         if (!statusChanged && !commentChanged)

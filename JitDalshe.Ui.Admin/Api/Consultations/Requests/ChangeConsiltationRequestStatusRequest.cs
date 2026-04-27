@@ -1,8 +1,5 @@
-using FluentValidation;
-using JitDalshe.Ui.Admin.Models;
+using JitDalshe.Ui.Admin.Models.Common;
 
 namespace JitDalshe.Ui.Admin.Api.Consultations.Requests;
 
-public record ChangeConsultationRequestStatusRequest(
-    ConsultationRequestStatus Status
-);
+public record ChangeConsultationRequestStatusRequest(RequestStatus Status);

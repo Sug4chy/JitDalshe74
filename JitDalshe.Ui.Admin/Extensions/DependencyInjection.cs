@@ -6,7 +6,9 @@ using JitDalshe.Ui.Admin.Services.ModalService;
 using JitDalshe.Ui.Admin.Services.NewsService;
 using JitDalshe.Ui.Admin.Services.ReviewService;
 using JitDalshe.Ui.Admin.Services.Shared;
+using JitDalshe.Ui.Admin.Services.SupportGroupService;
 using JitDalshe.Ui.Admin.Services.SwiperService;
+using JitDalshe.Ui.Admin.Services.VolunteerService;
 
 namespace JitDalshe.Ui.Admin.Extensions;
 
@@ -38,4 +40,10 @@ public static class DependencyInjection
 
     public static IServiceCollection AddConsultationService(this IServiceCollection services)
         => services.AddScoped<IConsultationService, ConsultationService>();
+    
+    public static IServiceCollection AddSupportGroupService(this IServiceCollection services)
+        => services.AddScoped<ISupportGroupService,  SupportGroupService>();
+    
+    public static IServiceCollection AddVolunteerService(this IServiceCollection services)
+        => services.AddScoped<IVolunteerService,  VolunteerService>();
 }

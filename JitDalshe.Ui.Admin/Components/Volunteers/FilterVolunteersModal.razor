@@ -1,0 +1,78 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Controls
+@using JitDalshe.Ui.Admin.Components.Shared.Forms
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Common
+@using JitDalshe.Ui.Admin.Services.VolunteerService
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
+@inject IVolunteerService VolunteerService
+@inject IToastService ToastService
+
+<Modal Id="@Id"
+       Title="Фильтр заявок"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Применить"
+       OnFooterButtonClick="@ApplyFiltersAsync">
+
+    <div class="mb-3">
+        <label class="form-label">Статус</label>
+        <InputSelect class="form-select" @bind-Value="_selectedStatus">
+            <option value="">Все статусы</option>
+            <option value="@RequestStatus.New">Новая</option>
+            <option value="@RequestStatus.InProgress">В обработке</option>
+            <option value="@RequestStatus.Completed">Обработана</option>
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">С даты</label>
+        <InputDate TValue="DateTime?" class="form-control" @bind-Value="_startDate" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">По дату</label>
+        <InputDate TValue="DateTime?" class="form-control" @bind-Value="_endDate" />
+    </div>
+
+    <ResetButton OnClick="@ClearFilterAsync" />
+</Modal>
+
+@code {
+    [Parameter] public required string Id { get; init; }
+    
+    [Parameter] public RequestStatus? CurrentStatus { get; set; }
+    [Parameter] public DateOnly? CurrentStartDate { get; set; }
+    [Parameter] public DateOnly? CurrentEndDate { get; set; }
+    
+    [Parameter] public EventCallback<(RequestStatus? Status, DateOnly? Start, DateOnly? End)> OnFilterApplied { get; set; }
+    
+    private RequestStatus? _selectedStatus;
+    private DateTime? _startDate;
+    private DateTime? _endDate;
+
+    protected override void OnParametersSet()
+    {
+        _selectedStatus = CurrentStatus;
+        _startDate = CurrentStartDate?.ToDateTime(TimeOnly.MinValue);
+        _endDate = CurrentEndDate?.ToDateTime(TimeOnly.MinValue);
+    }
+
+    private async Task ApplyFiltersAsync()
+    {
+        var start = _startDate.HasValue ? DateOnly.FromDateTime(_startDate.Value) : (DateOnly?)null;
+        var end = _endDate.HasValue ? DateOnly.FromDateTime(_endDate.Value) : (DateOnly?)null;
+        
+        await OnFilterApplied.InvokeAsync((_selectedStatus, start, end));
+        await ModalService.HideModalAsync($"#{Id}");
+    }
+    
+    private async Task ClearFilterAsync()
+    {
+        _selectedStatus = null;
+        _startDate = null;
+        _endDate = null;
+        
+        await OnFilterApplied.InvokeAsync((null, null, null));
+        await ModalService.HideModalAsync($"#{Id}");
+    }
+}

@@ -1,3 +1,4 @@
+using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.Consultations;
 
 namespace JitDalshe.Application.Site.UseCases.Consultations;
@@ -9,6 +10,6 @@ public interface ISignUpForConsultationUseCase
         int patientAge,
         string? patientPhoneNumber,
         string? patientEmail,
-        PatientCommunicationMethod communicationMethod,
+        CommunicationMethod communicationMethod,
         CancellationToken ct = default);
 }

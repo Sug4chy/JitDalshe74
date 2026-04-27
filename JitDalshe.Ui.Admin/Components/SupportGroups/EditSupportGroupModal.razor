@@ -1,0 +1,81 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Common
+@using JitDalshe.Ui.Admin.Services.SupportGroupService
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
+@inject ISupportGroupService SupportGroupService
+@inject IToastService ToastService
+
+<Modal Id="@Id"
+       Title="Изменение статуса и комментария заявки"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Сохранить"
+       OnFooterButtonClick="@SaveStatusAsync">
+
+    <p class="h5 mb-3">Пациент: @Request.ApplicantName (@Request.ApplicantAge лет)</p>
+    <p class="h5 mb-3">Дата: @Request.Date.ToString("dd.MM.yyyy")</p>
+    
+    <div class="mb-3">
+        <label class="form-label">Статус заявки:</label>
+        <InputSelect class="form-select" @bind-Value="_selectedStatus">
+            <option value="@RequestStatus.New">Новая</option>
+            <option value="@RequestStatus.InProgress">В обработке</option>
+            <option value="@RequestStatus.Completed">Обработана</option>
+        </InputSelect>
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Комментарий:</label>
+        <InputTextArea class="form-control" 
+                       @bind-Value="_comment" 
+                       rows="4" 
+                       placeholder="Ваш комментарий..." />
+    </div>
+</Modal>
+
+@code {
+    [Parameter] public required string Id { get; init; }
+    [Parameter] public required SupportGroupRequest Request { get; init; }
+    [Parameter] public required EventCallback OnStatusChanged { get; init; }
+    
+    private RequestStatus _selectedStatus;
+    private string? _comment;
+
+    protected override void OnParametersSet()
+    {
+        _selectedStatus = Request.Status;
+        _comment = Request.Comment;
+    }
+
+    private async Task SaveStatusAsync()
+    {
+        bool statusChanged = _selectedStatus != Request.Status;
+        bool commentChanged = _comment != Request.Comment;
+        
+        if (!statusChanged && !commentChanged)
+        {
+            await ModalService.HideModalAsync($"#{Id}");
+            return;
+        }
+        
+        bool success = true;
+        
+        if (statusChanged)
+        {
+            success = await SupportGroupService.ChangeStatusAsync(Request.Id, _selectedStatus);
+            if (!success) return;
+            ToastService.ShowSuccess("Статус успешно изменён!");
+        }
+        
+        if (commentChanged)
+        {
+            success = await SupportGroupService.UpdateCommentAsync(Request.Id, _comment);
+            if (!success) return;
+            ToastService.ShowSuccess("Комментарий успешно обновлён!");
+        }
+        
+        await ModalService.HideModalAsync($"#{Id}");
+        await OnStatusChanged.InvokeAsync();
+    }
+}

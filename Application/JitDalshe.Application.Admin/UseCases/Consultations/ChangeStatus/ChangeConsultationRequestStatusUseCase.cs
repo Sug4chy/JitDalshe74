@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Errors;
+using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.ValueObjects;
 
@@ -17,7 +18,7 @@ public sealed class ChangeConsultationRequestStatusUseCase : IChangeConsultation
         _requests = requests;
     }
     
-    public async Task<UnitResult<Error>> EditAsync(IdOf<ConsultationRequest> requestId, ConsultationRequestStatus newStatus, CancellationToken ct = default)
+    public async Task<UnitResult<Error>> EditAsync(IdOf<ConsultationRequest> requestId, RequestStatus newStatus, CancellationToken ct = default)
         
     {
         try

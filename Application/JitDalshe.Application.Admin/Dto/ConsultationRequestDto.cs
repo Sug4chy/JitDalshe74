@@ -1,4 +1,5 @@
-using JitDalshe.Domain.Entities.Consultations;
+using JitDalshe.Domain.Common;
+
 
 namespace JitDalshe.Application.Admin.Dto;
 
@@ -8,8 +9,8 @@ public readonly record struct ConsultationRequestDto(
     int PatientAge,
     string? PatientPhoneNumber,
     string? PatientEmail,
-    ConsultationRequestStatus ConsultationRequestStatus,
-    PatientCommunicationMethod CommunicationMethods,
+    RequestStatus RequestStatus,
+    CommunicationMethod CommunicationMethods,
     DateOnly Date,
     string? Comment
 );

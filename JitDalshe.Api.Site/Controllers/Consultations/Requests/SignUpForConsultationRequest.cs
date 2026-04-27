@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using FluentValidation;
+using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.Consultations;
 
 namespace JitDalshe.Api.Site.Controllers.Consultations.Requests;
@@ -9,7 +10,7 @@ public readonly record struct SignUpForConsultationRequest(
     int PatientAge,
     string? PatientPhoneNumber,
     string? PatientEmail,
-    PatientCommunicationMethod CommunicationMethod
+    CommunicationMethod CommunicationMethod
 );
 
 public sealed partial class SignUpForConsultationRequestValidator : AbstractValidator<SignUpForConsultationRequest>
@@ -34,18 +35,18 @@ public sealed partial class SignUpForConsultationRequestValidator : AbstractVali
 
         RuleFor(x => x.PatientPhoneNumber)
             .NotEmpty()
-            .When(x => x.CommunicationMethod.HasFlag(PatientCommunicationMethod.CallAPhone) ||
-                       x.CommunicationMethod.HasFlag(PatientCommunicationMethod.WhatsApp) ||
-                       x.CommunicationMethod.HasFlag(PatientCommunicationMethod.Telegram))
+            .When(x => x.CommunicationMethod.HasFlag(CommunicationMethod.CallAPhone) ||
+                       x.CommunicationMethod.HasFlag(CommunicationMethod.WhatsApp) ||
+                       x.CommunicationMethod.HasFlag(CommunicationMethod.Telegram))
             .Must(x => PhoneNumberRegex().IsMatch(x!))
-            .When(x => x.CommunicationMethod.HasFlag(PatientCommunicationMethod.CallAPhone) ||
-                       x.CommunicationMethod.HasFlag(PatientCommunicationMethod.WhatsApp) ||
-                       x.CommunicationMethod.HasFlag(PatientCommunicationMethod.Telegram));
+            .When(x => x.CommunicationMethod.HasFlag(CommunicationMethod.CallAPhone) ||
+                       x.CommunicationMethod.HasFlag(CommunicationMethod.WhatsApp) ||
+                       x.CommunicationMethod.HasFlag(CommunicationMethod.Telegram));
 
         RuleFor(x => x.PatientEmail)
             .NotEmpty()
-            .When(x => x.CommunicationMethod.HasFlag(PatientCommunicationMethod.Email))
+            .When(x => x.CommunicationMethod.HasFlag(CommunicationMethod.Email))
             .EmailAddress()
-            .When(x => x.CommunicationMethod.HasFlag(PatientCommunicationMethod.Email));
+            .When(x => x.CommunicationMethod.HasFlag(CommunicationMethod.Email));
     }
 }

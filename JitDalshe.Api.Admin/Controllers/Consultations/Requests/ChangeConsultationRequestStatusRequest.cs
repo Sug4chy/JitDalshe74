@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
 using JitDalshe.Api.Attributes;
+using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.Consultations;
 
 namespace JitDalshe.Api.Admin.Controllers.Consultations.Requests;
@@ -8,7 +9,7 @@ namespace JitDalshe.Api.Admin.Controllers.Consultations.Requests;
 [Validator<ChangeConsultationRequestStatusRequestValidator>]
 public sealed record ChangeConsultationRequestStatusRequest(
     [property: JsonConverter(typeof(JsonStringEnumConverter))] 
-    ConsultationRequestStatus Status
+    RequestStatus Status
 );
 
 public sealed class ChangeConsultationRequestStatusRequestValidator : AbstractValidator<ChangeConsultationRequestStatusRequest>

@@ -129,7 +129,8 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Comment")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("comment");
 
                     b.Property<int>("CommunicationMethods")
                         .HasColumnType("integer")
@@ -389,6 +390,102 @@ namespace JitDalshe.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("review", (string)null);
+                });
+
+            modelBuilder.Entity("JitDalshe.Domain.Entities.SupportGroups.SupportGroupRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("ApplicantAge")
+                        .HasColumnType("integer")
+                        .HasColumnName("applicant_age");
+
+                    b.Property<string>("ApplicantEmail")
+                        .HasColumnType("text")
+                        .HasColumnName("applicant_email");
+
+                    b.Property<string>("ApplicantName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("applicant_name");
+
+                    b.Property<string>("ApplicantPhoneNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("applicant_phone_number");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("text")
+                        .HasColumnName("comment");
+
+                    b.Property<int>("CommunicationMethods")
+                        .HasColumnType("integer")
+                        .HasColumnName("communication_methods");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("support_group_request", (string)null);
+                });
+
+            modelBuilder.Entity("JitDalshe.Domain.Entities.Volunteers.VolunteerRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("ApplicantAge")
+                        .HasColumnType("integer")
+                        .HasColumnName("applicant_age");
+
+                    b.Property<string>("ApplicantEmail")
+                        .HasColumnType("text")
+                        .HasColumnName("applicant_email");
+
+                    b.Property<string>("ApplicantName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("applicant_name");
+
+                    b.Property<string>("ApplicantPhoneNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("applicant_phone_number");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("text")
+                        .HasColumnName("comment");
+
+                    b.Property<int>("CommunicationMethods")
+                        .HasColumnType("integer")
+                        .HasColumnName("communication_methods");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("volunteer_request", (string)null);
                 });
 
             modelBuilder.Entity("JitDalshe.Domain.Entities.Banners.BannerImage", b =>

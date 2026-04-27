@@ -4,6 +4,7 @@
 ## Get latest from `dotnet new gitignore`
 
 # dotenv files
+.htpasswd
 .env
 *.Production.json
 # User-specific files

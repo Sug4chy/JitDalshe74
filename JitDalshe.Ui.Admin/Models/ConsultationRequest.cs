@@ -1,4 +1,7 @@
+using JitDalshe.Ui.Admin.Models.Common;
+
 namespace JitDalshe.Ui.Admin.Models;
+
 
 public sealed record ConsultationRequest(
     Guid Id,
@@ -6,8 +9,8 @@ public sealed record ConsultationRequest(
     int PatientAge,
     string? PatientPhoneNumber,
     string? PatientEmail,
-    ConsultationRequestStatus ConsultationRequestStatus,
-    PatientCommunicationMethod CommunicationMethods,
+    RequestStatus Status,
+    CommunicationMethod CommunicationMethods,
     DateOnly Date,
     string? Comment
 )
@@ -18,35 +21,19 @@ public sealed record ConsultationRequest(
         {
             var methods = new List<string>();
             
-            if (CommunicationMethods.HasFlag(PatientCommunicationMethod.CallAPhone)) 
+            if (CommunicationMethods.HasFlag(CommunicationMethod.CallAPhone)) 
                 methods.Add("Звонок");
             
-            if (CommunicationMethods.HasFlag(PatientCommunicationMethod.WhatsApp)) 
+            if (CommunicationMethods.HasFlag(CommunicationMethod.WhatsApp)) 
                 methods.Add("WhatsApp");
             
-            if (CommunicationMethods.HasFlag(PatientCommunicationMethod.Telegram)) 
+            if (CommunicationMethods.HasFlag(CommunicationMethod.Telegram)) 
                 methods.Add("Telegram");
             
-            if (CommunicationMethods.HasFlag(PatientCommunicationMethod.Email)) 
+            if (CommunicationMethods.HasFlag(CommunicationMethod.Email)) 
                 methods.Add("Email");
 
             return methods.Count > 0 ? string.Join(", ", methods) : "Не выбран";
         }
     }
-}
-
-[Flags]
-public enum PatientCommunicationMethod
-{
-    CallAPhone = 1,
-    WhatsApp = 2,
-    Telegram = 4,
-    Email = 8
-}
-
-public enum ConsultationRequestStatus
-{
-    New = 0,
-    InProgress = 1,
-    Completed = 2
 }

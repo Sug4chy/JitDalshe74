@@ -4,6 +4,8 @@ using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.Entities.Reviews;
+using JitDalshe.Domain.Entities.SupportGroups;
+using JitDalshe.Domain.Entities.Volunteers;
 
 namespace JitDalshe.Application.Admin.Extensions;
 
@@ -62,7 +64,33 @@ public static class DomainToDtoMappingExtensions
             PatientAge: request.PatientAge,
             PatientPhoneNumber: request.PatientPhoneNumber,
             PatientEmail: request.PatientEmail,
-            ConsultationRequestStatus: request.ConsultationRequestStatus,
+            RequestStatus: request.ConsultationRequestStatus,
+            CommunicationMethods: request.CommunicationMethods,
+            Date: DateOnly.FromDateTime(request.CreatedAt),
+            Comment: request.Comment
+        );
+    
+    public static SupportGroupRequestDto ToDto(this SupportGroupRequest request)
+        => new(
+            Id: request.Id,
+            ApplicantName: request.ApplicantName,
+            ApplicantAge: request.ApplicantAge,
+            ApplicantPhoneNumber: request.ApplicantPhoneNumber,
+            ApplicantEmail: request.ApplicantEmail,
+            Status: request.Status,
+            CommunicationMethods: request.CommunicationMethods,
+            Date: DateOnly.FromDateTime(request.CreatedAt),
+            Comment: request.Comment
+        );
+    
+    public static VolunteerRequestDto ToDto(this VolunteerRequest request)
+        => new(
+            Id: request.Id,
+            ApplicantName: request.ApplicantName,
+            ApplicantAge: request.ApplicantAge,
+            ApplicantPhoneNumber: request.ApplicantPhoneNumber,
+            ApplicantEmail: request.ApplicantEmail,
+            Status: request.Status,
             CommunicationMethods: request.CommunicationMethods,
             Date: DateOnly.FromDateTime(request.CreatedAt),
             Comment: request.Comment

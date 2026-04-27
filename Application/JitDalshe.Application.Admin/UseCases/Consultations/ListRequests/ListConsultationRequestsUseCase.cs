@@ -8,6 +8,7 @@ using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
 using JitDalshe.Application.Models;
+using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.Consultations;
 
 namespace JitDalshe.Application.Admin.UseCases.Consultations.ListRequests;
@@ -25,7 +26,7 @@ public sealed class ListConsultationRequestsUseCase : IListConsultationRequestsU
     public async Task<Result<PagedResult<ConsultationRequestDto>, Error>> ListAsync(
         int pageNumber, 
         int pageSize, 
-        ConsultationRequestStatus? status = null,
+        RequestStatus? status = null,
         DateOnly? startDate = null,
         DateOnly? endDate = null,
         CancellationToken ct = default)

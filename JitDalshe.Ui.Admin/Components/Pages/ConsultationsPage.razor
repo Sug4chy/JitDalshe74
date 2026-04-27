@@ -3,6 +3,7 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Controls
 @using JitDalshe.Ui.Admin.Components.Shared.States
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Common
 @using JitDalshe.Ui.Admin.Services.ConsultationService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IConsultationService ConsultationService
@@ -54,7 +55,7 @@ else
     private const int PageSize = 10;
     private string FilterModalId { get; init; } = "modal_filter_consultations";
     
-    private ConsultationRequestStatus? _filterStatus;
+    private RequestStatus? _filterStatus;
     private DateOnly? _filterStartDate;
     private DateOnly? _filterEndDate;
     
@@ -95,12 +96,12 @@ else
         }
     }
     
-    private async Task ApplyFilters((ConsultationRequestStatus? Status, DateOnly? Start, DateOnly? End) filters)
+    private async Task ApplyFilters((RequestStatus? Status, DateOnly? Start, DateOnly? End) filters)
     {
         _filterStatus = filters.Status;
         _filterStartDate = filters.Start;
         _filterEndDate = filters.End;
-        _currentPage = 1; // Всегда сбрасываем на 1 страницу при фильтрации
+        _currentPage = 1;
         await LoadCurrentPage();
     }
 }

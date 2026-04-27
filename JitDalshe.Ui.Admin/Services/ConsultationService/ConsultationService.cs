@@ -4,6 +4,7 @@ using JitDalshe.Ui.Admin.Api.Consultations;
 using JitDalshe.Ui.Admin.Api.Consultations.Requests;
 using JitDalshe.Ui.Admin.Extensions;
 using JitDalshe.Ui.Admin.Models;
+using JitDalshe.Ui.Admin.Models.Common;
 using JitDalshe.Ui.Admin.Services.ErrorHandlers;
 using JitDalshe.Ui.Admin.Services.Shared;
 
@@ -30,7 +31,7 @@ public sealed class ConsultationService : IConsultationService
     public Task<PagedResult<ConsultationRequest>?> ListAsync(
         int pageNumber, 
         int pageSize, 
-        ConsultationRequestStatus? status = null,
+        RequestStatus? status = null,
         DateOnly? startDate = null,
         DateOnly? endDate = null,
         CancellationToken ct = default
@@ -50,7 +51,7 @@ public sealed class ConsultationService : IConsultationService
             }
         }, defaultValue: null);
 
-    public Task<bool> ChangeStatusAsync(Guid id, ConsultationRequestStatus status, CancellationToken ct = default) 
+    public Task<bool> ChangeStatusAsync(Guid id, RequestStatus status, CancellationToken ct = default) 
         => _runner.RunCatchingAsync(async () =>
         {
             var request = new ChangeConsultationRequestStatusRequest(status);
@@ -74,7 +75,7 @@ public sealed class ConsultationService : IConsultationService
     public Task<bool> UpdateCommentAsync(Guid id, string? comment, CancellationToken ct = default)
         => _runner.RunCatchingAsync(async () =>
         {
-            var request = new UpdateConsultationCommentRequest(comment);
+            var request = new UpdateConsultationRequestCommentRequest(comment);
             var response = await _consultationsApi.UpdateCommentAsync(id, request, ct);
             
             switch (response.StatusCode)

@@ -4,6 +4,8 @@ using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.Entities.Reviews;
+using JitDalshe.Domain.Entities.SupportGroups;
+using JitDalshe.Domain.Entities.Volunteers;
 using Microsoft.EntityFrameworkCore;
 
 namespace JitDalshe.Infrastructure.Persistence.Context;
@@ -20,7 +22,8 @@ public sealed class PostgresqlDbContext(DbContextOptions<PostgresqlDbContext> op
     public DbSet<Review> Reviews { get; init; }
     public DbSet<TelegramChat> TelegramChats { get; init; }
     public DbSet<ConsultationRequest> ConsultationRequests { get; init; }
-
+    public DbSet<SupportGroupRequest> SupportGroupRequests { get; init; }
+    public DbSet<VolunteerRequest> VolunteerRequests { get; init; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);

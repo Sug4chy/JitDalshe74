@@ -2,6 +2,7 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Common
 @using JitDalshe.Ui.Admin.Services.ConsultationService
 @using JitDalshe.Ui.Admin.Services.ModalService
 @inject IModalService ModalService
@@ -18,9 +19,9 @@
         <label class="form-label">Статус</label>
         <InputSelect class="form-select" @bind-Value="_selectedStatus">
             <option value="">Все статусы</option>
-            <option value="@ConsultationRequestStatus.New">Новая</option>
-            <option value="@ConsultationRequestStatus.InProgress">В обработке</option>
-            <option value="@ConsultationRequestStatus.Completed">Обработана</option>
+            <option value="@RequestStatus.New">Новая</option>
+            <option value="@RequestStatus.InProgress">В обработке</option>
+            <option value="@RequestStatus.Completed">Обработана</option>
         </InputSelect>
     </div>
 
@@ -39,13 +40,13 @@
 @code {
     [Parameter] public required string Id { get; init; }
     
-    [Parameter] public ConsultationRequestStatus? CurrentStatus { get; set; }
+    [Parameter] public RequestStatus? CurrentStatus { get; set; }
     [Parameter] public DateOnly? CurrentStartDate { get; set; }
     [Parameter] public DateOnly? CurrentEndDate { get; set; }
     
-    [Parameter] public EventCallback<(ConsultationRequestStatus? Status, DateOnly? Start, DateOnly? End)> OnFilterApplied { get; set; }
+    [Parameter] public EventCallback<(RequestStatus? Status, DateOnly? Start, DateOnly? End)> OnFilterApplied { get; set; }
     
-    private ConsultationRequestStatus? _selectedStatus;
+    private RequestStatus? _selectedStatus;
     private DateTime? _startDate;
     private DateTime? _endDate;
 
