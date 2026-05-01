@@ -17,19 +17,31 @@ public sealed class EventEntityTypeConfiguration : IEntityTypeConfiguration<Even
             .IsRequired()
             .HasColumnName(nameof(Event.Title).ToSnakeCase());
 
-        entity.Property(x => x.Description)
-            .HasColumnName(nameof(Event.Description).ToSnakeCase());
-
-        entity.Property(x => x.Date)
+        entity.Property(x => x.ShortDescription)
             .IsRequired()
+            .HasColumnName(nameof(Event.ShortDescription).ToSnakeCase());
+
+        entity.Property(x => x.FullText)
+            .IsRequired()
+            .HasColumnType("text")
+            .HasColumnName(nameof(Event.FullText).ToSnakeCase());
+        
+        entity.Property(x => x.Date)
             .HasColumnType("date")
             .HasColumnName(nameof(Event.Date).ToSnakeCase());
-
-        entity.Property(x => x.IsDisplaying)
+        
+        entity.Property(x => x.Time)
+            .HasColumnName(nameof(Event.Time).ToSnakeCase());
+        
+        entity.Property(x => x.Location)
+            .HasColumnName(nameof(Event.Location).ToSnakeCase());
+        
+        entity.Property(x => x.Status)
             .IsRequired()
-            .HasDefaultValue(false)
-            .HasColumnName(nameof(Event.IsDisplaying).ToSnakeCase());
-
+            .HasConversion<string>()
+            .HasDefaultValue(EventStatus.NotPublished)
+            .HasColumnName(nameof(Event.Status).ToSnakeCase());
+        
         entity.HasAudits();
 
         entity.HasOne(x => x.Image)

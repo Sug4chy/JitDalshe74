@@ -21,4 +21,6 @@ public interface IEventsRepository
     Task EditAsync(Event @event, CancellationToken ct = default);
     Task ReplaceEventImageAsync(Event @event, EventImage newImage, CancellationToken ct = default);
     Task RemoveAsync(Event @event, CancellationToken ct = default);
+    
+    Task<int> CountAsync(Expression<Func<Event, bool>>? filteringExpression = null, CancellationToken ct = default);
 }

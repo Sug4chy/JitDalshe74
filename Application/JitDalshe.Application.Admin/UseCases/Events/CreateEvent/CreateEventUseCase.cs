@@ -24,10 +24,12 @@ internal sealed class CreateEventUseCase : ICreateEventUseCase
 
     public async Task<UnitResult<Error>> CreateAsync(
         string title,
-        string? description,
-        DateTime date,
+        string shortDescription,
+        string fullText,
+        DateOnly? date,
+        TimeOnly? time,
+        string? location,
         string imageBase64Url,
-        bool isDisplaying,
         CancellationToken ct = default)
     {
         try
@@ -43,13 +45,17 @@ internal sealed class CreateEventUseCase : ICreateEventUseCase
                 url: _imageUrlTemplate.Replace("[id]", eventId.ToString()).Replace("[entity]", "events"),
                 contentType: imageContentType,
                 eventId: eventId);
+            
             var @event = Event.Create(
                 id: eventId,
+                image: eventImage,
                 title: title,
-                description: description,
-                date: DateOnly.FromDateTime(date),
-                isDisplaying: isDisplaying,
-                image: eventImage);
+                shortDescription: shortDescription,
+                fullText: fullText,
+                date: date,
+                time: time,
+                location: location
+                );
 
             await _events.AddAsync(@event, ct);
 

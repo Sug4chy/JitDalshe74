@@ -6,38 +6,69 @@ namespace JitDalshe.Domain.Entities.Events;
 
 public sealed class Event : AuditableEntity<IdOf<Event>>
 {
-    public string Title { get; set; }
-    public string? Description { get; set; }
-    public DateOnly Date { get; set; }
-    public bool IsDisplaying { get; set; }
-
-    public EventImage? Image { get; set; }
+    public EventImage Image { get; private set; }
+    public string Title { get; private set; }
+    public string ShortDescription { get; private set; }
+    public string FullText { get; private set; }
+    public DateOnly? Date { get; private set; }
+    public TimeOnly? Time { get; private set; }
+    public string? Location { get; private set; }
+    public EventStatus Status { get; private set; }
 
     private Event(
         IdOf<Event> id,
+        EventImage image,
         string title,
-        string? description,
-        DateOnly date,
-        bool isDisplaying,
-        EventImage? image = null)
+        string shortDescription,
+        string fullText,
+        DateOnly? date,
+        TimeOnly? time,
+        string? location, 
+        EventStatus status)
     {
         Id = id;
-        Title = title;
-        Description = description;
-        Date = date;
-        IsDisplaying = isDisplaying;
         Image = image;
+        Title = title;
+        ShortDescription = shortDescription;
+        FullText = fullText;
+        Date = date;
+        Time = time;
+        Location = location;
+        Status = status;
     }
 
     public static Event Create(
         IdOf<Event> id,
+        EventImage image,
         string title,
-        string? description,
-        DateOnly date,
-        bool isDisplaying,
-        EventImage? image = null)
-        => new(id, title, description, date, isDisplaying, image);
+        string shortDescription,
+        string fullText,
+        DateOnly? date,
+        TimeOnly? time,
+        string? location
+        )
+        => new(id, image, title, shortDescription, fullText, date, time, location, EventStatus.NotPublished);
 
+
+    public void UpdateEventDetails(
+        string title, 
+        string shortDescription, 
+        string fullText, 
+        DateOnly? date,
+        TimeOnly? time,
+        string? location)
+    {
+        Title = title;
+        ShortDescription = shortDescription;
+        FullText = fullText;
+        Date = date;
+        Time = time;
+        Location = location;
+    }
+    
+    public void ChangeEventStatus(EventStatus status) => Status = status;
+    
+    public void ReplaceImage(EventImage newImage) => Image = newImage;
     /// <summary>
     /// For EF Core
     /// </summary>

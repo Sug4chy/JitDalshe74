@@ -86,4 +86,13 @@ internal sealed class EventsRepository : IEventsRepository
         _dbContext.Events.Remove(@event);
         await _dbContext.SaveChangesAsync(ct);
     }
+    
+    public async Task<int> CountAsync(
+        Expression<Func<Event, bool>>? filteringExpression = null, 
+        CancellationToken ct = default)
+    {
+        return filteringExpression != null
+            ? await _dbContext.Events.CountAsync(filteringExpression, ct)
+            : await _dbContext.Events.CountAsync(ct);
+    }
 }

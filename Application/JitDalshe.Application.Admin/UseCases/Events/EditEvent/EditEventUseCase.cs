@@ -20,9 +20,12 @@ internal sealed class EditEventUseCase : IEditEventUseCase
     public async Task<UnitResult<Error>> EditAsync(
         IdOf<Event> id,
         string title,
-        string? description,
-        DateTime date,
-        bool isDisplaying,
+        string shortDescription,
+        string fullText,
+        DateOnly? date,
+        TimeOnly? time,
+        string? location,
+        EventStatus eventStatus,
         CancellationToken ct = default)
     {
         try
@@ -35,10 +38,8 @@ internal sealed class EditEventUseCase : IEditEventUseCase
 
             var @event = maybeEvent.Value;
 
-            @event.Title = title;
-            @event.Description = description;
-            @event.Date = DateOnly.FromDateTime(date);
-            @event.IsDisplaying = isDisplaying;
+            @event.UpdateEventDetails(title, shortDescription, fullText, date, time, location);
+            @event.ChangeEventStatus(eventStatus);
 
             await _events.EditAsync(@event, ct);
 

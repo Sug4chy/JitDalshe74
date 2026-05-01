@@ -7,9 +7,11 @@ public interface ICreateEventUseCase
 {
     Task<UnitResult<Error>> CreateAsync(
         string title,
-        string? description,
-        DateTime date,
+        string shortDescription,
+        string fullText,
+        DateOnly? date,
+        TimeOnly? time,
+        string? location,
         string imageBase64Url,
-        bool isDisplaying,
         CancellationToken ct = default);
 }

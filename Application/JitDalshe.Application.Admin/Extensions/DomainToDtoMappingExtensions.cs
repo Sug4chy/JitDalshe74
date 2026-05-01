@@ -32,10 +32,13 @@ public static class DomainToDtoMappingExtensions
         => new(
             Id: @event.Id,
             Title: @event.Title,
-            Description: @event.Description,
+            ShortDescription: @event.ShortDescription,
+            FullText: @event.FullText,
             Date: @event.Date,
-            ImageUrl: @event.Image!.Url,
-            IsDisplaying: @event.IsDisplaying
+            Time: @event.Time,
+            Location: @event.Location,
+            Status: @event.Status,
+            ImageUrl: @event.Image!.Url
         );
 
     public static BannerDto ToDto(this Banner banner)

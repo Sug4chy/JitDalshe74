@@ -1,8 +1,6 @@
-using JitDalshe.Domain.Entities.Events;
+namespace JitDalshe.Application.Site.Dto.Events;
 
-namespace JitDalshe.Application.Admin.Dto;
-
-public readonly record struct EventDto(
+public readonly record struct EventDto (
     Guid Id,
     string Title,
     string ShortDescription,
@@ -10,6 +8,5 @@ public readonly record struct EventDto(
     DateOnly? Date,
     TimeOnly? Time,
     string? Location,
-    EventStatus Status,
     string ImageUrl
 );
