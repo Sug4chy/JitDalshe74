@@ -25,7 +25,7 @@ internal sealed class EditEventUseCase : IEditEventUseCase
         DateOnly? date,
         TimeOnly? time,
         string? location,
-        EventStatus eventStatus,
+        EventStatus status,
         CancellationToken ct = default)
     {
         try
@@ -39,7 +39,7 @@ internal sealed class EditEventUseCase : IEditEventUseCase
             var @event = maybeEvent.Value;
 
             @event.UpdateEventDetails(title, shortDescription, fullText, date, time, location);
-            @event.ChangeEventStatus(eventStatus);
+            @event.ChangeEventStatus(status);
 
             await _events.EditAsync(@event, ct);
 

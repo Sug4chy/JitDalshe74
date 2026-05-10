@@ -8,4 +8,5 @@ public static class ValidationMessages
     public const string RedirectUrlRequired = "Пожалуйста, укажите адрес для перенаправления";
     public const string NumberMustBeInRange = "{0} должен быть в промежутке между {1} и {2}";
     public const string TextIsRequired = "Пожалуйста, введите текст";
+    public const string FieldIsRequired = "Пожалуйста, заполните это поле";
 }

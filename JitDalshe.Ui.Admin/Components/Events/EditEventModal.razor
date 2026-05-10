@@ -23,12 +23,16 @@
         <UploadFile @bind-FileUrl="_formModel.UploadedImageUrl"/>
 
         <TextInput Label="Заголовок" @bind-Value="_formModel.Title"/>
-
-        <TextAreaInput Label="Описание" @bind-Value="_formModel.Description"/>
-
-        <DateInput Label="Дата события" @bind-Value="_formModel.Date"/>
-
-        <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsDisplaying"/>
+        
+        <TextAreaInput Label="Краткое описание" @bind-Value="_formModel.ShortDescription"/>
+        
+        <RichTextInput Label="Полное описание" @bind-Value="_formModel.FullText"/>
+        
+        <DateWithTimeInput @bind-Date="_formModel.Date" @bind-Time="_formModel.Time"/>
+        
+        <TextInput Label="Место проведения" @bind-Value="_formModel.Location"/>
+        
+        <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsPublished"/>
     </EditForm>
 
 </Modal>
@@ -41,16 +45,10 @@
     [Parameter] public required string Id { get; init; }
     [Parameter] public required Event Event { get; init; }
     [Parameter] public required EventCallback EventEdited { get; init; }
-
+    
     private void InitializeFields(bool isInitializing)
     {
-        _formModel = new EventFormModel(
-            uploadedImageUrl: Event.ImageUrl,
-            title: Event.Title,
-            description: Event.Description ?? string.Empty,
-            date: Event.Date.ToDateTime(TimeOnly.MinValue),
-            isDisplaying: Event.IsDisplaying
-        );
+        _formModel = new EventFormModel(Event);
         _editContext = new EditContext(_formModel);
         if (!isInitializing)
         {
@@ -70,10 +68,12 @@
     private EditEventRequest BuildEditEventRequest()
         => new(
             Title: _formModel.Title,
-            Description: _formModel.Description,
+            ShortDescription: _formModel.ShortDescription,
+            FullText: _formModel.FullText,
             Date: _formModel.Date,
-            ImageBase64Url: _formModel.UploadedImageUrl!,
-            IsDisplaying: _formModel.IsDisplaying
+            Time: _formModel.Time,
+            Location: _formModel.Location,
+            Status: _formModel.IsPublished ? EventStatus.Published : EventStatus.NotPublished
         );
 
     private async Task SubmitEditEventAsync()

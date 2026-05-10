@@ -1,14 +1,19 @@
+using System.Text.Json.Serialization;
 using FluentValidation;
 using JitDalshe.Api.Attributes;
+using JitDalshe.Domain.Entities.Events;
 
 namespace JitDalshe.Api.Admin.Controllers.Events.Requests;
 
 [Validator<EditEventRequestValidator>]
 public sealed record EditEventRequest(
     string Title,
-    string? Description,
-    DateTime Date,
-    bool IsDisplaying
+    string ShortDescription,
+    string FullText,
+    DateOnly? Date,
+    TimeOnly? Time,
+    string? Location,
+    [property: JsonConverter(typeof(JsonStringEnumConverter))] EventStatus Status
 );
 
 public sealed class EditEventRequestValidator : AbstractValidator<EditEventRequest>
@@ -16,6 +21,8 @@ public sealed class EditEventRequestValidator : AbstractValidator<EditEventReque
     public EditEventRequestValidator()
     {
         RuleFor(x => x.Title).NotEmpty();
-        RuleFor(x => x.Date).GreaterThan(DateTime.Now);
+        RuleFor(x => x.ShortDescription).NotEmpty();
+        RuleFor(x => x.FullText).NotEmpty();
+        RuleFor(x => x.Status).IsInEnum();
     }
 }

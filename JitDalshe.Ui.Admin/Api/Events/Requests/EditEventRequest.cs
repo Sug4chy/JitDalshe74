@@ -1,9 +1,13 @@
+using JitDalshe.Ui.Admin.Models;
+
 namespace JitDalshe.Ui.Admin.Api.Events.Requests;
 
 public sealed record EditEventRequest(
     string Title,
-    string? Description,
-    DateTime Date,
-    string ImageBase64Url,
-    bool IsDisplaying
+    string ShortDescription,
+    string FullText,
+    DateOnly? Date,
+    TimeOnly? Time,
+    string? Location,
+    EventStatus Status
 );

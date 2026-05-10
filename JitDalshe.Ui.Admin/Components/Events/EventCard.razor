@@ -8,6 +8,7 @@
 
 <Card HeaderText="@CardHeaderText"
       Title="@Event.Title"
+      Comment="@Event.ShortDescription"
       Buttons="Card.Button.Info | Card.Button.Edit | Card.Button.Delete"
       OnInfoButtonClick="@ShowInfoEventModalAsync"
       OnEditButtonClick="@ShowEditEventModalAsync"
@@ -18,7 +19,7 @@
 
 @code {
 
-    private string CardHeaderText => $"{Event.Date.ToString("dd-MM-yyyy")} ({Event.DisplayingStatus})";
+    private string CardHeaderText => $"{Event.Date?.ToString("dd-MM-yyyy") ?? "-" } ({Event.DisplayingStatus})";
     private string EditEventModalId => $"modal_edit_event_{Event.Id}";
     private string InfoEventModalId => $"modal_info_event_{Event.Id}";
 

@@ -26,23 +26,23 @@ public sealed class EventService : IEventService
         _commonErrorHandlers = commonErrorHandlers;
         _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
-
-    public Task<Event[]> FindAllAsync()
+    
+    public Task<PagedResult<Event>?> ListAsync(int pageNumber, int pageSize, CancellationToken ct = default)
         => _runner.RunCatchingAsync(async () =>
         {
-            var response = await _eventsApi.ListEventsAsync();
+            var response = await _eventsApi.ListEventsAsync(pageNumber, pageSize, ct);
 
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return response.Content!;
+                    return response.Content;
                 case HttpStatusCode.InternalServerError:
                     _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    return [];
+                    return null;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }, defaultValue: []);
+        }, defaultValue: null);
 
     public Task CreateEventAsync(CreateEventRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>

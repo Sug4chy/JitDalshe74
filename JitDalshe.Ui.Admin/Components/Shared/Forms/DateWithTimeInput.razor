@@ -1,0 +1,29 @@
+@using System.Linq.Expressions
+
+<div class="row mb-3">
+    <div class="col-6">
+        <DateInput Label="@DateLabel" 
+                   Value="@Date" 
+                   ValueChanged="@DateChanged" 
+                   ValueExpression="@DateExpression" />
+    </div>
+    <div class="col-6">
+        <DateInput Label="@TimeLabel" 
+                   Value="@Time" 
+                   ValueChanged="@TimeChanged" 
+                   ValueExpression="@TimeExpression" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public string DateLabel { get; set; } = "Дата";
+    [Parameter] public string TimeLabel { get; set; } = "Время";
+    
+    [Parameter] public DateOnly? Date { get; set; }
+    [Parameter] public EventCallback<DateOnly?> DateChanged { get; set; }
+    [Parameter] public Expression<Func<DateOnly?>> DateExpression { get; set; } = null!;
+    
+    [Parameter] public TimeOnly? Time { get; set; }
+    [Parameter] public EventCallback<TimeOnly?> TimeChanged { get; set; }
+    [Parameter] public Expression<Func<TimeOnly?>> TimeExpression { get; set; } = null!;
+}

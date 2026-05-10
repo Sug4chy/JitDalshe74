@@ -1,0 +1,46 @@
+@using System.Linq.Expressions
+@using TinyMCE.Blazor
+
+<div class="form-group mb-3">
+    <label class="form-label">@Label</label>
+    <Editor
+        ApiKey="9jeniir3gibp3c8aixgl6xazcosol7kyxnxzo1vchot2aro3"
+        @bind-Value="Value"
+        @bind-Value:after="OnValueChangedAsync"
+        Field="@ValueExpression"
+        Init="@_editorInit"
+        Class="form-control" />
+    <ValidationMessage For="@ValueExpression" />
+</div>
+
+@code {
+    [Parameter] public required string Label { get; init; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public Expression<Func<string?>> ValueExpression { get; set; } = null!;
+
+    [CascadingParameter] EditContext? EditContext { get; set; }
+    private FieldIdentifier _fieldIdentifier;
+
+    private readonly Dictionary<string, object> _editorInit = new()
+    {
+        ["plugins"] = "lists link autoresize",
+        ["toolbar"] = "undo redo | bold italic underline | bullist numlist | link | removeformat",
+        ["menubar"] = false,
+        ["height"] = 300,
+        ["statusbar"] = false,
+        ["promotion"] = false,
+        ["branding"] = false
+    };
+
+    protected override void OnParametersSet()
+    {
+        _fieldIdentifier = FieldIdentifier.Create(ValueExpression);
+    }
+
+    private async Task OnValueChangedAsync()
+    {
+        await ValueChanged.InvokeAsync(Value);
+        EditContext?.NotifyFieldChanged(_fieldIdentifier);
+    }
+}

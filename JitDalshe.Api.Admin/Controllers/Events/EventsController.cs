@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using JitDalshe.Api.Admin.Controllers.Events.Requests;
+using JitDalshe.Api.Admin.Requests;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Application.Admin.UseCases.Events.CreateEvent;
@@ -38,18 +39,18 @@ public sealed class EventsController : AbstractController
     }
 
     /// <summary>
-    /// Получение полного списка событий (от новых к старым)
+    /// Получение списка событий с пагинацией
     /// </summary>
     [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListEvents(
+        [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListEventsUseCase listEvents,
         CancellationToken ct = default)
     {
-        var result = await listEvents.ListAsync(ct);
-
+        var result = await listEvents.ListAsync(request.PageNumber, request.PageSize, ct);
         return result.IsSuccess
             ? Ok(result.Value)
             : Error(result.Error);
@@ -70,10 +71,13 @@ public sealed class EventsController : AbstractController
     {
         var result = await createEvent.CreateAsync(
             title: request.Title,
-            description: request.Description,
+            shortDescription: request.ShortDescription,
+            fullText: request.FullText,
             date: request.Date,
+            time: request.Time,
+            location: request.Location,
+            status: request.Status,
             imageBase64Url: request.ImageBase64Url,
-            isDisplaying: request.IsDisplaying,
             ct: ct);
 
         return result.IsSuccess
@@ -99,9 +103,12 @@ public sealed class EventsController : AbstractController
         var result = await editEvent.EditAsync(
             id: IdOf<Event>.From(id),
             title: request.Title,
-            description: request.Description,
+            shortDescription: request.ShortDescription,
+            fullText: request.FullText,
             date: request.Date,
-            isDisplaying: request.IsDisplaying,
+            time: request.Time,
+            location: request.Location,
+            status: request.Status,
             ct: ct);
 
         return result.IsSuccess

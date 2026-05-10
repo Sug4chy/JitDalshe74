@@ -1,19 +1,26 @@
+@typeparam TValue
+@using Microsoft.AspNetCore.Components.Forms
 @using System.Linq.Expressions
 <div class="form-group">
-    <label for="@_id">@Label</label>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label for="@_id">@Label</label>
+    }
+    
     <InputDate id="@_id"
+               Type="@Type"
                class="@Style"
-               TValue="DateTime"
                Value="@Value"
                ValueExpression="@ValueExpression"
-               ValueChanged="@ValueChangedAsync"/>
+               ValueChanged="@((TValue? v) => ValueChangedAsync(v))"/>
+    
     <ValidationMessage For="@ValueExpression"/>
 </div>
 
 @code {
 
     private readonly string _id = Guid.NewGuid().ToString();
-    private DateTime _value;
+    
     [CascadingParameter] EditContext? EditContext { get; set; }
     private FieldIdentifier _fieldIdentifier;
 
@@ -22,23 +29,34 @@
         : "form-control";
 
     [Parameter] public required string Label { get; init; }
-    [Parameter] public DateTime Value { get; set; }
-    [Parameter] public EventCallback<DateTime> ValueChanged { get; init; }
-    [Parameter] public Expression<Func<DateTime>> ValueExpression { get; set; } = null!;
-
-    private async Task ValueChangedAsync(DateTime newValue)
+    [Parameter] public TValue? Value { get; set; }
+    [Parameter] public EventCallback<TValue?> ValueChanged { get; init; }
+    [Parameter] public Expression<Func<TValue?>> ValueExpression { get; set; } = null!;
+    [Parameter] public InputDateType Type { get; set; } = InputDateType.Date;
+    
+    private async Task ValueChangedAsync(TValue? newValue)
     {
-        if (_value != newValue)
+        bool hasChanged = !EqualityComparer<TValue>.Default.Equals(Value, newValue);
+        if (hasChanged)
         {
-            _value = newValue;
-            await ValueChanged.InvokeAsync(newValue);
+            Value = newValue;
+            await ValueChanged.InvokeAsync(Value);
+            
+            if (EditContext is not null)
+            {
+                EditContext.NotifyFieldChanged(_fieldIdentifier);
+            }
         }
     }
 
     protected override void OnParametersSet()
     {
-        _value = Value;
         _fieldIdentifier = FieldIdentifier.Create(ValueExpression);
+
+        if (typeof(TValue) == typeof(TimeOnly) || typeof(TValue) == typeof(TimeOnly?))
+        {
+            Type = InputDateType.Time;
+        }
     }
 
 }

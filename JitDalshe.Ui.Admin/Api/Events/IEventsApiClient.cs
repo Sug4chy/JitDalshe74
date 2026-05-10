@@ -7,7 +7,7 @@ namespace JitDalshe.Ui.Admin.Api.Events;
 public interface IEventsApiClient
 {
     [Get("")]
-    Task<IApiResponse<Event[]>> ListEventsAsync();
+    Task<IApiResponse<PagedResult<Event>>> ListEventsAsync([Query] int pageNumber, [Query] int pageSize, CancellationToken ct = default);
 
     [Post("")]
     Task<IApiResponse> CreateEventAsync([Body] CreateEventRequest request);
@@ -20,4 +20,7 @@ public interface IEventsApiClient
 
     [Delete("/{id}")]
     Task<IApiResponse> DeleteEventAsync(Guid id);
+    
+    [Get("/{id}/image")]
+    Task<Stream> GetImageAsync(Guid id, CancellationToken ct = default);
 }

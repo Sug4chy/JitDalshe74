@@ -45,9 +45,9 @@ public sealed class Event : AuditableEntity<IdOf<Event>>
         string fullText,
         DateOnly? date,
         TimeOnly? time,
-        string? location
-        )
-        => new(id, image, title, shortDescription, fullText, date, time, location, EventStatus.NotPublished);
+        string? location,
+        EventStatus status = EventStatus.NotPublished)
+        => new(id, image, title, shortDescription, fullText, date, time, location, status);
 
 
     public void UpdateEventDetails(

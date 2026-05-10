@@ -15,6 +15,6 @@ public interface IEditEventUseCase
         DateOnly? date,
         TimeOnly? time, 
         string? location,
-        EventStatus eventStatus,
+        EventStatus status,
         CancellationToken ct = default);
 }

@@ -1,6 +1,7 @@
 @using JitDalshe.Ui.Admin.Api.Events.Requests
 @using JitDalshe.Ui.Admin.Components.Shared.Forms
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Models.Forms
 @using JitDalshe.Ui.Admin.Services.EventService
 @using JitDalshe.Ui.Admin.Services.ModalService
@@ -23,11 +24,15 @@
 
         <TextInput Label="Заголовок" @bind-Value="_formModel.Title"/>
 
-        <TextAreaInput Label="Описание" @bind-Value="_formModel.Description"/>
-
-        <DateInput Label="Дата события" @bind-Value="_formModel.Date"/>
-
-        <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsDisplaying"/>
+        <TextAreaInput Label="Краткое описание" @bind-Value="_formModel.ShortDescription"/>
+        
+        <RichTextInput Label="Полное описание" @bind-Value="_formModel.FullText"/>
+        
+        <DateWithTimeInput @bind-Date="_formModel.Date" @bind-Time="_formModel.Time" />
+        
+        <TextInput Label="Место проведения" @bind-Value="_formModel.Location"/>
+        
+        <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsPublished"/>
 
     </EditForm>
 
@@ -38,7 +43,7 @@
     private EventFormModel _formModel = null!;
     private EditContext? _editContext;
     private FluentValidationValidator? _fluentValidationValidator;
-
+    
     [Parameter] public required string Id { get; init; }
     [Parameter] public required EventCallback EventCreated { get; init; }
 
@@ -61,10 +66,13 @@
     private CreateEventRequest BuildCreateEventRequest()
         => new(
             _formModel.Title,
-            _formModel.Description,
+            _formModel.ShortDescription,
+            _formModel.FullText,
             _formModel.Date,
-            _formModel.UploadedImageUrl!,
-            _formModel.IsDisplaying
+            _formModel.Time,
+            _formModel.Location,
+            _formModel.IsPublished ? EventStatus.Published : EventStatus.NotPublished,
+            _formModel.UploadedImageUrl!
         );
 
     private async Task SubmitCreateEventAsync()

@@ -9,11 +9,19 @@
     <img src="@Event.ImageUrl"
          class="mb-4 img-primary rounded"
          alt=""/>
-    @((MarkupString)(Event.Description?.Replace("\n", "<br/>") ?? string.Empty))
+    @((MarkupString)(Event.ShortDescription?.Replace("\n", "<br/>") ?? string.Empty))
+    <hr/>
+    @((MarkupString)(Event.FullText))
+
+    @if (!string.IsNullOrEmpty(Event.Location))
+    {
+        <p class="mt-3"><b>Место:</b> @Event.Location</p>
+    }
+    
 </Modal>
 
 @code {
-    private string FooterText => $"Событие запланировано на {Event.Date.ToString("dd-MM-yyyy")}";
+    private string FooterText => $"Событие запланировано на {Event.Date?.ToString("dd-MM-yyyy")} {Event.Time?.ToString("HH:mm")}".Trim();
     private string ModalTitle => $"{Event.Title} ({Event.DisplayingStatus})";
 
     [Parameter] public required string Id { get; init; }

@@ -12,7 +12,7 @@ public static class DomainToDtoMappingExtensions
         => new(news.Text, news.PrimaryImage?.NewsImage!.Url.ToString() ?? string.Empty, news.PostUrl);
 
     public static EventPreviewDto ToPreviewDto(this Event @event)
-        => new(@event.Id, @event.ShortDescription, @event.Image!.Url, @event.Date);
+        => new(@event.Id, @event.Title, @event.ShortDescription, @event.Image!.Url, @event.Date);
 
     public static EventDto ToDto(this Event @event)
         => new(

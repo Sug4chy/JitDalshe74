@@ -1,5 +1,7 @@
 @page "/events"
 @using JitDalshe.Ui.Admin.Components.Events
+@using JitDalshe.Ui.Admin.Components.Shared.Controls
+@using JitDalshe.Ui.Admin.Components.Shared.States
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Services.EventService
 @using JitDalshe.Ui.Admin.Services.ModalService
@@ -15,33 +17,72 @@
         + Добавить
     </button>
 </div>
-@if (_events is not null)
-{
-    @foreach (var eventItem in _events)
-    {
-        <EventCard Event="eventItem" OnEventEditedCallback="LoadEventsAsync" OnEventDeletedCallback="LoadEventsAsync"/>
-    }
-}
-else
+
+@if (_isLoading)
 {
     <SpinnerLoader/>
 }
+else if (_pagedResult is null || _pagedResult.Items.Length == 0)
+{
+    <EmptyState Message="Событий пока нет" />
+}
+else
+{
+    @foreach (var eventItem in _pagedResult.Items)
+    {
+        <EventCard Event="eventItem" 
+                   OnEventEditedCallback="LoadCurrentPage" 
+                   OnEventDeletedCallback="LoadCurrentPage"/>
+    }
+    
+    <PaginationControls
+        CurrentPage="@_currentPage"
+        TotalPages="@_pagedResult.TotalPages"
+        OnPrevButtonClicked="@LoadPrevPage"
+        OnNextButtonClicked="@LoadNextPage" />
+}
 
-<CreateEventModal Id="@CreateEventModalId" EventCreated="LoadEventsAsync"/>
+<CreateEventModal Id="@CreateEventModalId" EventCreated="LoadCurrentPage"/>
 
 @code {
+    
     private const string CreateEventModalId = "modal_create_event";
-    private Event[] _events = null!;
+    private const int PageSize = 10;
+    private int _currentPage = 1;
+    private PagedResult<Event>? _pagedResult;
+    private bool _isLoading;
 
-    private async Task LoadEventsAsync()
+    private async Task LoadCurrentPage()
     {
-        _events = await EventService.FindAllAsync();
+        _isLoading = true;
+        StateHasChanged();
+        _pagedResult = await EventService.ListAsync(_currentPage, PageSize);
+        _isLoading = false;
+        StateHasChanged();
     }
 
     private Task ShowCreateEventModalAsync()
         => ModalService.ShowModalAsync($"#{CreateEventModalId}");
 
     protected override Task OnInitializedAsync()
-        => LoadEventsAsync();
+        => LoadCurrentPage();
+
+    private async Task LoadPrevPage()
+    {
+        if (_pagedResult?.HasPreviousPage == true)
+        {
+            _currentPage--;
+            await LoadCurrentPage();
+        }
+    }
+
+    private async Task LoadNextPage()
+    {
+        if (_pagedResult?.HasNextPage == true)
+        {
+            _currentPage++;
+            await LoadCurrentPage();
+        }
+    }
 
 }

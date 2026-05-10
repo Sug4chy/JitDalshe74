@@ -29,6 +29,7 @@ internal sealed class CreateEventUseCase : ICreateEventUseCase
         DateOnly? date,
         TimeOnly? time,
         string? location,
+        EventStatus status,
         string imageBase64Url,
         CancellationToken ct = default)
     {
@@ -54,7 +55,8 @@ internal sealed class CreateEventUseCase : ICreateEventUseCase
                 fullText: fullText,
                 date: date,
                 time: time,
-                location: location
+                location: location,
+                status: status
                 );
 
             await _events.AddAsync(@event, ct);

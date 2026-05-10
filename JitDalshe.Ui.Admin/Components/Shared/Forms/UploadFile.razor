@@ -47,9 +47,9 @@
         {
             return;
         }
-
+        long maxFileSize = 10485760; 
         byte[] buffer = new byte[file.Size];
-        await using var stream = file.OpenReadStream();
+        await using var stream = file.OpenReadStream(maxFileSize);
         int _ = await stream.ReadAsync(buffer);
 
         FileUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
