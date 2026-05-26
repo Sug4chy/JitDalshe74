@@ -1,8 +1,8 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using JitDalshe.Application.TelegramBot;
+using JitDalshe.Infrastructure.Notifications;
 using JitDalshe.Infrastructure.Persistence;
-using JitDalshe.Infrastructure.Telegram;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +15,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
             ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
         });
 
-        containerBuilder.RegisterModule(new TelegramInfrastructureModule
+        containerBuilder.RegisterModule(new NotificationsInfrastructureModule
         {
             BotToken = builder.Configuration["TelegramBot:Token"] ?? string.Empty,
             WebhookUrl = builder.Configuration["WEBHOOK_URL"] ?? string.Empty,

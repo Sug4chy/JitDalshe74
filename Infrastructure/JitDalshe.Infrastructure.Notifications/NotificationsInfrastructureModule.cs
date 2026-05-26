@@ -1,13 +1,13 @@
 using Autofac;
 using JitDalshe.Application.Abstractions.Notifications;
-using JitDalshe.Infrastructure.Telegram.Initialization;
-using JitDalshe.Infrastructure.Telegram.Notifications;
+using JitDalshe.Infrastructure.Notifications.Initialization;
+using JitDalshe.Infrastructure.Notifications.Notifications;
 using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 
-namespace JitDalshe.Infrastructure.Telegram;
+namespace JitDalshe.Infrastructure.Notifications;
 
-public sealed class TelegramInfrastructureModule : Module
+public sealed class NotificationsInfrastructureModule : Module
 {
     public required string BotToken { get; init; }
     public required string WebhookUrl { get; init; }

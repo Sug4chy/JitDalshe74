@@ -2,7 +2,7 @@ using JitDalshe.Application.Abstractions.Notifications;
 using JitDalshe.Application.Abstractions.Repositories;
 using Telegram.Bot;
 
-namespace JitDalshe.Infrastructure.Telegram.Notifications;
+namespace JitDalshe.Infrastructure.Notifications.Notifications;
 
 internal sealed class TelegramNotificationsSender : INotificationsSender
 {

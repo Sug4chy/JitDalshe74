@@ -49,7 +49,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Api.TelegramBot",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Application.TelegramBot", "Application\JitDalshe.Application.TelegramBot\JitDalshe.Application.TelegramBot.csproj", "{4024A0A9-18DE-450E-BDE7-9870712D7B46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Infrastructure.Telegram", "Infrastructure\JitDalshe.Infrastructure.Telegram\JitDalshe.Infrastructure.Telegram.csproj", "{70780374-FFEF-4D22-ABAF-14A580C22353}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Infrastructure.Notifications", "Infrastructure\JitDalshe.Infrastructure.Notifications\JitDalshe.Infrastructure.Notifications.csproj", "{70780374-FFEF-4D22-ABAF-14A580C22353}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

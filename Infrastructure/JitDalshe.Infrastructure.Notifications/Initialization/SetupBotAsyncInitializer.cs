@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace JitDalshe.Infrastructure.Telegram.Initialization;
+namespace JitDalshe.Infrastructure.Notifications.Initialization;
 
 internal sealed class SetupBotAsyncInitializer : IAsyncInitializer
 {
