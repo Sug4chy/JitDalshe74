@@ -38,6 +38,7 @@ public sealed class UpdateAuditsSaveChangesInterceptor : SaveChangesInterceptor
     private static void UpdateAudits(DbContext dbContext)
     {
         var entries = dbContext.ChangeTracker.Entries<IAuditableEntity>();
+        var now = DateTime.UtcNow;
         foreach (var entry in entries)
         {
             switch (entry.State)
@@ -47,10 +48,11 @@ public sealed class UpdateAuditsSaveChangesInterceptor : SaveChangesInterceptor
                 case EntityState.Deleted:
                     break;
                 case EntityState.Modified:
-                    entry.Property(e => e.UpdatedAt).CurrentValue = DateTime.UtcNow;
+                    entry.Property(e => e.UpdatedAt).CurrentValue = now;
                     break;
                 case EntityState.Added:
-                    entry.Property(e => e.CreatedAt).CurrentValue = DateTime.UtcNow;
+                    entry.Property(e => e.CreatedAt).CurrentValue = now;
+                    entry.Property(e => e.UpdatedAt).CurrentValue = now;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
