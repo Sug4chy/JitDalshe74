@@ -10,11 +10,11 @@ public sealed class VkApiClient : IDisposable
     public VkApiClient(string apiKey)
     {
         _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri("https://api.vk.com/method");
+        _httpClient.BaseAddress = new Uri("https://api.vk.com/method/");
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
     }
 
-    public Task<VkWallGetResponse?> WallGetAsync(
+    public async Task<VkWallGetResponse?> WallGetAsync(
         string domain,
         int offset,
         int count = 100,
@@ -22,10 +22,19 @@ public sealed class VkApiClient : IDisposable
         int extended = 0,
         string? fields = null,
         CancellationToken ct = default)
-        => _httpClient.GetFromJsonAsync<VkWallGetResponse>(
-            $"/wall.get?domain={domain}&offset={offset}&count={count}&filter={filter}&extended={extended}&fields={fields}",
+    {
+        var wrapper = await _httpClient.GetFromJsonAsync<VkResponseWrapper>(
+            $"wall.get?domain={domain}&offset={offset}&count={count}&filter={filter}&extended={extended}&fields={fields}&v=5.131",
             ct
         );
+
+        return wrapper?.Response;
+    }
+    
+    private sealed class VkResponseWrapper
+    {
+        public VkWallGetResponse? Response { get; set; }
+    }
 
     private void Dispose(bool disposing)
     {

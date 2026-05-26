@@ -24,16 +24,16 @@
       db:
         condition: service_healthy
 
-#  # Step 3: News fetcher
-#  news-fetcher:
-#    image: soniccooles/jit-dalshe-news-fetcher
-#    environment:
-#      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
-#      DOTNET_ENVIRONMENT: ${DOTNET_ENVIRONMENT}
-#      VK_API_ACCESS_TOKEN: ${VK_API_ACCESS_TOKEN}
-#    depends_on:
-#      migrator:
-#        condition: service_completed_successfully
+  # Step 3: News fetcher
+  news-fetcher:
+    image: soniccooles/jit-dalshe-news-fetcher
+    environment:
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      DOTNET_ENVIRONMENT: ${DOTNET_ENVIRONMENT}
+      VK_API_ACCESS_TOKEN: ${VK_API_ACCESS_TOKEN}
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
 
   # Step 4: MinIO
   minio:

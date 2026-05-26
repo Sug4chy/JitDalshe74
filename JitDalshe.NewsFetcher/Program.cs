@@ -17,7 +17,7 @@ string envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ??
 
 var configuration =  new ConfigurationBuilder()
     .AddEnvironmentVariables()
-    .AddJsonFile($"appsettings.{envName}.json")
+    .AddJsonFile($"appsettings.{envName}.json", optional: true)
     .Build();
 
 string apiAccessToken = configuration["VK_API_ACCESS_TOKEN"]
@@ -33,6 +33,9 @@ if (await dbContext.News.AnyAsync(ct))
 {
     return;
 }
+
+var existingIds = await dbContext.News.Select(x => x.ExtId).ToListAsync(ct);
+var processedIds = new HashSet<long>(existingIds);
 
 using var client = new VkApiClient(apiAccessToken);
 var newsRepository = new NewsRepository(dbContext);
@@ -51,6 +54,11 @@ while (currentOffset % 100 == 0)
     currentOffset += response.Count;
     foreach (var wallPost in response.Items)
     {
+        if (!processedIds.Add(wallPost.Id))
+        {
+            continue;
+        }
+        
         var photoAttachments = wallPost.Attachments.Where(x => x.Type is "photo");
         var newsImages = photoAttachments
             .Select(x => NewsImage.Create(
