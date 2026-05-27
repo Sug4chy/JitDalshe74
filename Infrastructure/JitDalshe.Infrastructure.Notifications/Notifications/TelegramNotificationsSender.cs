@@ -4,12 +4,12 @@ using Telegram.Bot;
 
 namespace JitDalshe.Infrastructure.Notifications.Notifications;
 
-internal sealed class TelegramNotificationsSender : INotificationsSender
+internal sealed class TelegramTelegramNotificationsSender : ITelegramNotificationsSender
 {
     private readonly ITelegramChatsRepository _telegramChats;
     private readonly ITelegramBotClient _telegramBot;
 
-    public TelegramNotificationsSender(ITelegramChatsRepository telegramChats, ITelegramBotClient telegramBot)
+    public TelegramTelegramNotificationsSender(ITelegramChatsRepository telegramChats, ITelegramBotClient telegramBot)
     {
         _telegramChats = telegramChats;
         _telegramBot = telegramBot;

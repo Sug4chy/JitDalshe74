@@ -17,7 +17,7 @@ public sealed class NotificationsInfrastructureModule : Module
     protected override void Load(ContainerBuilder builder)
     {
         LoadTelegramBotClient(builder);
-        LoadTelegramNotificationsSender(builder);
+        LoadNotificationsSenders(builder);
         if (SetWebhook)
         {
             LoadSetWebhookAsyncInitializer(builder);
@@ -31,10 +31,14 @@ public sealed class NotificationsInfrastructureModule : Module
             .SingleInstance();
     }
 
-    private static void LoadTelegramNotificationsSender(ContainerBuilder builder)
+    private static void LoadNotificationsSenders(ContainerBuilder builder)
     {
-        builder.RegisterType<TelegramNotificationsSender>()
-            .As<INotificationsSender>()
+        builder.RegisterType<TelegramTelegramNotificationsSender>()
+            .As<ITelegramNotificationsSender>()
+            .InstancePerLifetimeScope();
+        
+        builder.RegisterType<SmtpNotificationSender>()
+            .As<IEmailNotificationsSender>()
             .InstancePerLifetimeScope();
     }
 

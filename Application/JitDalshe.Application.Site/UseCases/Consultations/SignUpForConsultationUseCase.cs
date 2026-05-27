@@ -11,11 +11,11 @@ namespace JitDalshe.Application.Site.UseCases.Consultations;
 internal sealed class SignUpForConsultationUseCase : ISignUpForConsultationUseCase
 {
     private readonly IConsultationRequestsRepository _consultationRepository;
-    // private readonly INotificationsSender _notifications;
+    // private readonly ITelegramNotificationsSender _notifications;
 
     public SignUpForConsultationUseCase(
         IConsultationRequestsRepository consultationRepository
-        // INotificationsSender notifications
+        // ITelegramNotificationsSender notifications
         )
     {
         _consultationRepository = consultationRepository;
