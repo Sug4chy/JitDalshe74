@@ -21,7 +21,7 @@ internal sealed class GetBannerImageUseCase : IGetBannerImageUseCase
         _imageStorage = imageStorage;
     }
 
-    public async Task<Result<ImageModel, Error>> GetAsync(IdOf<Banner> bannerId, CancellationToken ct = default)
+    public async Task<Result<ImageModel, Error>> GetAsync(IdOf<Banner> bannerId, bool isMobile = false, CancellationToken ct = default)
     {
         try
         {
@@ -31,14 +31,32 @@ internal sealed class GetBannerImageUseCase : IGetBannerImageUseCase
                 return Result.Failure<ImageModel, Error>(Error.Of("Баннер не найден", ErrorGroup.NotFound));
             }
 
-            var maybeImageStream = await _imageStorage.GetImageByIdAsync(maybeBanner.Value.Image!.Id, ct);
-            if (maybeImageStream.HasNoValue)
+            var banner = maybeBanner.Value;
+            
+            if (isMobile)
             {
-                return Result.Failure<ImageModel, Error>(Error.Of("Изображение не найдено",  ErrorGroup.NotFound));
-            }
+                var image = banner.MobileImage!;
+                var maybeImageStream = await _imageStorage.GetImageByIdAsync(image.Id, ct);
+                if (maybeImageStream.HasNoValue)
+                {
+                    return Result.Failure<ImageModel, Error>(Error.Of("Изображение не найдено в хранилище", ErrorGroup.NotFound));
+                }
 
-            return Result.Success<ImageModel, Error>(
-                new ImageModel(maybeImageStream.Value, maybeBanner.Value.Image.ContentType));
+                return Result.Success<ImageModel, Error>(
+                    new ImageModel(maybeImageStream.Value, image.ContentType));
+            }
+            else
+            {
+                var image = banner.Image!;
+                var maybeImageStream = await _imageStorage.GetImageByIdAsync(image.Id, ct);
+                if (maybeImageStream.HasNoValue)
+                {
+                    return Result.Failure<ImageModel, Error>(Error.Of("Изображение не найдено в хранилище", ErrorGroup.NotFound));
+                }
+
+                return Result.Success<ImageModel, Error>(
+                    new ImageModel(maybeImageStream.Value, image.ContentType));
+            }
         }
         catch (Exception e)
         {

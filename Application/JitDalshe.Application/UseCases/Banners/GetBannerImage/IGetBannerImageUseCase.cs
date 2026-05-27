@@ -8,5 +8,5 @@ namespace JitDalshe.Application.UseCases.Banners.GetBannerImage;
 
 public interface IGetBannerImageUseCase
 {
-    Task<Result<ImageModel, Error>> GetAsync(IdOf<Banner> bannerId, CancellationToken ct = default);
+    Task<Result<ImageModel, Error>> GetAsync(IdOf<Banner> bannerId, bool isMobile = false, CancellationToken ct = default);
 }

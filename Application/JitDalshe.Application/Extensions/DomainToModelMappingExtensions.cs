@@ -8,7 +8,9 @@ public static class DomainToModelMappingExtensions
     public static DisplayingBannerModel ToDisplayingModel(this Banner banner)
         => new(
             Title: banner.Title,
+            Description: banner.Description,
             ImageUrl: banner.Image!.Url,
+            MobileImageUrl: banner.MobileImage!.Url,
             DisplayOrder: banner.DisplayOrder!.Value,
             RedirectOnClickUrl: banner.RedirectOnClickUrl
         );

@@ -24,6 +24,8 @@ public sealed class BannersRepository : IBannersRepository
     public Task<Banner[]> FindDisplayingBannersAsync(CancellationToken ct = default)
         => _dbContext.Banners
             .Include(x => x.Image)
+            .Include(x => x.MobileImage)
+            .Where(x => x.Status == BannerStatus.Published)
             .Where(x => x.DisplayOrder.HasValue)
             .OrderBy(x => x.DisplayOrder!.Value)
             .ToArrayAsync(ct);
@@ -31,6 +33,7 @@ public sealed class BannersRepository : IBannersRepository
     public Task<Maybe<Banner>> FindByIdAsync(IdOf<Banner> id, CancellationToken ct = default)
         => _dbContext.Banners
             .Include(x => x.Image)
+            .Include(x => x.MobileImage)
             .TryFirstAsync(x => x.Id == id, ct);
 
     public Task<Banner[]> FindAllAsync<TOrderKey>(

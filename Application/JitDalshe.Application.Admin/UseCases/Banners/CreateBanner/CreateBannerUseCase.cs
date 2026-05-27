@@ -26,8 +26,10 @@ internal sealed class CreateBannerUseCase : ICreateBannerUseCase
     }
 
     public async Task<UnitResult<Error>> CreateAsync(
-        string title,
+        string? title,
+        string? description,
         string imageBase64Url,
+        string mobileImageBase64Url,
         bool isClickable = false,
         string? redirectOnClickUrl = null,
         int? displayOrder = null,
@@ -50,6 +52,12 @@ internal sealed class CreateBannerUseCase : ICreateBannerUseCase
             string imageContentString = imageBase64Url.Split(',')[1];
             byte[] imageBytes = Convert.FromBase64String(imageContentString);
             var imageId = await _imageStorage.SaveImageAsync<BannerImage>(imageBytes, imageContentType, ct);
+            
+            string mobileImageContentType = mobileImageBase64Url[(mobileImageBase64Url.IndexOf(':') + 1)..mobileImageBase64Url.IndexOf(';')];
+            string mobileImageContentString = mobileImageBase64Url.Split(',')[1];
+            byte[] mobileImageBytes = Convert.FromBase64String(mobileImageContentString);
+            var mobileImageId = await _imageStorage.SaveImageAsync<BannerMobileImage>(mobileImageBytes, mobileImageContentType, ct);
+            
             var bannerId = IdOf<Banner>.New();
 
             var image = BannerImage.Create(
@@ -57,12 +65,20 @@ internal sealed class CreateBannerUseCase : ICreateBannerUseCase
                 url: _imageUrlTemplate.Replace("[id]", bannerId.ToString()).Replace("[entity]", "banners"),
                 contentType: imageContentType,
                 bannerId: bannerId);
+            var mobileImage = BannerMobileImage.Create(
+                id: mobileImageId,
+                url: _imageUrlTemplate.Replace("[id]", bannerId.ToString()).Replace("[entity]", "banners") + "?isMobile=true",
+                contentType: mobileImageContentType,
+                bannerId: bannerId);
+            
             var banner = Banner.Create(
                 id: bannerId,
                 title: title,
+                description: description,
                 redirectOnClickUrl: redirectOnClickUrl,
                 displayOrder: displayOrder,
-                image: image);
+                image: image,
+                mobileImage: mobileImage);
 
             await _banners.AddAsync(banner, ct);
 

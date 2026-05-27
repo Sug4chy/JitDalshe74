@@ -9,7 +9,9 @@ public interface IEditBannerUseCase
 {
     Task<UnitResult<Error>> EditAsync(
         IdOf<Banner> bannerId,
-        string title,
+        string? title,
+        string? description,
+        BannerStatus status,
         bool isClickable = false,
         string? redirectOnClickUrl = null,
         int? displayOrder = null,

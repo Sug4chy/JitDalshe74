@@ -8,10 +8,11 @@ public sealed class Banner : AuditableEntity<IdOf<Banner>>
 {
     private int? _displayOrder;
 
-    public string Title { get; set; }
+    public string? Title { get; set; }
+    public string? Description { get; set; }
     public bool IsClickable { get; set; }
     public string? RedirectOnClickUrl { get; set; }
-
+    public BannerStatus Status { get; set; }
     public int? DisplayOrder
     {
         get => _displayOrder;
@@ -27,29 +28,39 @@ public sealed class Banner : AuditableEntity<IdOf<Banner>>
     }
 
     public BannerImage? Image { get; init; }
-
+    public BannerMobileImage? MobileImage { get; init; }
+    
     private Banner(
         IdOf<Banner> id,
-        string title,
+        string? title,
+        string? description,
         string? redirectOnClickUrl,
         int? displayOrder,
-        BannerImage? image)
+        BannerImage? image,
+        BannerMobileImage? mobileImage,
+        BannerStatus status)
     {
         Id = id;
         Title = title;
+        Description = description;
         IsClickable = redirectOnClickUrl is not null;
         RedirectOnClickUrl = redirectOnClickUrl;
         DisplayOrder = displayOrder;
         Image = image;
+        MobileImage = mobileImage;
+        Status = status;
     }
 
     public static Banner Create(
         IdOf<Banner> id, 
-        string title, 
+        string? title, 
+        string? description,
         string? redirectOnClickUrl, 
         int? displayOrder,
-        BannerImage? image) 
-        => new(id, title, redirectOnClickUrl, displayOrder, image);
+        BannerImage? image,
+        BannerMobileImage? mobileImage,
+        BannerStatus status = BannerStatus.NotPublished) 
+        => new(id, title, description, redirectOnClickUrl, displayOrder, image, mobileImage, status);
 
     /// <summary>
     /// For EF Core

@@ -19,6 +19,7 @@ public sealed class PostgresqlDbContext(DbContextOptions<PostgresqlDbContext> op
     public DbSet<EventImage> EventImages { get; init; }
     public DbSet<Banner> Banners { get; init; }
     public DbSet<BannerImage> BannerImages { get; init; }
+    public DbSet<BannerMobileImage> BannerMobileImages { get; init; }
     public DbSet<Review> Reviews { get; init; }
     public DbSet<TelegramChat> TelegramChats { get; init; }
     public DbSet<ConsultationRequest> ConsultationRequests { get; init; }

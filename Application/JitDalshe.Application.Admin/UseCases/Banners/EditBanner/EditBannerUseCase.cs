@@ -19,7 +19,9 @@ internal sealed class EditBannerUseCase : IEditBannerUseCase
 
     public async Task<UnitResult<Error>> EditAsync(
         IdOf<Banner> bannerId,
-        string title,
+        string? title,
+        string? description,
+        BannerStatus status,
         bool isClickable = false,
         string? redirectOnClickUrl = null,
         int? displayOrder = null,
@@ -35,9 +37,11 @@ internal sealed class EditBannerUseCase : IEditBannerUseCase
 
             var banner = maybeBanner.Value;
             banner.Title = title;
+            banner.Description = description;
             banner.IsClickable = isClickable;
             banner.RedirectOnClickUrl = redirectOnClickUrl;
             banner.DisplayOrder = displayOrder;
+            banner.Status = status;
 
             await _banners.EditBannerAsync(banner, ct);
 

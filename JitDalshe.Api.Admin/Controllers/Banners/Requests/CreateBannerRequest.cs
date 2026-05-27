@@ -5,8 +5,10 @@ namespace JitDalshe.Api.Admin.Controllers.Banners.Requests;
 
 [Validator<CreateBannerRequestValidator>]
 public sealed record CreateBannerRequest(
-    string Title,
+    string? Title,
+    string? Description,
     string ImageBase64Url,
+    string MobileImageBase64Url,
     bool IsClickable = false,
     string? RedirectOnClickUrl = null,
     int? DisplayOrder = null
@@ -16,8 +18,8 @@ public sealed class CreateBannerRequestValidator : AbstractValidator<CreateBanne
 {
     public CreateBannerRequestValidator()
     {
-        RuleFor(x => x.Title).NotEmpty();
         RuleFor(x => x.ImageBase64Url).NotEmpty();
+        RuleFor(x => x.MobileImageBase64Url).NotEmpty();
         RuleFor(x => x.RedirectOnClickUrl)
             .NotEmpty()
             .When(x => x.IsClickable);

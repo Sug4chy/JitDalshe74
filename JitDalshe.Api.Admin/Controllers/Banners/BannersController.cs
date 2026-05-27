@@ -39,6 +39,7 @@ public sealed class BannersController : AbstractController
     /// <summary>
     /// Возвращает изображение для баннера
     /// </summary>
+    /// <param name="isMobile">Флаг возврата нужной картинки: true — вернуть мобильную версию, false — десктопную</param>
     [HttpGet("{bannerId:guid}/image")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -46,9 +47,10 @@ public sealed class BannersController : AbstractController
     public async Task<IActionResult> GetBannerImage(
         [FromRoute] Guid bannerId,
         [FromServices] IGetBannerImageUseCase getBannerImage,
+        [FromQuery] bool isMobile = false,
         CancellationToken ct = default)
     {
-        var result = await getBannerImage.GetAsync(IdOf<Banner>.From(bannerId), ct);
+        var result = await getBannerImage.GetAsync(IdOf<Banner>.From(bannerId), isMobile, ct);
 
         return result.IsSuccess
             ? File(result.Value.ImageStream, result.Value.ContentType)
@@ -72,6 +74,9 @@ public sealed class BannersController : AbstractController
             : Error(result.Error);
     }
 
+    /// <summary>
+    /// Создание нового баннера
+    /// </summary>
     [HttpPost]
     [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -84,7 +89,9 @@ public sealed class BannersController : AbstractController
     {
         var result = await createBanner.CreateAsync(
             title: request.Title,
+            description: request.Description,
             imageBase64Url: request.ImageBase64Url,
+            mobileImageBase64Url: request.MobileImageBase64Url,
             isClickable: request.IsClickable,
             redirectOnClickUrl: request.RedirectOnClickUrl,
             displayOrder: request.DisplayOrder,
@@ -95,6 +102,9 @@ public sealed class BannersController : AbstractController
             : Error(result.Error);
     }
 
+    /// <summary>
+    /// Редактирование баннера
+    /// </summary>
     [HttpPatch("{id:guid}")]
     [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -110,6 +120,8 @@ public sealed class BannersController : AbstractController
         var result = await editBanner.EditAsync(
             bannerId: IdOf<Banner>.From(id),
             title: request.Title,
+            description: request.Description,
+            status: request.Status,
             isClickable: request.IsClickable,
             redirectOnClickUrl: request.RedirectOnClickUrl,
             displayOrder: request.DisplayOrder,
@@ -120,6 +132,9 @@ public sealed class BannersController : AbstractController
             : Error(result.Error);
     }
 
+    /// <summary>
+    /// Изменение изображения, которое прикреплено к баннеру
+    /// </summary>
     [HttpPatch("{id:guid}/image")]
     [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -142,6 +157,10 @@ public sealed class BannersController : AbstractController
             : Error(result.Error);
     }
 
+    
+    /// <summary>
+    /// Удаление баннера
+    /// </summary>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

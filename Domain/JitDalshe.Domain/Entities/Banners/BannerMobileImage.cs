@@ -4,15 +4,16 @@ using JitDalshe.Domain.ValueObjects;
 
 namespace JitDalshe.Domain.Entities.Banners;
 
-public sealed class BannerImage : AuditableEntity<IdOf<BannerImage>>, IImage
+public sealed class BannerMobileImage : AuditableEntity<IdOf<BannerMobileImage>>, IImage
 {
     public string Url { get; init; }
     public string ContentType { get; init; }
+
     public Banner? Banner { get; init; }
     public IdOf<Banner> BannerId { get; init; }
 
-    private BannerImage(
-        IdOf<BannerImage> id,
+    private BannerMobileImage(
+        IdOf<BannerMobileImage> id,
         string url,
         string contentType,
         IdOf<Banner> bannerId,
@@ -25,20 +26,17 @@ public sealed class BannerImage : AuditableEntity<IdOf<BannerImage>>, IImage
         BannerId = bannerId;
     }
 
-    public static BannerImage Create(
-        IdOf<BannerImage> id,
+    public static BannerMobileImage Create(
+        IdOf<BannerMobileImage> id,
         string url,
         string contentType,
         IdOf<Banner> bannerId,
         Banner? banner = null)
         => new(id, url, contentType, bannerId, banner);
 
-    /// <summary>
-    /// For EF Core
-    /// </summary>
     [UsedImplicitly]
 #pragma warning disable CS8618
-    private BannerImage()
+    private BannerMobileImage()
     {
     }
 #pragma warning restore CS8618

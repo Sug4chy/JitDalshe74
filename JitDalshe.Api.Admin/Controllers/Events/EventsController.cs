@@ -86,7 +86,7 @@ public sealed class EventsController : AbstractController
     }
 
     /// <summary>
-    /// Редактирование события (заголовка, описания и даты)
+    /// Редактирование события
     /// </summary>
     [HttpPatch("{id:guid}")]
     [ValidateRequest]

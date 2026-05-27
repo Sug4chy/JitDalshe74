@@ -45,9 +45,12 @@ public static class DomainToDtoMappingExtensions
         => new(
             Id: banner.Id,
             Title: banner.Title,
+            Description: banner.Description,
             RedirectOnClickUrl: banner.RedirectOnClickUrl,
             DisplayOrder: banner.DisplayOrder,
-            ImageUrl: banner.Image!.Url
+            Status: banner.Status,
+            ImageUrl: banner.Image!.Url,
+            MobileImageUrl: banner.MobileImage!.Url
         );
 
     public static UnmoderatedReviewDto ToDto(this Review review)
