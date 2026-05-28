@@ -5,7 +5,7 @@ using JitDalshe.Application.Admin.UseCases.Banners.CreateBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.DeleteBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.EditBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.ListBanners;
-using JitDalshe.Application.Admin.UseCases.Banners.ReplaceBannerImage;
+using JitDalshe.Application.Admin.UseCases.Banners.ReplaceBannerImage.Desktop;
 using JitDalshe.Application.Admin.UseCases.Banners.ReplaceBannerImage.Mobile;
 using JitDalshe.Application.Models;
 using JitDalshe.Application.UseCases.Banners.GetBannerImage;
