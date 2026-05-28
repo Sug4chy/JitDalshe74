@@ -21,8 +21,12 @@
 
         <UploadFile @bind-FileUrl="_formModel.ImageUrl"/>
 
+        <UploadFile @bind-FileUrl="_formModel.MobileImageUrl"/>
+        
         <TextInput Label="Заголовок" @bind-Value="_formModel.Title"/>
 
+        <TextAreaInput Label="Описание" @bind-Value="_formModel.Description"></TextAreaInput>
+        
         <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsDisplaying"/>
 
         @if (_formModel.IsDisplaying)
@@ -72,7 +76,9 @@
     private CreateBannerRequest BuildRequest()
         => new(
             Title: _formModel.Title,
+            Description: _formModel.Description,
             ImageBase64Url: _formModel.ImageUrl!,
+            MobileImageBase64Url: _formModel.MobileImageUrl!,
             IsClickable: _formModel.IsClickable,
             RedirectOnClickUrl: _formModel.IsClickable ? _formModel.RedirectOnClickUrl : null,
             DisplayOrder: _formModel.IsDisplaying ? _formModel.DisplayingOrder : null

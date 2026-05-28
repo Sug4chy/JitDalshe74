@@ -21,9 +21,13 @@
         <FluentValidationValidator @ref="_fluentValidationValidator"/>
 
         <UploadFile @bind-FileUrl="_formModel.ImageUrl"/>
-
+        
+        <UploadFile @bind-FileUrl="_formModel.MobileImageUrl"/>
+        
         <TextInput Label="Заголовок" @bind-Value="_formModel.Title"/>
 
+        <TextAreaInput Label="Описание" @bind-Value="_formModel.Description"/>
+        
         <CheckboxInput Label="Отображать на сайте?" @bind-Value="_formModel.IsDisplaying"/>
 
         @if (_formModel.IsDisplaying)
@@ -56,7 +60,10 @@
     {
         _formModel = new BannerFormModel(
             title: Banner.Title,
+            description: Banner.Description,
             imageUrl: Banner.ImageUrl,
+            mobileImageUrl: Banner.MobileImageUrl,
+            status: Banner.Status,
             isDisplaying: Banner.DisplayOrder is not null,
             displayingOrder: Banner.DisplayOrder ?? 0,
             isClickable: Banner.RedirectOnClickUrl is not null,
@@ -80,7 +87,9 @@
 
     private EditBannerRequest BuildEditBannerRequest()
         => new(
-            Title: _formModel.Title,
+            Title: string.IsNullOrWhiteSpace(_formModel.Title) ? null : _formModel.Title,
+            Description: string.IsNullOrWhiteSpace(_formModel.Description) ? null : _formModel.Description,
+            Status: _formModel.IsDisplaying ? BannerStatus.Published : BannerStatus.NotPublished,
             IsClickable: _formModel.IsClickable,
             RedirectOnClickUrl: _formModel.IsClickable ? _formModel.RedirectOnClickUrl : null,
             DisplayOrder: _formModel.IsDisplaying ? _formModel.DisplayingOrder : null
@@ -105,6 +114,13 @@
                     );
                 }
 
+                if (_formModel.MobileImageUrl != Banner.MobileImageUrl)
+                {
+                    await BannerService.ReplaceBannerMobileImageAsync(
+                        Banner.Id, new ReplaceBannerImageRequest(_formModel.MobileImageUrl!)
+                    );
+                }
+                
                 await CloseModalAsync();
                 ToastService.ShowSuccess("Баннер успешно изменён!");
                 await BannerEdited.InvokeAsync();

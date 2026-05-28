@@ -6,17 +6,17 @@ function hideModal(modalID) {
     $(modalID).modal('hide')
 }
 
-function initSwiper() {
-    return new Swiper(".mySwiper", {
+function initSwiper(selector) {
+    return new Swiper(selector, {
         ally: true,
         slidesPerView: 1,
         spaceBetween: 100,
         navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
+            nextEl: selector + " .swiper-button-next",
+            prevEl: selector + " .swiper-button-prev",
         },
         pagination: {
-            el: ".swiper-pagination",
+            el: selector + " .swiper-pagination",
             clickable: true,
             bulletActiveClass: "swiper-active-bullet swiper-pagination-bullet-active",
         },
