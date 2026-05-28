@@ -29,6 +29,7 @@ public sealed class MinioImageStorage : IImageStorage
         {
             IdOf<EventImage> => GetImageByIdAsync(id, EventImagesBucketName, ct),
             IdOf<BannerImage> => GetImageByIdAsync(id, BannerImagesBucketName, ct),
+            IdOf<BannerMobileImage> => GetImageByIdAsync(id, BannerImagesBucketName, ct),
             _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
         };
 
@@ -77,6 +78,8 @@ public sealed class MinioImageStorage : IImageStorage
                 SaveImageAsync<TImage>(imageContent, EventImagesBucketName, contentType, ct),
             { } bannerImageType when bannerImageType == typeof(BannerImage) =>
                 SaveImageAsync<TImage>(imageContent, BannerImagesBucketName, contentType, ct),
+            { } bannerMobileImageType when bannerMobileImageType == typeof(BannerMobileImage) =>
+                SaveImageAsync<TImage>(imageContent, BannerImagesBucketName, contentType, ct),
             _ => throw new ArgumentOutOfRangeException(nameof(TImage), typeof(TImage).Name, null)
         };
 
@@ -112,6 +115,7 @@ public sealed class MinioImageStorage : IImageStorage
         {
             IdOf<EventImage> => RemoveImageAsync(id, EventImagesBucketName, ct),
             IdOf<BannerImage> => RemoveImageAsync(id, BannerImagesBucketName, ct),
+            IdOf<BannerMobileImage> => RemoveImageAsync(id, BannerImagesBucketName, ct),
             _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
         };
 
