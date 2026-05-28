@@ -6,6 +6,7 @@ using JitDalshe.Application.Admin.UseCases.Banners.DeleteBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.EditBanner;
 using JitDalshe.Application.Admin.UseCases.Banners.ListBanners;
 using JitDalshe.Application.Admin.UseCases.Banners.ReplaceBannerImage;
+using JitDalshe.Application.Admin.UseCases.Banners.ReplaceBannerImage.Mobile;
 using JitDalshe.Application.Models;
 using JitDalshe.Application.UseCases.Banners.GetBannerImage;
 using JitDalshe.Application.UseCases.Banners.GetDisplayingBanners;
@@ -148,6 +149,31 @@ public sealed class BannersController : AbstractController
         CancellationToken ct = default)
     {
         var result = await replaceBannerImage.ReplaceAsync(
+            bannerId: IdOf<Banner>.From(id),
+            imageBase64Url: request.ImageBase64Url,
+            ct: ct);
+
+        return result.IsSuccess
+            ? Ok()
+            : Error(result.Error);
+    }
+    
+    /// <summary>
+    /// Изменение мобильного изображения, которое прикреплено к баннеру
+    /// </summary>
+    [HttpPatch("{id:guid}/mobile-image")]
+    [ValidateRequest]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ReplaceBannerMobileImage(
+        [FromRoute] Guid id,
+        [FromBody] ReplaceBannerImageRequest request,
+        [FromServices] IReplaceBannerMobileImageUseCase replaceBannerMobileImage,
+        CancellationToken ct = default)
+    {
+        var result = await replaceBannerMobileImage.ReplaceAsync(
             bannerId: IdOf<Banner>.From(id),
             imageBase64Url: request.ImageBase64Url,
             ct: ct);
