@@ -10,5 +10,6 @@ public interface IBannerService
     Task CreateBannerAsync(CreateBannerRequest request, Func<Task>? onSuccess = null);
     Task EditBannerAsync(Guid id, EditBannerRequest request, Func<Task>? onSuccess = null);
     Task ReplaceBannerImageAsync(Guid id, ReplaceBannerImageRequest request, Func<Task>? onSuccess = null);
+    Task ReplaceBannerMobileImageAsync(Guid id, ReplaceBannerImageRequest request, Func<Task>? onSuccess = null);
     Task DeleteBannerAsync(Guid id, Func<Task>? onSuccess = null);
 }

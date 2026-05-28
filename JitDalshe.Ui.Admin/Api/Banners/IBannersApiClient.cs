@@ -21,6 +21,9 @@ public interface IBannersApiClient
     [Patch("/{id}/image")]
     Task<IApiResponse> ReplaceBannerImageAsync(Guid id, [Body] ReplaceBannerImageRequest request);
 
+    [Patch("/{id}/mobile-image")]
+    Task<IApiResponse> ReplaceBannerMobileImageAsync(Guid id, [Body] ReplaceBannerImageRequest request);
+    
     [Delete("/{id}")]
     Task<IApiResponse> DeleteBannerAsync(Guid id);
 }
