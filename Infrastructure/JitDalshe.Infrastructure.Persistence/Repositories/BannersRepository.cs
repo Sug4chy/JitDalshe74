@@ -43,6 +43,7 @@ public sealed class BannersRepository : IBannersRepository
     {
         var query = _dbContext.Banners
             .Include(x => x.Image)
+            .Include(x => x.MobileImage)
             .AsQueryable();
 
         if (orderByExpression is not null)
