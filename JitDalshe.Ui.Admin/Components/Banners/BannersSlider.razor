@@ -2,11 +2,11 @@
 
 <section class="main-section">
     <article class="main-article">
-        <Swiper Items="@Items.OrderBy(x => x.DisplayOrder).ToArray()"/>
+        <Swiper Items="@Items.OrderBy(x => x.DisplayOrder).ToArray()" IsMobile="@IsMobile"/>
     </article>
 </section>
 
 @code {
     [Parameter] public required PreviewBanner[] Items { get; init; } = [];
-
+    [Parameter] public bool IsMobile { get; set; }
 }

@@ -2,7 +2,7 @@
 @using JitDalshe.Ui.Admin.Services.SwiperService
 @inject ISwiperService SwiperService
 
-<div class="swiper mySwiper">
+<div id="@_swiperId" class="swiper mySwiper">
     <div class="swiper-wrapper">
         @foreach (var item in Items)
         {
@@ -11,13 +11,13 @@
                 <a class="swiper-slide"
                    href="@item.RedirectOnClickUrl"
                    target="_blank">
-                    <img src="@item.ImageUrl" alt="@item.Title">
+                    <img src="@(IsMobile ? item.MobileImageUrl : item.ImageUrl)" alt="@item.Title">
                 </a>
             }
             else
             {
                 <div class="swiper-slide">
-                    <img src="@item.ImageUrl" alt="@item.Title">
+                    <img src="@(IsMobile ? item.MobileImageUrl : item.ImageUrl)" alt="@item.Title">
                 </div>
             }
         }
@@ -29,13 +29,16 @@
 </div>
 
 @code {
+    private readonly string _swiperId = $"swiper-{Guid.NewGuid().ToString("N")}";
+
     [Parameter] public required PreviewBanner[] Items { get; init; } = [];
+    [Parameter] public bool IsMobile { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await SwiperService.InitSwiperAsync();
+            await SwiperService.InitSwiperAsync($"#{_swiperId}");
         }
     }
 

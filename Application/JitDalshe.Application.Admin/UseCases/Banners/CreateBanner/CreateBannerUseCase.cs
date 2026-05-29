@@ -78,7 +78,8 @@ internal sealed class CreateBannerUseCase : ICreateBannerUseCase
                 redirectOnClickUrl: redirectOnClickUrl,
                 displayOrder: displayOrder,
                 image: image,
-                mobileImage: mobileImage);
+                mobileImage: mobileImage,
+                status: displayOrder is null ? BannerStatus.NotPublished : BannerStatus.Published);
 
             await _banners.AddAsync(banner, ct);
 

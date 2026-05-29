@@ -2,5 +2,5 @@ namespace JitDalshe.Ui.Admin.Services.SwiperService;
 
 public interface ISwiperService
 {
-    Task InitSwiperAsync(CancellationToken ct = default);
+    Task InitSwiperAsync(string selector, CancellationToken ct = default);
 }

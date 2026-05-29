@@ -26,3 +26,13 @@ img {
     line-height: 38px;
     font-family: Golos, sans-serif;
 }
+
+.mobile-preview-container {
+    max-width: 375px;
+    margin: 0 auto;
+}
+
+::deep .mobile-preview-container {
+    max-width: 375px !important;
+    margin: 0 auto !important;
+}

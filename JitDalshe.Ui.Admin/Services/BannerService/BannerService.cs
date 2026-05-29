@@ -130,6 +130,31 @@ public sealed class BannerService : IBannerService
             }
         });
 
+    public Task ReplaceBannerMobileImageAsync(Guid id, ReplaceBannerImageRequest request, Func<Task>? onSuccess = null)
+        => _runner.RunCatchingAsync(async () =>
+        {
+            var response = await _bannersApi.ReplaceBannerMobileImageAsync(id, request);
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
+                    break;
+                case HttpStatusCode.BadRequest:
+                    _errorHandlers.HandleBadRequest(response.Error!);
+                    break;
+                case HttpStatusCode.NotFound:
+                    _errorHandlers.HandleNotFound(response.Error!);
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    _errorHandlers.HandleInternalServerError(response.Error!);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        });
+
+    
     public Task DeleteBannerAsync(Guid id, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {

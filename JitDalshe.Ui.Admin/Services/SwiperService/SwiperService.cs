@@ -17,9 +17,9 @@ public sealed class SwiperService : ISwiperService
         _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
-    public Task InitSwiperAsync(CancellationToken ct = default)
+    public Task InitSwiperAsync(string selector, CancellationToken ct = default)
         => _runner.RunCatchingAsync(async () =>
         {
-            await _jsRuntime.InvokeVoidAsync(JsInteropConstants.InitSwiper, ct);
+            await _jsRuntime.InvokeVoidAsync(JsInteropConstants.InitSwiper, ct, selector);
         });
 }

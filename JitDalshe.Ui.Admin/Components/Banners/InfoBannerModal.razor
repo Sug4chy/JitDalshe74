@@ -6,12 +6,23 @@
        Footer="Modal.FooterType.Text"
        FooterText=""
        FooterContentPosition="Modal.FooterPositioning.Start">
-    <img src="@Banner.ImageUrl"
-         class="mb-4 img-primary rounded"
-         alt=""/>
-    <p>
-        @Banner.Title
-    </p>
+    
+    <p><b>Десктоп версия:</b></p>
+    <img src="@Banner.ImageUrl" class="mb-4 img-primary rounded" alt=""/>
+
+    <p><b>Мобильная версия:</b></p>
+    <img src="@Banner.MobileImageUrl" class="mb-4 img-primary rounded" alt=""/>
+    
+    @if (!string.IsNullOrWhiteSpace(Banner.Title))
+    {
+        <p><b>Заголовок:</b> @Banner.Title</p>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Banner.Description))
+    {
+        <p><b>Описание:</b> @Banner.Description</p>
+    }
+    
     @if (Banner.RedirectOnClickUrl is not null)
     {
         <p>
@@ -28,5 +39,4 @@
 
     [Parameter] public required string Id { get; init; }
     [Parameter] public required Banner Banner { get; init; }
-
 }

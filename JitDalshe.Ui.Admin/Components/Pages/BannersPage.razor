@@ -14,9 +14,17 @@
 {
     <h2>Предпросмотр активных баннеров</h2>
 
-    <main class="main-slider-container">
-        <BannersSlider Items="@_previewBanners"/>
-    </main>
+    <div class="row mb-5">
+        <div class="col-md-9">
+            <p class="text-muted fw-bold mb-2">Десктопная версия:</p>
+            <BannersSlider @key="@_sliderVersion" Items="@_previewBanners" IsMobile="false"/>
+        </div>
+        
+        <div class="col-md-3">
+            <p class="text-muted fw-bold mb-2">Мобильная версия:</p>
+            <BannersSlider @key="@_sliderVersion" Items="@_previewBanners" IsMobile="true"/>
+        </div>
+    </div>
 }
 
 <div class="topbar-container">
@@ -46,6 +54,7 @@ else
     private const string CreateBannerModalId = "modal_create_banner";
 
     private PreviewBanner[] _previewBanners = null!;
+    private string _sliderVersion = Guid.NewGuid().ToString();
 
     private Banner[] _banners = null!;
 
@@ -54,12 +63,36 @@ else
 
     private async Task LoadPreviewBannersAsync()
     {
-        _previewBanners = await BannerService.FindPreviewBannersAsync();
+        var rawPreviewBanners = await BannerService.FindPreviewBannersAsync();
+        var buster = Guid.NewGuid().ToString();
+
+        _previewBanners = rawPreviewBanners
+            .Select(x => x with { 
+                ImageUrl = AppendCacheBuster(x.ImageUrl, buster)
+            })
+            .ToArray();
+        
+        _sliderVersion = Guid.NewGuid().ToString();
     }
 
     private async Task LoadBannersAsync()
     {
-        _banners = await BannerService.FindAllAsync();
+        var rawBanners = await BannerService.FindAllAsync();
+        var buster = Guid.NewGuid().ToString();
+
+        _banners = rawBanners
+            .Select(x => x with { 
+                ImageUrl = AppendCacheBuster(x.ImageUrl, buster),
+                MobileImageUrl = AppendCacheBuster(x.MobileImageUrl, buster)
+            })
+            .ToArray();
+    }
+    
+    private static string AppendCacheBuster(string url, string buster)
+    {
+        if (string.IsNullOrEmpty(url)) return url;
+        char separator = url.Contains('?') ? '&' : '?';
+        return $"{url}{separator}v={buster}";
     }
 
     private async Task LoadAllBanners()
@@ -72,5 +105,4 @@ else
     {
         await LoadAllBanners();
     }
-
 }

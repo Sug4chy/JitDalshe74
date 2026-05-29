@@ -7,15 +7,15 @@ using JitDalshe.Application.Exceptions;
 using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.ValueObjects;
 
-namespace JitDalshe.Application.Admin.UseCases.Banners.ReplaceBannerImage;
+namespace JitDalshe.Application.Admin.UseCases.Banners.ReplaceBannerImage.Mobile;
 
 [UseCase]
-internal sealed class ReplaceBannerImageUseCase : IReplaceBannerImageUseCase
+internal sealed class ReplaceBannerMobileImageUseCase : IReplaceBannerMobileImageUseCase
 {
     private readonly IBannersRepository _banners;
     private readonly IImageStorage _imageStorage;
 
-    public ReplaceBannerImageUseCase(IBannersRepository banners, IImageStorage imageStorage)
+    public ReplaceBannerMobileImageUseCase(IBannersRepository banners, IImageStorage imageStorage)
     {
         _banners = banners;
         _imageStorage = imageStorage;
@@ -39,18 +39,21 @@ internal sealed class ReplaceBannerImageUseCase : IReplaceBannerImageUseCase
             }
 
             var banner = maybeBanner.Value;
-
-            await _imageStorage.RemoveImageAsync(banner.Image!.Id, ct);
-
-            var newImageId = await _imageStorage.SaveImageAsync<BannerImage>(imageBytes, imageContentType, ct);
-            var newImage = BannerImage.Create(
+            
+            if (banner.MobileImage is not null)
+            {
+                await _imageStorage.RemoveImageAsync(banner.MobileImage.Id, ct);
+            }
+            
+            var newImageId = await _imageStorage.SaveImageAsync<BannerMobileImage>(imageBytes, imageContentType, ct);
+            var newImage = BannerMobileImage.Create(
                 id: newImageId,
-                url: banner.Image.Url,
+                url: banner.MobileImage!.Url,
                 contentType: imageContentType,
                 bannerId: bannerId,
                 banner: banner);
 
-            await _banners.ReplaceBannerImageAsync(banner, newImage, ct);
+            await _banners.ReplaceBannerMobileImageAsync(banner, newImage, ct);
 
             return UnitResult.Success<Error>();
         }
