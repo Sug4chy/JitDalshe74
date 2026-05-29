@@ -1,3 +1,4 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Forms
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Services.ModalService
@@ -9,32 +10,57 @@
 <Modal Id="@Id"
        Title="Новый отзыв"
        Footer="Modal.FooterType.Button"
-       FooterButtonText="Подтвердить"
-       OnFooterButtonClick="@ApproveReviewAsync">
+       FooterButtonText="Сохранить"
+       OnFooterButtonClick="@SaveChangesAsync">
 
-    <p class="h5 mb-4">Имя: @Review.ReviewerName</p>
-    <p class="h5 mb-4">Возраст: @Review.ReviewerAgeString</p>
-    <p class="h5 mb-4">Статус: @Review.ReviewerStatusString</p>
-    <p class="h5 mb-4">Оставлен @Review.Date.ToString("dd-MM-yyyy")</p>
-    <p class="h5">Отзыв:</p>
-    <p class="h5">@((MarkupString)Review.Text.Replace("\n", "<br/>"))</p>
-
+    <InfoRow Label="Имя" Value="@($"{Review.ReviewerName} ({Review.ReviewerAgeString})")" />
+    <InfoRow Label="Статус автора" Value="@Review.ReviewerStatusString" />
+    <InfoRow Label="Оставлен" Value="@Review.Date.ToString("dd-MM-yyyy")" />
+    
+    <TextBox Label="Текст отзыва:">
+        @Review.Text
+    </TextBox>
+    
+    <div class="mb-3">
+        <label class="form-label fw-bold">Статус отзыва:</label>
+        <InputSelect class="form-select" @bind-Value="_selectedStatus">
+            <option value="@ReviewStatus.New">Новый</option>
+            <option value="@ReviewStatus.InProgress">В обработке</option>
+            <option value="@ReviewStatus.Published">Опубликован</option>
+            <option value="@ReviewStatus.NotPublished">Не публиковать</option>
+        </InputSelect>
+    </div>
+    
 </Modal>
 
 @code {
 
     [Parameter] public required string Id { get; init; }
-    [Parameter] public required UnmoderatedReview Review { get; init; }
-    [Parameter] public required EventCallback OnReviewModerated { get; init; }
+    [Parameter] public required Review Review { get; init; }
+    [Parameter] public required EventCallback OnReviewStatusChanged { get; init; }
 
-    private Task ApproveReviewAsync()
-        => ReviewService.ModerateReviewAsync(
-            reviewId: Review.Id,
-            onSuccess: async () =>
-            {
-                ToastService.ShowSuccess("Отзыв успешно подтверждён!");
-                await ModalService.HideModalAsync($"#{Id}");
-                await OnReviewModerated.InvokeAsync();
-            });
 
+    private ReviewStatus _selectedStatus;
+
+    protected override void OnParametersSet()
+    {
+        _selectedStatus = Review.Status;
+    }
+
+    private async Task SaveChangesAsync()
+    {
+        if (_selectedStatus == Review.Status)
+        {
+            await ModalService.HideModalAsync($"#{Id}");
+            return;
+        }
+
+        var success = await ReviewService.ChangeStatusAsync(Review.Id, _selectedStatus);
+        if (success)
+        {
+            ToastService.ShowSuccess("Статус отзыва успешно обновлен!");
+            await ModalService.HideModalAsync($"#{Id}");
+            await OnReviewStatusChanged.InvokeAsync();
+        }
+    }
 }

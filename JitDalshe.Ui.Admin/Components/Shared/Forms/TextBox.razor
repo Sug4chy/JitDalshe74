@@ -1,0 +1,11 @@
+<div class="mb-3">
+    <span class="text-muted d-block mb-1">@Label</span>
+    <div class="p-2 bg-light border rounded">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public required string Label { get; init; }
+    [Parameter] public required RenderFragment ChildContent { get; init; }
+}

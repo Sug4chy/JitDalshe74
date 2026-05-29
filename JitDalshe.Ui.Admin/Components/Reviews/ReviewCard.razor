@@ -12,16 +12,16 @@
       OnInfoButtonClick="@ShowInfoModalAsync"
       OnDeleteButtonClick="@DeleteReviewAsync"/>
 
-<InfoReviewModal Id="@InfoModalId" Review="@Review" OnReviewModerated="@OnReviewModerated"/>
+<InfoReviewModal Id="@InfoModalId" Review="@Review" OnReviewStatusChanged="@OnReviewStatusChanged"/>
 
 @code {
 
-    private string CardHeaderText => $"Оставлен {Review.Date.ToString("dd-MM-yyyy")}";
+    private string CardHeaderText => $"Статус: {StatusToString(Review.Status)} — Оставлен {Review.Date.ToString("dd-MM-yyyy")}";
     private string CardTitle => $"Отзыв от {Review.ReviewerName}, {Review.ReviewerAgeString}";
     private string InfoModalId => $"modal_info_review_{Review.Id}";
 
-    [Parameter] public required UnmoderatedReview Review { get; init; }
-    [Parameter] public required EventCallback OnReviewModerated { get; init; }
+    [Parameter] public required Review Review { get; init; }
+    [Parameter] public required EventCallback OnReviewStatusChanged { get; init; }
     [Parameter] public required EventCallback OnReviewDeleted { get; init; }
 
     private Task ShowInfoModalAsync()
@@ -36,4 +36,12 @@
                 await OnReviewDeleted.InvokeAsync();
             });
 
+    private static string StatusToString(ReviewStatus s) => s switch
+    {
+        ReviewStatus.New => "Новый",
+        ReviewStatus.InProgress => "В обработке",
+        ReviewStatus.Published => "Опубликован",
+        ReviewStatus.NotPublished => "Не публиковать",
+        _ => s.ToString()
+    };
 }
