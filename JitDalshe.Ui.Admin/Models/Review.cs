@@ -1,11 +1,12 @@
 namespace JitDalshe.Ui.Admin.Models;
 
-public sealed record UnmoderatedReview(
+public sealed record Review(
     Guid Id,
     string ReviewerName,
     int ReviewerAge,
     ReviewerStatus ReviewerStatus,
     string Text,
+    ReviewStatus Status,
     DateOnly Date
 )
 {
@@ -32,4 +33,12 @@ public enum ReviewerStatus
     Patient,
     PatientRelative,
     Other
+}
+    
+public enum ReviewStatus
+{
+    New,
+    InProgress,
+    Published,
+    NotPublished
 }

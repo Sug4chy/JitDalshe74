@@ -1,6 +1,7 @@
 using System.Net;
 using Blazored.Toast.Services;
 using JitDalshe.Ui.Admin.Api.Reviews;
+using JitDalshe.Ui.Admin.Api.Reviews.Requests;
 using JitDalshe.Ui.Admin.Extensions;
 using JitDalshe.Ui.Admin.Models;
 using JitDalshe.Ui.Admin.Services.ErrorHandlers;
@@ -26,10 +27,14 @@ public sealed class ReviewService : IReviewService
         _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
-    public Task<UnmoderatedReview[]> FindAllUnmoderatedReviewsAsync()
+    public Task<PagedResult<Review>?> ListAsync(
+        int pageNumber, 
+        int pageSize, 
+        ReviewStatus? status = null, 
+        CancellationToken ct = default)
         => _runner.RunCatchingAsync(async () =>
         {
-            var response = await _reviewsApi.ListUnmoderatedReviewsAsync();
+            var response = await _reviewsApi.ListReviewsAsync(pageNumber, pageSize, status, ct);
 
             switch (response.StatusCode)
             {
@@ -37,35 +42,32 @@ public sealed class ReviewService : IReviewService
                     return response.Content!;
                 case HttpStatusCode.InternalServerError:
                     _errorHandlers.HandleInternalServerError(response.Error!);
-                    return [];
+                    return null;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }, defaultValue: []);
+        }, defaultValue: null);
 
-    public Task ModerateReviewAsync(Guid reviewId, Func<Task>? onSuccess = null)
+    public Task<bool> ChangeStatusAsync(Guid id, ReviewStatus status, CancellationToken ct = default)
         => _runner.RunCatchingAsync(async () =>
         {
-            var response = await _reviewsApi.ModerateReviewAsync(reviewId);
+            var request = new ChangeReviewStatusRequest(status);
+            var response = await _reviewsApi.ChangeReviewStatusAsync(id, request, ct);
 
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
+                    return true;
                 case HttpStatusCode.NotFound:
                     _errorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.Conflict:
-                    _errorHandlers.HandleConflict(response.Error!);
-                    break;
+                    return false;
                 case HttpStatusCode.InternalServerError:
                     _errorHandlers.HandleInternalServerError(response.Error!);
-                    break;
+                    return false;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        });
+        }, defaultValue: false);
 
     public Task DeleteReviewAsync(Guid reviewId, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
