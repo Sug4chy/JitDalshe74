@@ -65,6 +65,13 @@
       Minio__Endpoint: ${Minio__Endpoint}
       Minio__AccessKey: ${MINIO_ACCESS_KEY}
       Minio__SecretKey: ${MINIO_SECRET_KEY}
+      
+      Email__SmtpServer: ${SMTP_SERVER}
+      Email__Port: ${SMTP_PORT}
+      Email__SenderEmail: ${SMTP_SENDER}
+      Email__RecipientEmail: ${SMTP_RECIPIENT}
+      Email__Username: ${SMTP_USERNAME}
+      Email__Password: ${SMTP_PASSWORD}
 #    healthcheck:
 #      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
 #      interval: 10s
