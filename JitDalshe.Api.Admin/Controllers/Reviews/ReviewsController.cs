@@ -1,8 +1,13 @@
+using JitDalshe.Api.Admin.Controllers.Reviews.Requests;
+using JitDalshe.Api.Admin.Requests;
+using JitDalshe.Api.Attributes;
+using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Api.Models;
 using JitDalshe.Application.Admin.Dto;
+using JitDalshe.Application.Admin.UseCases.Reviews.ChangeStatus;
 using JitDalshe.Application.Admin.UseCases.Reviews.DeleteReview;
-using JitDalshe.Application.Admin.UseCases.Reviews.ListUnmoderatedReviews;
-using JitDalshe.Application.Admin.UseCases.Reviews.ModerateReview;
+using JitDalshe.Application.Admin.UseCases.Reviews.ListReviews;
+using JitDalshe.Application.Models;
 using JitDalshe.Domain.Entities.Reviews;
 using JitDalshe.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -11,47 +16,49 @@ namespace JitDalshe.Api.Admin.Controllers.Reviews;
 
 [ApiController]
 [Route("/api-admin/v1/[controller]")]
-public sealed class ReviewsController : ControllerBase
+public sealed class ReviewsController : AbstractController
 {
     /// <summary>
-    /// Получить все непромодерированные отзывы
+    /// Получить отзывы с пагинацией и фильтрацией по статусу
     /// </summary>
-    [HttpGet("unmoderated")]
-    [ProducesResponseType(typeof(UnmoderatedReviewDto[]), StatusCodes.Status200OK)]
+    [HttpGet]
+    [ValidateRequest]
+    [ProducesResponseType(typeof(PagedResult<ReviewDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ListUnmoderatedReviews(
-        [FromServices] IListUnmoderatedReviewsUseCase listUnmoderatedReviews,
+    public async Task<IActionResult> ListReviews(
+        [FromQuery] ListWithPaginationRequest request,
+        [FromServices] IListReviewsUseCase listReviews,
+        [FromQuery] ReviewStatus? status = null,
         CancellationToken ct = default)
     {
-        var result = await listUnmoderatedReviews.ListAsync(ct);
+        var result = await listReviews.ListAsync(request.PageNumber, request.PageSize, status, ct);
 
-        return result.Match(
-            found => Ok(found.Reviews),
-            error => StatusCode(StatusCodes.Status500InternalServerError, ApiError.From(error.Message))
-        );
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : Error(result.Error);
     }
 
+
     /// <summary>
-    /// Одобрить отзыв
+    /// Изменить статус отзыва (New, InProgress, Published, NotPublished)
     /// </summary>
-    [HttpPost("{id:guid}/moderate")]
+    [HttpPatch("{id:guid}/status")]
+    [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ModerateReview(
+    public async Task<IActionResult> ChangeReviewStatus(
         [FromRoute] Guid id,
-        [FromServices] IModerateReviewUseCase moderateReview,
+        [FromBody] ChangeReviewStatusRequest request,
+        [FromServices] IChangeReviewStatusUseCase changeStatus,
         CancellationToken ct = default)
     {
-        var result = await moderateReview.ModerateAsync(IdOf<Review>.From(id), ct);
+        var result = await changeStatus.ChangeStatusAsync(IdOf<Review>.From(id), request.Status, ct);
 
-        return result.Match<IActionResult>(
-            _ => Ok(),
-            _ => NotFound(ApiError.From($"Review with ID {id} wasn't found")),
-            _ => Conflict(ApiError.From($"Review with ID {id} is already moderated")),
-            error => StatusCode(StatusCodes.Status500InternalServerError, ApiError.From(error.Message))
-        );
+        return result.IsSuccess
+            ? Ok()
+            : Error(result.Error);
     }
 
     /// <summary>
