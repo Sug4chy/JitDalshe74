@@ -20,4 +20,5 @@ public interface IReviewsRepository
     Task AddAsync(Review review, CancellationToken ct = default);
     Task EditAsync(Review review, CancellationToken ct = default);
     Task RemoveAsync(Review review, CancellationToken ct = default);
+    Task<int> CountAsync(Expression<Func<Review, bool>>? filteringExpression = null, CancellationToken ct = default);
 }

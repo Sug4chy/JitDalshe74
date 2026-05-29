@@ -10,16 +10,16 @@ public sealed class Review : AuditableEntity<IdOf<Review>>
     public int ReviewerAge { get; init; }
     public ReviewerStatus ReviewerStatus { get; init; }
     public string Text { get; init; }
-    public bool IsModerated { get; set; }
+    public ReviewStatus Status { get; private set; }
 
-    private Review(string reviewerName, int reviewerAge, ReviewerStatus reviewerStatus, string text, bool isModerated)
+    private Review(string reviewerName, int reviewerAge, ReviewerStatus reviewerStatus, string text, ReviewStatus status)
     {
         Id = IdOf<Review>.New();
         ReviewerName = reviewerName;
         ReviewerAge = reviewerAge;
         ReviewerStatus = reviewerStatus;
         Text = text;
-        IsModerated = isModerated;
+        Status = status;
     }
 
     public static Review Create(
@@ -27,8 +27,8 @@ public sealed class Review : AuditableEntity<IdOf<Review>>
         int reviewerAge,
         ReviewerStatus reviewerStatus,
         string text,
-        bool isModerated)
-        => new(reviewerName, reviewerAge, reviewerStatus, text, isModerated);
+        ReviewStatus status = ReviewStatus.New)
+        => new(reviewerName, reviewerAge, reviewerStatus, text, status);
 
     /// <summary>
     /// For EF Core

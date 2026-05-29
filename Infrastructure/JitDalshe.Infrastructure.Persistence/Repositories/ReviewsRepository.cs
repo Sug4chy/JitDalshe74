@@ -75,4 +75,16 @@ internal sealed class ReviewsRepository : IReviewsRepository
         _dbContext.Reviews.Remove(review);
         await _dbContext.SaveChangesAsync(ct);
     }
+    
+    public async Task<int> CountAsync(Expression<Func<Review, bool>>? filteringExpression = null, CancellationToken ct = default)
+    {
+        var query = _dbContext.Reviews.AsQueryable();
+
+        if (filteringExpression is not null)
+        {
+            query = query.Where(filteringExpression);
+        }
+        
+        return await query.CountAsync(ct);
+    }
 }
