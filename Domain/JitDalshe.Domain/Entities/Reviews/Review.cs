@@ -30,6 +30,11 @@ public sealed class Review : AuditableEntity<IdOf<Review>>
         ReviewStatus status = ReviewStatus.New)
         => new(reviewerName, reviewerAge, reviewerStatus, text, status);
 
+    public void ChangeStatus(ReviewStatus newStatus)
+    {
+        Status = newStatus;
+    }
+    
     /// <summary>
     /// For EF Core
     /// </summary>

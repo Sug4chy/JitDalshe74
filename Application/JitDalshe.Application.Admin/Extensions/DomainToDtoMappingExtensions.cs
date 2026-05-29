@@ -53,13 +53,14 @@ public static class DomainToDtoMappingExtensions
             MobileImageUrl: banner.MobileImage!.Url
         );
 
-    public static UnmoderatedReviewDto ToDto(this Review review)
+    public static ReviewDto ToDto(this Review review)
         => new(
             Id: review.Id,
             ReviewerName: review.ReviewerName,
             ReviewerAge: review.ReviewerAge,
             ReviewerStatus: review.ReviewerStatus,
             Text: review.Text,
+            ReviewStatus: review.Status,
             Date: DateOnly.FromDateTime(review.CreatedAt)
         );
     

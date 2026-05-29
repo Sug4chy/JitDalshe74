@@ -24,7 +24,7 @@ internal sealed class LeaveReviewUseCase : ILeaveReviewUseCase
         try
         {
             await _reviews.AddAsync(
-                Review.Create(reviewerName, reviewerAge, reviewerStatus, text, isModerated: false), 
+                Review.Create(reviewerName, reviewerAge, reviewerStatus, text), 
                 ct);
 
             return LeaveReviewResult.Success();
