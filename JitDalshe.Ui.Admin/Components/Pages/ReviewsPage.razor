@@ -1,35 +1,92 @@
 @page "/reviews"
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Components.Reviews
+@using JitDalshe.Ui.Admin.Components.Shared.Controls
+@using JitDalshe.Ui.Admin.Components.Shared.States
 @using JitDalshe.Ui.Admin.Services.ReviewService
 @inject IReviewService ReviewService
 
 <PageTitle>Отзывы</PageTitle>
 
-<h1>Отзывы на модерацию</h1>
+<div class="topbar-container">
+    <h1>Отзывы</h1>
+    
+    <div class="d-flex align-items-center gap-2">
+        <span class="text-muted">Статус:</span>
+        <InputSelect class="form-select form-select-sm" @bind-Value="_filterStatus" @bind-Value:after="LoadCurrentPage">
+            <option value="">Все</option>
+            <option value="@ReviewStatus.New">Новые</option>
+            <option value="@ReviewStatus.InProgress">В обработке</option>
+            <option value="@ReviewStatus.Published">Опубликованные</option>
+            <option value="@ReviewStatus.NotPublished">Не публиковать</option>
+        </InputSelect>
+    </div>
+</div>
 
-@if (_reviews is not null)
-{
-    @foreach (var review in _reviews)
-    {
-        <ReviewCard Review="review" OnReviewModerated="@LoadReviewsAsync" OnReviewDeleted="@LoadReviewsAsync"/>
-    }
-}
-else
+@if (_isLoading)
 {
     <SpinnerLoader/>
 }
+else if (_pagedResult is null || _pagedResult.Items.Length == 0)
+{
+    <EmptyState Message="Отзывов с таким статусом не найдено" />
+}
+else
+{
+    @foreach (var review in _pagedResult.Items)
+    {
+        <ReviewCard Review="@review" 
+                    OnReviewStatusChanged="@LoadCurrentPage" 
+                    OnReviewDeleted="@LoadCurrentPage"/>
+    }
+
+    <PaginationControls
+        CurrentPage="@_currentPage"
+        TotalPages="@_pagedResult.TotalPages"
+        OnPrevButtonClicked="@LoadPrevPage"
+        OnNextButtonClicked="@LoadNextPage" />
+}
+
 
 @code {
 
-    private UnmoderatedReview[] _reviews = null!;
+    private PagedResult<Review>? _pagedResult;
+    private int _currentPage = 1;
+    private const int PageSize = 10;
+    private bool _isLoading;
+    private ReviewStatus? _filterStatus;
 
-    private async Task LoadReviewsAsync()
+    protected override async Task OnInitializedAsync()
     {
-        _reviews = await ReviewService.FindAllUnmoderatedReviewsAsync();
+        await LoadCurrentPage();
     }
 
-    protected override Task OnInitializedAsync()
-        => LoadReviewsAsync();
+    private async Task LoadCurrentPage()
+    {
+        _isLoading = true;
+        StateHasChanged();
 
+        _pagedResult = await ReviewService.ListAsync(_currentPage, PageSize, _filterStatus);
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadPrevPage()
+    {
+        if (_pagedResult?.HasPreviousPage == true)
+        {
+            _currentPage--;
+            await LoadCurrentPage();
+        }
+    }
+
+    private async Task LoadNextPage()
+    {
+        if (_pagedResult?.HasNextPage == true)
+        {
+            _currentPage++;
+            await LoadCurrentPage();
+        }
+    }
 }

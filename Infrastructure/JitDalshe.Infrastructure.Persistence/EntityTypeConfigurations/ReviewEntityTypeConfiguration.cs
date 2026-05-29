@@ -30,11 +30,12 @@ public sealed class ReviewEntityTypeConfiguration : IEntityTypeConfiguration<Rev
             .HasMaxLength(255)
             .HasColumnName(nameof(Review.Text).ToSnakeCase());
 
-        entity.Property(x => x.IsModerated)
+        entity.Property(x => x.Status)
             .IsRequired()
-            .HasDefaultValue(false)
-            .HasColumnName(nameof(Review.IsModerated).ToSnakeCase());
-
+            .HasConversion<string>()
+            .HasDefaultValue(ReviewStatus.New)
+            .HasColumnName(nameof(Review.Status).ToSnakeCase());
+        
         entity.HasAudits();
     }
 }

@@ -3,6 +3,7 @@ using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Enums;
 using JitDalshe.Application.Errors;
 using JitDalshe.Application.Site.Extensions;
+using JitDalshe.Domain.Entities.Reviews;
 
 namespace JitDalshe.Application.Site.UseCases.Reviews.ListReviews;
 
@@ -23,7 +24,7 @@ internal sealed class ListReviewsUseCase : IListReviewsUseCase
             var foundReviews = await _reviews.FindAllAsync(
                 pageNumber: pageNumber,
                 pageSize: pageSize,
-                filteringExpression: x => x.IsModerated,
+                filteringExpression: x => x.Status == ReviewStatus.Published,
                 orderByExpression: x => x.CreatedAt,
                 sortingOrder: SortingOrder.Descending,
                 ct: ct);
