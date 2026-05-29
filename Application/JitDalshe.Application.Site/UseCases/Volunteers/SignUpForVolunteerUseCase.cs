@@ -1,3 +1,4 @@
+using JitDalshe.Application.Abstractions.Notifications;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Domain.Common;
@@ -10,12 +11,15 @@ namespace JitDalshe.Application.Site.UseCases.Volunteers;
 internal sealed class SignUpForVolunteerUseCase : ISignUpForVolunteerUseCase
 {
     private readonly IVolunteerRequestsRepository _repository;
-
+    private readonly IEmailNotificationsSender _emailSender;
+    
     public SignUpForVolunteerUseCase(
-        IVolunteerRequestsRepository repository
+        IVolunteerRequestsRepository repository,
+        IEmailNotificationsSender emailSender
         )
     {
         _repository = repository;
+        _emailSender = emailSender;
     }
 
     public async Task<SignUpForVolunteerResult> SignUpAsync(
@@ -37,6 +41,9 @@ internal sealed class SignUpForVolunteerUseCase : ISignUpForVolunteerUseCase
                 communicationMethods: communicationMethods);
             
             await _repository.AddAsync(request, ct);
+            
+            const string emailBody = "На сайте зарегистрирована новая заявка на волонтерство. Пожалуйста, проверьте панель администрирования.";
+            await _emailSender.SendAsync("Новая заявка на волонтерство", emailBody, ct);
             
             return SignUpForVolunteerResult.Success();
         }

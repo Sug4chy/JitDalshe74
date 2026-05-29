@@ -1,3 +1,4 @@
+using JitDalshe.Application.Abstractions.Notifications;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Domain.Common;
@@ -10,12 +11,14 @@ namespace JitDalshe.Application.Site.UseCases.SupportGroups;
 internal sealed class SignUpForSupportGroupUseCase : ISignUpForSupportGroupUseCase
 {
     private readonly ISupportGroupRequestsRepository _supportGroupRepository;
-    
+    private readonly IEmailNotificationsSender _emailSender;
     public SignUpForSupportGroupUseCase(
-        ISupportGroupRequestsRepository supportGroupRepository
+        ISupportGroupRequestsRepository supportGroupRepository, 
+        IEmailNotificationsSender emailSender
         )
     {
         _supportGroupRepository = supportGroupRepository;
+        _emailSender = emailSender;
     }
 
     public async Task<SignUpForSupportGroupResult> SignUpAsync(
@@ -37,6 +40,9 @@ internal sealed class SignUpForSupportGroupUseCase : ISignUpForSupportGroupUseCa
                 communicationMethods: communicationMethods);
             
             await _supportGroupRepository.AddAsync(request, ct);
+            
+            const string emailBody = "На сайте зарегистрирована новая заявка на запись в группу поддержки. Пожалуйста, проверьте панель администрирования.";
+            await _emailSender.SendAsync("Новая заявка в группу поддержки", emailBody, ct);
             
             return SignUpForSupportGroupResult.Success();
         }

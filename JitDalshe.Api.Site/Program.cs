@@ -6,6 +6,7 @@ using JitDalshe.Api.Extensions;
 using JitDalshe.Application;
 using JitDalshe.Application.Site;
 using JitDalshe.Infrastructure.Minio;
+using JitDalshe.Infrastructure.Notifications;
 using JitDalshe.Infrastructure.Persistence;
 using Minio;
 
@@ -29,6 +30,14 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
                     .WithCredentials(builder.Configuration["Minio:AccessKey"], builder.Configuration["Minio:SecretKey"])
                     .WithSSL(false)
                     .Build()
+        });
+        
+        containerBuilder.RegisterModule(new NotificationsInfrastructureModule
+        {
+            BotToken = builder.Configuration["TelegramBot:Token"] ?? string.Empty,
+            WebhookUrl = string.Empty,
+            SetWebhook = false, // Отключаем настройку вебхуков бота на стороне сайта
+            CertificatePath = string.Empty
         });
     });
 

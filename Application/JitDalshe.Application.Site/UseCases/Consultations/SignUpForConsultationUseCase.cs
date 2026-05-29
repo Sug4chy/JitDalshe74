@@ -11,15 +11,15 @@ namespace JitDalshe.Application.Site.UseCases.Consultations;
 internal sealed class SignUpForConsultationUseCase : ISignUpForConsultationUseCase
 {
     private readonly IConsultationRequestsRepository _consultationRepository;
-    // private readonly ITelegramNotificationsSender _notifications;
+    private readonly IEmailNotificationsSender _emailSender;
 
     public SignUpForConsultationUseCase(
-        IConsultationRequestsRepository consultationRepository
-        // ITelegramNotificationsSender notifications
+        IConsultationRequestsRepository consultationRepository,
+        IEmailNotificationsSender emailSender
         )
     {
         _consultationRepository = consultationRepository;
-        // _notifications = notifications;
+        _emailSender = emailSender;
     }
 
     public async Task<SignUpForConsultationResult> SignUpAsync(
@@ -39,9 +39,11 @@ internal sealed class SignUpForConsultationUseCase : ISignUpForConsultationUseCa
                 patientPhoneNumber: patientPhoneNumber,
                 patientEmail: patientEmail,
                 communicationMethods: communicationMethod);
-
+            
             await _consultationRepository.AddAsync(request, ct);
-            // await _notifications.SendAsync("Поступила новая заявка на запись на консультацию", ct);
+            
+            const string emailBody = "На сайте зарегистрирована новая заявка на запись на консультацию. Пожалуйста, проверьте панель администрирования.";
+            await _emailSender.SendAsync("Новая заявка на консультацию", emailBody, ct);
 
             return SignUpForConsultationResult.Success();
         }
