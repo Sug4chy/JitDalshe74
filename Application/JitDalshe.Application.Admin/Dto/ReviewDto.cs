@@ -8,6 +8,6 @@ public readonly record struct ReviewDto(
     int ReviewerAge,
     ReviewerStatus ReviewerStatus,
     string Text,
-    ReviewStatus ReviewStatus,
+    ReviewStatus Status,
     DateOnly Date
 );
