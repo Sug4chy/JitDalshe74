@@ -6,7 +6,7 @@ env:
 on:
   push:
     branches:
-      - feature/ci-cd
+      - develop
 
 jobs:
   build-and-push:
