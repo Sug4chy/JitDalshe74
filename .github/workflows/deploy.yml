@@ -1,0 +1,73 @@
+name: CI/CD Pipeline - Backend Dev
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - service: api-site
+            file: JitDalshe.Api.Site/Dockerfile
+          - service: api-admin
+            file: JitDalshe.Api.Admin/Dockerfile
+          - service: api-vk-callback
+            file: JitDalshe.Api.VkCallback/Dockerfile
+          - service: migrator
+            file: JitDalshe.Migrator/Dockerfile
+          - service: news-fetcher
+            file: JitDalshe.NewsFetcher/Dockerfile
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and Push ${{ matrix.service }} Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.file }}
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/jit-dalshe-${{ matrix.service }}:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/jit-dalshe-${{ matrix.service }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/jit-dalshe-${{ matrix.service }}:buildcache,mode=max
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Deploy to dev server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            cd ~/projects/JitDalshe74
+            
+            git fetch origin
+            git checkout develop
+            git pull origin develop
+            
+            echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+            
+            docker compose pull
+            docker compose up -d
+            
+            docker image prune -f
