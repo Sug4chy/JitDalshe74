@@ -52,9 +52,9 @@
       interval: 10s
       timeout: 3s
       retries: 3
-#    depends_on:
-#      news-fetcher:
-#        condition: service_completed_successfully
+    depends_on:
+      news-fetcher:
+        condition: service_completed_successfully
 
   # Step 5: APIs
   api-site:
@@ -72,13 +72,15 @@
       Email__RecipientEmail: ${SMTP_RECIPIENT}
       Email__Username: ${SMTP_USERNAME}
       Email__Password: ${SMTP_PASSWORD}
-#    healthcheck:
-#      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
-#      interval: 10s
-#      timeout: 3s
-#      retries: 3
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/health || wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
     depends_on:
       minio:
+        condition: service_healthy
+      db:
         condition: service_healthy
 
   api-admin:
@@ -89,13 +91,15 @@
       Minio__Endpoint: ${Minio__Endpoint}
       Minio__AccessKey: ${MINIO_ACCESS_KEY}
       Minio__SecretKey: ${MINIO_SECRET_KEY}
-#    healthcheck:
-#      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
-#      interval: 10s
-#      timeout: 3s
-#      retries: 3
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
     depends_on:
       minio:
+        condition: service_healthy
+      db:
         condition: service_healthy
 
   api-vk-callback:
@@ -103,12 +107,14 @@
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
-#    healthcheck:
-#      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
-#      interval: 10s
-#      timeout: 3s
-#      retries: 3
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
     depends_on:
+      db:
+        condition: service_healthy
       minio:
         condition: service_healthy
 
@@ -135,14 +141,16 @@
     ports:
       - "8080:80"
     depends_on:
+      client-ui:
+        condition: service_started
       admin-ui:
         condition: service_started
       api-vk-callback:
-        condition: service_started
+        condition: service_healthy
       api-site:
-        condition: service_started
-      client-ui:
-        condition: service_started
+        condition: service_healthy
+      api-admin:
+        condition: service_healthy
         
 volumes:
   postgres_data:
