@@ -8,6 +8,8 @@ using JitDalshe.Application.Site;
 using JitDalshe.Infrastructure.Minio;
 using JitDalshe.Infrastructure.Notifications;
 using JitDalshe.Infrastructure.Persistence;
+using JitDalshe.Infrastructure.Persistence.Context;
+using JitDalshe.Infrastructure.Persistence.Extensions;
 using Minio;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,6 +66,16 @@ if (!app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<PostgresqlDbContext>();
+    
+    if (app.Environment.IsDevelopment())
+    {
+        await context.SeedDataAsync(); 
+    }
 }
 
 app.MapControllers();

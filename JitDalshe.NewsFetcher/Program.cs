@@ -44,7 +44,7 @@ int currentOffset = 0;
 
 while (currentOffset % 100 == 0)
 {
-    var response = await client.WallGetAsync(domain: "zhitdalshe74", offset: currentOffset);
+    var response = await client.WallGetAsync(domain: "zhitdalshe74", offset: currentOffset, count: 10, ct: ct);
     if (response is null)
     {
         Console.WriteLine($"Response on offset {currentOffset} is null");
@@ -52,6 +52,12 @@ while (currentOffset % 100 == 0)
     }
 
     currentOffset += response.Count;
+    
+    if (response.Count == 0)
+    {
+        break;
+    }
+    
     foreach (var wallPost in response.Items)
     {
         if (!processedIds.Add(wallPost.Id))
