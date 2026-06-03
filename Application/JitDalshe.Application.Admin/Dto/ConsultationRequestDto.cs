@@ -9,7 +9,7 @@ public readonly record struct ConsultationRequestDto(
     int PatientAge,
     string? PatientPhoneNumber,
     string? PatientEmail,
-    RequestStatus RequestStatus,
+    RequestStatus Status,
     CommunicationMethod CommunicationMethods,
     DateOnly Date,
     string? Comment

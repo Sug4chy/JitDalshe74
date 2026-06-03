@@ -71,7 +71,7 @@ public static class DomainToDtoMappingExtensions
             PatientAge: request.PatientAge,
             PatientPhoneNumber: request.PatientPhoneNumber,
             PatientEmail: request.PatientEmail,
-            RequestStatus: request.ConsultationRequestStatus,
+            Status: request.ConsultationRequestStatus,
             CommunicationMethods: request.CommunicationMethods,
             Date: DateOnly.FromDateTime(request.CreatedAt),
             Comment: request.Comment
