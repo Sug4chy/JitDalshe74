@@ -19,7 +19,7 @@
     [Parameter] public required VolunteerRequest Request { get; init; }
     [Parameter] public required EventCallback OnStatusChanged { get; init; }
     private string HeaderText => $"{Request.Date.ToString("dd.MM.yyyy")} - {StatusToString(Request.Status)}";
-    private string CardTitle => $"{Request.ApplicantName} ({Request.ApplicantAge} лет)";
+    private string CardTitle => $"{Request.ApplicantName} ({Request.ApplicantAge} лет) - {Request.CommunicationMethodsString}: {Request.ApplicantPhoneNumber ?? Request.ApplicantEmail}";
     private string EditModalId => $"modal_edit_volunteer_{Request.Id}";
     
     private string? Comment => string.IsNullOrWhiteSpace(Request.Comment) 

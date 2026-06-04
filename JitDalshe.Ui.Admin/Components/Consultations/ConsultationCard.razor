@@ -19,7 +19,7 @@
     [Parameter] public required ConsultationRequest Request { get; init; }
     [Parameter] public required EventCallback OnStatusChanged { get; init; }
     private string HeaderText => $"{Request.Date.ToString("dd.MM.yyyy")} - {StatusToString(Request.Status)}";
-    private string CardTitle => $"{Request.PatientName} ({Request.PatientAge} лет)";
+    private string CardTitle => $"{Request.PatientName} ({Request.PatientAge} лет) - {Request.CommunicationMethodsString}: {Request.PatientPhoneNumber ?? Request.PatientEmail}";
     private string EditModalId => $"modal_edit_consultation_{Request.Id}";
     
     private string? Comment => string.IsNullOrWhiteSpace(Request.Comment) 
