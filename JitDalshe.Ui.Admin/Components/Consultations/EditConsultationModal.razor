@@ -1,3 +1,4 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Forms
 @using JitDalshe.Ui.Admin.Components.Shared.Modals
 @using JitDalshe.Ui.Admin.Models
 @using JitDalshe.Ui.Admin.Models.Common
@@ -13,8 +14,21 @@
        FooterButtonText="Сохранить"
        OnFooterButtonClick="@SaveStatusAsync">
 
-    <p class="h5 mb-3">Пациент: @Request.PatientName (@Request.PatientAge лет)</p>
-    <p class="h5 mb-3">Дата: @Request.Date.ToString("dd.MM.yyyy")</p>
+    <h6 class="text-muted mb-3">Информация о пациенте:</h6>
+        
+    <InfoRow Label="ФИО пациента" Value="@Request.PatientName" />
+    <InfoRow Label="Возраст" Value="@($"{Request.PatientAge} лет")" />
+    <InfoRow Label="Дата подачи заявки" Value="@Request.Date.ToString("dd.MM.yyyy")" />
+    <InfoRow Label="Желаемый способ связи" Value="@Request.CommunicationMethodsString" />
+        
+    @if (!string.IsNullOrWhiteSpace(Request.PatientPhoneNumber))
+    {
+        <InfoRow Label="Номер телефона" Value="@Request.PatientPhoneNumber" />
+    }
+    @if (!string.IsNullOrWhiteSpace(Request.PatientEmail))
+    {
+        <InfoRow Label="Электронная почта" Value="@Request.PatientEmail" />
+    }
     
     <div class="mb-3">
         <label class="form-label">Статус заявки:</label>

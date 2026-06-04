@@ -19,13 +19,45 @@
     [Parameter] public required VolunteerRequest Request { get; init; }
     [Parameter] public required EventCallback OnStatusChanged { get; init; }
     private string HeaderText => $"{Request.Date.ToString("dd.MM.yyyy")} - {StatusToString(Request.Status)}";
-    private string CardTitle => $"{Request.ApplicantName} ({Request.ApplicantAge} лет) - {Request.CommunicationMethodsString}: {Request.ApplicantPhoneNumber ?? Request.ApplicantEmail}";
+
+    private string CardTitle => $"{Request.ApplicantName} ({Request.ApplicantAge} лет) - {Request.CommunicationMethodsString} - {ContactInfo}";
     private string EditModalId => $"modal_edit_volunteer_{Request.Id}";
     
     private string? Comment => string.IsNullOrWhiteSpace(Request.Comment) 
         ? null 
         : Request.Comment;
     
+    private string ContactInfo
+    {
+        get
+        {
+            bool wantsPhone = Request.CommunicationMethods.HasFlag(CommunicationMethod.CallAPhone) || 
+                              Request.CommunicationMethods.HasFlag(CommunicationMethod.WhatsApp) || 
+                              Request.CommunicationMethods.HasFlag(CommunicationMethod.Telegram);
+            
+            bool wantsEmail = Request.CommunicationMethods.HasFlag(CommunicationMethod.Email);
+
+            string? phone = wantsPhone ? Request.ApplicantPhoneNumber : null;
+            string? email = wantsEmail ? Request.ApplicantEmail : null;
+            
+            if (!string.IsNullOrWhiteSpace(phone) && !string.IsNullOrWhiteSpace(email))
+            {
+                return $"Номер: {phone} / email: {email}";
+            }
+            
+            if (!string.IsNullOrWhiteSpace(phone))
+            {
+                return $"Номер: {phone}";
+            }
+            
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                return $"email: {email}";
+            }
+
+            return "Контакты для связи не указаны";
+        }
+    }
     
     private Task ShowEditModalAsync()
         => ModalService.ShowModalAsync($"#{EditModalId}");
