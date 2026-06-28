@@ -19,4 +19,7 @@
       <PackageReference Include="OneOf.SourceGenerator" Version="3.0.271" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="JitDalshe.Tests" />
+    </ItemGroup>
 </Project>

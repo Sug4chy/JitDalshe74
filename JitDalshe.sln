@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Application.Teleg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Infrastructure.Notifications", "Infrastructure\JitDalshe.Infrastructure.Notifications\JitDalshe.Infrastructure.Notifications.csproj", "{70780374-FFEF-4D22-ABAF-14A580C22353}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JitDalshe.Tests", "JitDalshe.Tests\JitDalshe.Tests.csproj", "{A09CD71E-EE6B-4472-ACB7-92DAD917DBD8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,10 @@ Global
 		{70780374-FFEF-4D22-ABAF-14A580C22353}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70780374-FFEF-4D22-ABAF-14A580C22353}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70780374-FFEF-4D22-ABAF-14A580C22353}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A09CD71E-EE6B-4472-ACB7-92DAD917DBD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A09CD71E-EE6B-4472-ACB7-92DAD917DBD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A09CD71E-EE6B-4472-ACB7-92DAD917DBD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A09CD71E-EE6B-4472-ACB7-92DAD917DBD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C6BA5D87-D53F-40F2-8FA4-D84B6AEC2045} = {BE24047B-D681-4DFE-83A1-1E70E0A43F9F}
