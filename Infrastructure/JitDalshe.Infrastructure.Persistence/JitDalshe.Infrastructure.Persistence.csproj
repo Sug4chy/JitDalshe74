@@ -21,4 +21,7 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="JitDalshe.Tests" />
+    </ItemGroup>
 </Project>
