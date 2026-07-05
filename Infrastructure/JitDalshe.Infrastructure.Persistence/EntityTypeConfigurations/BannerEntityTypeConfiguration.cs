@@ -11,8 +11,6 @@ public sealed class BannerEntityTypeConfiguration : IEntityTypeConfiguration<Ban
     {
         entity.ToTable(nameof(Banner).ToSnakeCase());
 
-        entity.HasId();
-
         entity.Property(x => x.Title)
             .IsRequired(false)
             .HasColumnName(nameof(Banner.Title).ToSnakeCase());
@@ -32,8 +30,6 @@ public sealed class BannerEntityTypeConfiguration : IEntityTypeConfiguration<Ban
         entity.Property(x => x.DisplayOrder)
             .HasColumnName(nameof(Banner.DisplayOrder).ToSnakeCase());
         entity.HasIndex(x => x.DisplayOrder).IsUnique();
-
-        entity.HasAudits();
 
         entity.HasOne(x => x.Image)
             .WithOne(x => x.Banner)

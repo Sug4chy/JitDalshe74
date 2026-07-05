@@ -11,7 +11,6 @@ public sealed class EventImageEntityTypeConfiguration : IEntityTypeConfiguration
     {
         entity.ToTable(nameof(EventImage).ToSnakeCase());
 
-        entity.HasId();
         entity.Property(x => x.Url)
             .IsRequired()
             .HasColumnName(nameof(EventImage.Url).ToSnakeCase());
@@ -22,10 +21,7 @@ public sealed class EventImageEntityTypeConfiguration : IEntityTypeConfiguration
 
         entity.Property(x => x.EventId)
             .IsRequired()
-            .HasGuidConversion()
             .HasColumnName(nameof(EventImage.EventId).ToSnakeCase());
-
-        entity.HasAudits();
 
         entity.HasOne(x => x.Event)
             .WithOne(x => x.Image)

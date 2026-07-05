@@ -11,8 +11,6 @@ public sealed class ReviewEntityTypeConfiguration : IEntityTypeConfiguration<Rev
     {
         entity.ToTable(nameof(Review).ToSnakeCase());
 
-        entity.HasId();
-
         entity.Property(x => x.ReviewerName)
             .IsRequired()
             .HasColumnName(nameof(Review.ReviewerName).ToSnakeCase());
@@ -35,7 +33,5 @@ public sealed class ReviewEntityTypeConfiguration : IEntityTypeConfiguration<Rev
             .HasConversion<string>()
             .HasDefaultValue(ReviewStatus.New)
             .HasColumnName(nameof(Review.Status).ToSnakeCase());
-        
-        entity.HasAudits();
     }
 }

@@ -1,13 +1,16 @@
+using JitDalshe.Application.Abstractions.Security;
 using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.Entities.Reviews;
 using JitDalshe.Domain.Entities.SupportGroups;
+using JitDalshe.Domain.Entities.Users;
 using JitDalshe.Domain.Entities.Volunteers;
 using JitDalshe.Domain.ValueObjects;
 using JitDalshe.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace JitDalshe.Infrastructure.Persistence.Extensions;
 
@@ -157,5 +160,35 @@ public static class DbContextExtensions
 
         context.VolunteerRequests.Add(request);
         return true;
+    }
+    
+    public static async Task SeedAdminUserAsync(
+        this PostgresqlDbContext context, 
+        IConfiguration configuration,
+        IPasswordHasher passwordHasher)
+    {
+        if (await context.AdminUsers.AnyAsync())
+        {
+            return;
+        }
+
+        var email = configuration["AdminCredentials:Email"];
+        var initialPassword = configuration["AdminCredentials:Password"];
+
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(initialPassword))
+        {
+            return;
+        }
+
+        var passwordHash = passwordHasher.Hash(initialPassword);
+        var admin = AdminUser.Create(
+            id: IdOf<AdminUser>.New(),
+            email: email,
+            passwordHash: passwordHash,
+            role: UserRole.SuperAdmin
+        );
+
+        context.AdminUsers.Add(admin);
+        await context.SaveChangesAsync();
     }
 }

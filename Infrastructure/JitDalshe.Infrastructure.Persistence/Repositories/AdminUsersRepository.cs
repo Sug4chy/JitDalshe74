@@ -1,17 +1,18 @@
-using System.Linq.Expressions;
 using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
-using JitDalshe.Application.Enums;
-using JitDalshe.Domain.Entities.Reviews;
-using JitDalshe.Domain.ValueObjects;
+using JitDalshe.Domain.Entities.Users;
 using JitDalshe.Infrastructure.Persistence.Attributes;
 using JitDalshe.Infrastructure.Persistence.Context;
 using JitDalshe.Infrastructure.Persistence.Extensions;
 using JitDalshe.Infrastructure.Persistence.Repositories.Base;
-using Microsoft.EntityFrameworkCore;
 
 namespace JitDalshe.Infrastructure.Persistence.Repositories;
 
+
 [Repository]
-internal sealed class ReviewsRepository(PostgresqlDbContext dbContext)
-    : BaseRepository<Review>(dbContext), IReviewsRepository;
+internal sealed class AdminUsersRepository(PostgresqlDbContext dbContext)
+    : BaseRepository<AdminUser>(dbContext), IAdminUsersRepository
+{
+    public Task<Maybe<AdminUser>> FindByEmailAsync(string email, CancellationToken ct = default)
+        => DbContext.AdminUsers.TryFirstAsync(x => x.Email == email, ct);
+}

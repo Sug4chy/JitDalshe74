@@ -68,16 +68,6 @@ if (!app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<PostgresqlDbContext>();
-    
-    if (app.Environment.IsDevelopment())
-    {
-        await context.SeedDataAsync(); 
-    }
-}
-
 app.MapControllers();
 
 app.Run();

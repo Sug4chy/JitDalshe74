@@ -11,12 +11,8 @@ public sealed class TelegramChatEntityTypeConfiguration : IEntityTypeConfigurati
     {
         entity.ToTable(nameof(TelegramChat).ToSnakeCase());
 
-        entity.HasId();
-
         entity.Property(x => x.ExtId)
             .IsRequired()
             .HasColumnName(nameof(TelegramChat.ExtId).ToSnakeCase());
-
-        entity.HasAudits();
     }
 }

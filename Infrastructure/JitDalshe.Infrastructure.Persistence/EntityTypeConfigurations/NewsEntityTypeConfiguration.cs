@@ -11,8 +11,6 @@ public sealed class NewsEntityTypeConfiguration : IEntityTypeConfiguration<News>
     {
         entity.ToTable(nameof(News).ToSnakeCase());
 
-        entity.HasId();
-
         entity.Property(x => x.ExtId)
             .IsRequired()
             .HasColumnName(nameof(News.ExtId).ToSnakeCase());
@@ -36,8 +34,6 @@ public sealed class NewsEntityTypeConfiguration : IEntityTypeConfiguration<News>
             .HasDefaultValue(false)
             .HasColumnName(nameof(News.IsDisplaying).ToSnakeCase());
 
-        entity.HasAudits();
-
         entity.HasMany(x => x.Images)
             .WithOne(x => x.News)
             .HasForeignKey(x => x.NewsId)
@@ -47,6 +43,5 @@ public sealed class NewsEntityTypeConfiguration : IEntityTypeConfiguration<News>
             .WithOne(x => x.News)
             .HasForeignKey<NewsPrimaryImage>(x => x.NewsId)
             .OnDelete(DeleteBehavior.Cascade);
-
     }
 }

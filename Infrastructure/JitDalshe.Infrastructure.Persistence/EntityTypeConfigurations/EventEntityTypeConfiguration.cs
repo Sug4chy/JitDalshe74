@@ -11,8 +11,6 @@ public sealed class EventEntityTypeConfiguration : IEntityTypeConfiguration<Even
     {
         entity.ToTable(nameof(Event).ToSnakeCase());
 
-        entity.HasId();
-
         entity.Property(x => x.Title)
             .IsRequired()
             .HasColumnName(nameof(Event.Title).ToSnakeCase());
@@ -41,8 +39,6 @@ public sealed class EventEntityTypeConfiguration : IEntityTypeConfiguration<Even
             .HasConversion<string>()
             .HasDefaultValue(EventStatus.NotPublished)
             .HasColumnName(nameof(Event.Status).ToSnakeCase());
-        
-        entity.HasAudits();
 
         entity.HasOne(x => x.Image)
             .WithOne(x => x.Event)

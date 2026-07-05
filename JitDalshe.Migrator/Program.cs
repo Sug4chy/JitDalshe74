@@ -1,6 +1,8 @@
 using System.Text.RegularExpressions;
 using JitDalshe.Infrastructure.Persistence.Context;
 using JitDalshe.Infrastructure.Persistence.Context.Options;
+using JitDalshe.Infrastructure.Persistence.Extensions;
+using JitDalshe.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 
 using var cts = new CancellationTokenSource();
@@ -37,5 +39,13 @@ foreach (string migrationName in pendingMigrationsNames)
     await dbContext.Database.MigrateAsync(migrationName, ct);
     Console.WriteLine($"Applied  migration: {migrationName}");
 }
+
+await dbContext.SeedAdminUserAsync(configuration, new BCryptPasswordHasher());
+
+if (envName == Environments.Development)
+{
+    await dbContext.SeedDataAsync();
+}
+
 
 Console.WriteLine("Finished");

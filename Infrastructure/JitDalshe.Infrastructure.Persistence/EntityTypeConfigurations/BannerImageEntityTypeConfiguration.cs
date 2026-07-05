@@ -11,8 +11,6 @@ public sealed class BannerImageEntityTypeConfiguration : IEntityTypeConfiguratio
     {
         entity.ToTable(nameof(BannerImage).ToSnakeCase());
 
-        entity.HasId();
-
         entity.Property(x => x.Url)
             .IsRequired()
             .HasColumnName(nameof(BannerImage.Url).ToSnakeCase());
@@ -24,9 +22,7 @@ public sealed class BannerImageEntityTypeConfiguration : IEntityTypeConfiguratio
         entity.Property(x => x.BannerId)
             .IsRequired()
             .HasColumnName(nameof(BannerImage.BannerId).ToSnakeCase());
-
-        entity.HasAudits();
-
+        
         entity.HasOne(x => x.Banner)
             .WithOne(x => x.Image)
             .HasForeignKey<BannerImage>(x => x.BannerId);

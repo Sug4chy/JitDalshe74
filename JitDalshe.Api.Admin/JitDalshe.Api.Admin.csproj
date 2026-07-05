@@ -11,6 +11,7 @@
         <ProjectReference Include="..\Application\JitDalshe.Application.Admin\JitDalshe.Application.Admin.csproj" />
         <ProjectReference Include="..\Infrastructure\JitDalshe.Infrastructure.Minio\JitDalshe.Infrastructure.Minio.csproj" />
         <ProjectReference Include="..\Infrastructure\JitDalshe.Infrastructure.Persistence\JitDalshe.Infrastructure.Persistence.csproj"/>
+        <ProjectReference Include="..\Infrastructure\JitDalshe.Infrastructure.Security\JitDalshe.Infrastructure.Security.csproj" />
         <ProjectReference Include="..\JitDalshe.Api\JitDalshe.Api.csproj"/>
     </ItemGroup>
 
@@ -21,6 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.17" />
       <PackageReference Include="OneOf" Version="3.0.271" />
       <PackageReference Include="OneOf.SourceGenerator" Version="3.0.271" />
     </ItemGroup>

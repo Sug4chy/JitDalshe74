@@ -16,13 +16,11 @@ public sealed class NewsPrimaryImageEntityTypeConfiguration : IEntityTypeConfigu
         entity.Property(x => x.NewsId)
             .IsRequired()
             .ValueGeneratedNever()
-            .HasGuidConversion()
             .HasColumnName(nameof(NewsPrimaryImage.NewsId).ToSnakeCase());
 
         entity.Property(x => x.NewsImageId)
             .IsRequired()
             .ValueGeneratedNever()
-            .HasGuidConversion()
             .HasColumnName(nameof(NewsPrimaryImage.NewsImageId).ToSnakeCase());
 
         entity.HasOne(x => x.News)

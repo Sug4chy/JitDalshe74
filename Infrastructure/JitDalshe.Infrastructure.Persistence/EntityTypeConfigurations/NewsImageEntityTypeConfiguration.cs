@@ -11,8 +11,6 @@ public sealed class NewsImageEntityTypeConfiguration : IEntityTypeConfiguration<
     {
         entity.ToTable(nameof(NewsImage).ToSnakeCase());
 
-        entity.HasId();
-
         entity.Property(x => x.ExtId)
             .IsRequired()
             .HasColumnName(nameof(NewsImage.ExtId).ToSnakeCase());
@@ -27,10 +25,7 @@ public sealed class NewsImageEntityTypeConfiguration : IEntityTypeConfiguration<
 
         entity.Property(x => x.NewsId)
             .IsRequired()
-            .HasGuidConversion()
             .HasColumnName(nameof(NewsImage.NewsId).ToSnakeCase());
-
-        entity.HasAudits();
 
         entity.HasOne(x => x.News)
             .WithMany(x => x.Images)

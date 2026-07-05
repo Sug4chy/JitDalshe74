@@ -11,8 +11,6 @@ public class SupportGroupRequestEntityTypeConfiguration : IEntityTypeConfigurati
     {
         entity.ToTable(nameof(SupportGroupRequest).ToSnakeCase());
 
-        entity.HasId();
-
         entity.Property(x => x.ApplicantName)
             .IsRequired()
             .HasColumnName(nameof(SupportGroupRequest.ApplicantName).ToSnakeCase());
@@ -36,7 +34,5 @@ public class SupportGroupRequestEntityTypeConfiguration : IEntityTypeConfigurati
         
         entity.Property(x => x.Comment)
             .HasColumnName(nameof(SupportGroupRequest.Comment).ToSnakeCase());
-        
-        entity.HasAudits();
     }
 }

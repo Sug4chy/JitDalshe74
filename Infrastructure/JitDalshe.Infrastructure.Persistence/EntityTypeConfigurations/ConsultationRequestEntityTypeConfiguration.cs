@@ -11,8 +11,6 @@ public sealed class ConsultationRequestEntityTypeConfiguration : IEntityTypeConf
     {
         entity.ToTable(nameof(ConsultationRequest).ToSnakeCase());
 
-        entity.HasId();
-
         entity.Property(x => x.PatientName)
             .IsRequired()
             .HasColumnName(nameof(ConsultationRequest.PatientName).ToSnakeCase());
@@ -36,7 +34,5 @@ public sealed class ConsultationRequestEntityTypeConfiguration : IEntityTypeConf
         
         entity.Property(x => x.Comment)
             .HasColumnName(nameof(ConsultationRequest.Comment).ToSnakeCase());
-        
-        entity.HasAudits();
     }
 }

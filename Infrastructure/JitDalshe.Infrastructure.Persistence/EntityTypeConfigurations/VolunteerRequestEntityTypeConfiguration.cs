@@ -11,8 +11,6 @@ public class VolunteerRequestEntityTypeConfiguration : IEntityTypeConfiguration<
     {
         entity.ToTable(nameof(VolunteerRequest).ToSnakeCase());
 
-        entity.HasId();
-
         entity.Property(x => x.ApplicantName)
             .IsRequired()
             .HasColumnName(nameof(VolunteerRequest.ApplicantName).ToSnakeCase());
@@ -36,7 +34,5 @@ public class VolunteerRequestEntityTypeConfiguration : IEntityTypeConfiguration<
         
         entity.Property(x => x.Comment)
             .HasColumnName(nameof(VolunteerRequest.Comment).ToSnakeCase());
-        
-        entity.HasAudits();
     }
 }

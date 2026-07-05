@@ -11,9 +11,6 @@ public sealed class BannerMobileImageEntityTypeConfiguration : IEntityTypeConfig
     {
         entity.ToTable(nameof(BannerMobileImage).ToSnakeCase());
 
-        entity.HasId();
-        entity.HasAudits();
-        
         entity.Property(x => x.Url)
             .IsRequired()
             .HasColumnName(nameof(BannerMobileImage.Url).ToSnakeCase());
