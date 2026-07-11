@@ -24,6 +24,8 @@ jobs:
             file: JitDalshe.Migrator/Dockerfile
           - service: news-fetcher
             file: JitDalshe.NewsFetcher/Dockerfile
+          - service: admin-ui
+            file: JitDalshe.Ui.Admin/Dockerfile
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -63,6 +65,8 @@ jobs:
             
             git fetch origin
             git checkout develop
+            
+            git reset --hard origin/develop
             git pull origin develop
             
             echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
