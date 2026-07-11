@@ -1,17 +1,21 @@
 using JitDalshe.Api.Admin.Controllers.News.Requests;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
+using JitDalshe.Api.Models;
 using JitDalshe.Application.Admin.UseCases.News.DeleteNews;
 using JitDalshe.Application.Admin.UseCases.News.EditNews;
 using JitDalshe.Application.Admin.UseCases.News.ListNews;
 using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Admin.Controllers.News;
 
 [ApiController]
+[Authorize]
 [Route("/api-admin/v1/[controller]")]
+[ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
 public sealed class NewsController : AbstractController
 {
     /// <summary>

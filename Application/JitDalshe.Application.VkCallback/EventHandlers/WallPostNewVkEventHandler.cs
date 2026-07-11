@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Ganss.Xss;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.VkCallback.Abstractions;
 using JitDalshe.Application.VkCallback.Events;
@@ -54,10 +55,13 @@ public sealed class WallPostNewVkEventHandler : IVkEventHandler
             )
             .ToList();
         
+        var sanitizer = new HtmlSanitizer();
+        var sanitizedText = sanitizer.Sanitize(payload.Text);
+        
         var news = News.Create(
             id: IdOf<News>.New(),
             extId: payload.Id,
-            text: payload.Text,
+            text: sanitizedText,
             publicationDate: DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeSeconds(payload.Date).Date),
             postUrl: $"https://vk.com/wall{groupId}_{payload.Id}",
             isDisplaying: false,

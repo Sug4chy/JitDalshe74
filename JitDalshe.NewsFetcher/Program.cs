@@ -1,4 +1,5 @@
-﻿using JitDalshe.Domain.Entities.News;
+﻿using Ganss.Xss;
+using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.ValueObjects;
 using JitDalshe.Infrastructure.Persistence.Context;
 using JitDalshe.Infrastructure.Persistence.Context.Options;
@@ -42,6 +43,8 @@ var newsRepository = new NewsRepository(dbContext);
 
 int currentOffset = 0;
 
+var sanitizer = new HtmlSanitizer();
+
 while (currentOffset % 100 == 0)
 {
     var response = await client.WallGetAsync(domain: "zhitdalshe74", offset: currentOffset, count: 10, ct: ct);
@@ -74,10 +77,12 @@ while (currentOffset % 100 == 0)
             )
             .ToList();
         
+        var sanitizedText = sanitizer.Sanitize(wallPost.Text);
+        
         var news = News.Create(
             id: IdOf<News>.New(),
             extId: wallPost.Id,
-            text: wallPost.Text,
+            text: sanitizedText,
             publicationDate: DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeSeconds(wallPost.Date).Date),
             postUrl: $"https://vk.com/wall-177662413_{wallPost.Id}",
             isDisplaying: false,

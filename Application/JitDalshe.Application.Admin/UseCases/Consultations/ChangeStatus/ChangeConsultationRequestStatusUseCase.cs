@@ -9,21 +9,15 @@ using JitDalshe.Domain.ValueObjects;
 namespace JitDalshe.Application.Admin.UseCases.Consultations.ChangeStatus;
 
 [UseCase]
-public sealed class ChangeConsultationRequestStatusUseCase : IChangeConsultationRequestStatusUseCase
+public sealed class ChangeConsultationRequestStatusUseCase(IConsultationRequestsRepository requests)
+    : IChangeConsultationRequestStatusUseCase
 {
-    private readonly IConsultationRequestsRepository _requests;
-
-    public ChangeConsultationRequestStatusUseCase(IConsultationRequestsRepository requests)
-    {
-        _requests = requests;
-    }
-    
     public async Task<UnitResult<Error>> EditAsync(IdOf<ConsultationRequest> requestId, RequestStatus newStatus, CancellationToken ct = default)
         
     {
         try
         {
-            var maybeRequest = await _requests.FindByIdAsync(requestId, ct);
+            var maybeRequest = await requests.FindByIdAsync(requestId, ct);
             if (maybeRequest.HasNoValue)
             {
                 return UnitResult.Failure(Error.Of("Заявка не найдена", ErrorGroup.NotFound));
@@ -33,7 +27,7 @@ public sealed class ChangeConsultationRequestStatusUseCase : IChangeConsultation
             
             request.ChangeStatus(newStatus);
             
-            await _requests.EditAsync(request, ct);
+            await requests.EditAsync(request, ct);
             
             return UnitResult.Success<Error>();
         }

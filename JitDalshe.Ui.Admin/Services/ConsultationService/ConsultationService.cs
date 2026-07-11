@@ -1,4 +1,3 @@
-using System.Net;
 using Blazored.Toast.Services;
 using JitDalshe.Ui.Admin.Api.Consultations;
 using JitDalshe.Ui.Admin.Api.Consultations.Requests;
@@ -14,17 +13,17 @@ public sealed class ConsultationService : IConsultationService
 {
     private readonly Runner _runner;
     private readonly IConsultationsApiClient _consultationsApi;
-    private readonly CommonErrorHandlers _commonErrorHandlers;
+    private readonly IErrorHandlers _errorHandlers;
 
     public ConsultationService(
         Runner runner, 
         IConsultationsApiClient consultationsApi, 
         IToastService toastService, 
-        CommonErrorHandlers commonErrorHandlers)
+        IErrorHandlers errorHandlers)
     {
         _runner = runner;
         _consultationsApi = consultationsApi;
-        _commonErrorHandlers = commonErrorHandlers;
+        _errorHandlers = errorHandlers;
         _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
@@ -34,21 +33,11 @@ public sealed class ConsultationService : IConsultationService
         RequestStatus? status = null,
         DateOnly? startDate = null,
         DateOnly? endDate = null,
-        CancellationToken ct = default
-        ) => _runner.RunCatchingAsync(async () =>
-    {
-        var response = await _consultationsApi.ListAsync(pageNumber, pageSize, status, startDate, endDate, ct);
-
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return response.Content;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    return null;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+        CancellationToken ct = default) 
+        => _runner.RunCatchingAsync(async () =>
+        {
+            var response = await _consultationsApi.ListAsync(pageNumber, pageSize, status, startDate, endDate, ct);
+            return response.Handle(_errorHandlers);
         }, defaultValue: null);
 
     public Task<bool> ChangeStatusAsync(Guid id, RequestStatus status, CancellationToken ct = default) 
@@ -56,20 +45,7 @@ public sealed class ConsultationService : IConsultationService
         {
             var request = new ChangeConsultationRequestStatusRequest(status);
             var response = await _consultationsApi.ChangeStatusAsync(id, request, ct);
-
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return true;
-                case HttpStatusCode.NotFound:
-                    _commonErrorHandlers.HandleNotFound(response.Error!);
-                    return false;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    return false;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return response.Handle(_errorHandlers);
         }, defaultValue: false);
     
     public Task<bool> UpdateCommentAsync(Guid id, string? comment, CancellationToken ct = default)
@@ -77,20 +53,6 @@ public sealed class ConsultationService : IConsultationService
         {
             var request = new UpdateConsultationRequestCommentRequest(comment);
             var response = await _consultationsApi.UpdateCommentAsync(id, request, ct);
-            
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return true;
-                case HttpStatusCode.NotFound:
-                    _commonErrorHandlers.HandleNotFound(response.Error!);
-                    return false;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    return false;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            
+            return response.Handle(_errorHandlers);
         }, defaultValue: false);
 }

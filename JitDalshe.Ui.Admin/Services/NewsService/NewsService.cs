@@ -13,17 +13,17 @@ public sealed class NewsService : INewsService
 {
     private readonly INewsApiClient _newsApi;
     private readonly Runner _runner;
-    private readonly CommonErrorHandlers _commonErrorHandlers;
+    private readonly IErrorHandlers _errorHandlers;
 
     public NewsService(
         IToastService toastService, 
         INewsApiClient newsApi, 
         Runner runner, 
-        CommonErrorHandlers commonErrorHandlers)
+        IErrorHandlers errorHandlers)
     {
         _newsApi = newsApi;
         _runner = runner;
-        _commonErrorHandlers = commonErrorHandlers;
+        _errorHandlers = errorHandlers;
         _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
 
@@ -31,39 +31,16 @@ public sealed class NewsService : INewsService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _newsApi.ListNewsAsync();
-
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return response.Content!;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    return [];
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return response.Handle(_errorHandlers) ?? [];
         }, defaultValue: []);
 
     public Task EditAsync(Guid id, EditNewsRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _newsApi.EditNewsAsync(id, request);
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers) is not null)
             {
-                case HttpStatusCode.OK:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.BadRequest:
-                    _commonErrorHandlers.HandleBadRequest(response.Error!);
-                    break;
-                case HttpStatusCode.NotFound:
-                    _commonErrorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 
@@ -71,20 +48,10 @@ public sealed class NewsService : INewsService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _newsApi.DeleteNewsByIdAsync(id);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers, HttpStatusCode.NoContent))
             {
-                case HttpStatusCode.NoContent:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.NotFound:
-                    _commonErrorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
+
 }

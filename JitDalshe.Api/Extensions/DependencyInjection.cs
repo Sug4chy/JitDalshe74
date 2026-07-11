@@ -1,4 +1,5 @@
 using System.Reflection;
+using JitDalshe.Api.Filters;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -27,7 +28,19 @@ public static class DependencyInjection
                 throw new InvalidOperationException("Unable to determine tag for endpoint.");
             });
             c.DocInclusionPredicate((_, _) => true);
-
+            
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Введите JWT токен в формате: Bearer {ваш_токен}"
+            });
+            
+            c.OperationFilter<AuthorizeOperationFilter>();
+            
             string xmlFilename = $"{Assembly.GetAssembly(typeof(TAnchor))!.GetName().Name}.xml";
             c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });

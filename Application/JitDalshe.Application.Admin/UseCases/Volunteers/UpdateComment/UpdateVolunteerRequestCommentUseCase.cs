@@ -8,15 +8,9 @@ using JitDalshe.Domain.ValueObjects;
 namespace JitDalshe.Application.Admin.UseCases.Volunteers.UpdateComment;
 
 [UseCase]
-public sealed class UpdateVolunteerRequestCommentUseCase : IUpdateVolunteerRequestCommentUseCase
+public sealed class UpdateVolunteerRequestCommentUseCase(IVolunteerRequestsRepository requests)
+    : IUpdateVolunteerRequestCommentUseCase
 {
-    private readonly IVolunteerRequestsRepository _requests;
-    
-    public UpdateVolunteerRequestCommentUseCase(IVolunteerRequestsRepository requests)
-    {
-        _requests = requests;
-    }
-
     public async Task<UnitResult<Error>> UpdateAsync(
         IdOf<VolunteerRequest> requestId,
         string? comment,
@@ -25,7 +19,7 @@ public sealed class UpdateVolunteerRequestCommentUseCase : IUpdateVolunteerReque
     {
         try
         {
-            var maybeRequest = await _requests.FindByIdAsync(requestId, ct);
+            var maybeRequest = await requests.FindByIdAsync(requestId, ct);
             if (maybeRequest.HasNoValue)
             {
                 return UnitResult.Failure(Error.Of("Заявка не найдена", ErrorGroup.NotFound));
@@ -34,7 +28,7 @@ public sealed class UpdateVolunteerRequestCommentUseCase : IUpdateVolunteerReque
             var request = maybeRequest.Value;
             request.UpdateComment(comment);
 
-            await _requests.EditAsync(request, ct);
+            await requests.EditAsync(request, ct);
 
             return UnitResult.Success<Error>();
         }

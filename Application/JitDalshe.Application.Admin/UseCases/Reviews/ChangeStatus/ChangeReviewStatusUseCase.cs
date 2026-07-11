@@ -8,20 +8,13 @@ using JitDalshe.Domain.ValueObjects;
 namespace JitDalshe.Application.Admin.UseCases.Reviews.ChangeStatus;
 
 [UseCase]
-internal sealed class ChangeReviewStatusUseCase : IChangeReviewStatusUseCase
+internal sealed class ChangeReviewStatusUseCase(IReviewsRepository reviews) : IChangeReviewStatusUseCase
 {
-    private readonly IReviewsRepository _reviews;
-
-    public ChangeReviewStatusUseCase(IReviewsRepository reviews)
-    {
-        _reviews = reviews;
-    }
-
     public async Task<UnitResult<Error>> ChangeStatusAsync(IdOf<Review> reviewId, ReviewStatus newStatus, CancellationToken ct = default)
     {
         try
         {
-            var maybeReview = await _reviews.FindByIdAsync(reviewId, ct);
+            var maybeReview = await reviews.FindByIdAsync(reviewId, ct);
             if (maybeReview.HasNoValue)
             {
                 return UnitResult.Failure(Error.Of("Отзыв не найден", ErrorGroup.NotFound));
@@ -30,7 +23,7 @@ internal sealed class ChangeReviewStatusUseCase : IChangeReviewStatusUseCase
             var review = maybeReview.Value;
             review.ChangeStatus(newStatus);
 
-            await _reviews.EditAsync(review, ct);
+            await reviews.EditAsync(review, ct);
 
             return UnitResult.Success<Error>();
         }

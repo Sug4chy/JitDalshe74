@@ -8,7 +8,7 @@ namespace JitDalshe.Ui.Admin.Api.SupportGroups;
 public interface ISupportGroupsApiClient
 {
     [Get("")]
-    Task<ApiResponse<PagedResult<SupportGroupRequest>>> ListAsync(
+    Task<IApiResponse<PagedResult<SupportGroupRequest>>> ListAsync(
         [Query] int pageNumber, 
         [Query] int pageSize, 
         [Query] RequestStatus? status,
@@ -17,8 +17,8 @@ public interface ISupportGroupsApiClient
         CancellationToken ct = default);
 
     [Patch("/{id}/status")]
-    Task<ApiResponse<IApiResponse>> ChangeStatusAsync(Guid id, ChangeSupportGroupRequestStatusRequest request, CancellationToken ct = default); 
+    Task<IApiResponse> ChangeStatusAsync(Guid id, ChangeSupportGroupRequestStatusRequest request, CancellationToken ct = default); 
 
     [Patch("/{id}/comment")]
-    Task<ApiResponse<IApiResponse>> UpdateCommentAsync(Guid id, UpdateSupportGroupRequestCommentRequest request, CancellationToken ct = default);
+    Task<IApiResponse> UpdateCommentAsync(Guid id, UpdateSupportGroupRequestCommentRequest request, CancellationToken ct = default);
 }

@@ -11,12 +11,15 @@ using JitDalshe.Application.Models;
 using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.SupportGroups;
 using JitDalshe.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Admin.Controllers.SupportGroups;
 
 [ApiController]
+[Authorize]
 [Route("/api-admin/v1/[controller]")]
+[ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
 public class SupportGroupsController : AbstractController
 {
     /// <summary>
@@ -26,7 +29,6 @@ public class SupportGroupsController : AbstractController
     [ValidateRequest]
     [ProducesResponseType(typeof(PagedResult<SupportGroupRequestDto>),StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListSupportGroupRequests(
         [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListSupportGroupRequestsUseCase listRequests,
@@ -52,7 +54,6 @@ public class SupportGroupsController : AbstractController
     [HttpPatch("{id:guid}/status")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditSupportGroupRequest(
         [FromRoute] Guid id, 
         [FromBody] ChangeSupportGroupRequestStatusRequest request,
@@ -68,7 +69,6 @@ public class SupportGroupsController : AbstractController
     [HttpPatch("{id:guid}/comment")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateSupportGroupComment(
         [FromRoute] Guid id,
         [FromBody] UpdateSupportGroupCommentRequest request,

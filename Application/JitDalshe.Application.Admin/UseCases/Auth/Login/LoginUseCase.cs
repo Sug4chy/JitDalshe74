@@ -1,45 +1,40 @@
+using CSharpFunctionalExtensions;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Abstractions.Security;
 using JitDalshe.Application.Attributes;
+using JitDalshe.Application.Errors;
 
 namespace JitDalshe.Application.Admin.UseCases.Auth.Login;
 
 [UseCase]
-internal sealed class LoginUseCase : ILoginUseCase
+internal sealed class LoginUseCase(
+    IAdminUsersRepository users,
+    IPasswordHasher passwordHasher,
+    IJwtProvider jwtProvider)
+    : ILoginUseCase
 {
-    private readonly IAdminUsersRepository _users;
-    private readonly IPasswordHasher _passwordHasher;
-    private readonly IJwtProvider _jwtProvider;
-
-    public LoginUseCase(IAdminUsersRepository users, IPasswordHasher passwordHasher, IJwtProvider jwtProvider)
-    {
-        _users = users;
-        _passwordHasher = passwordHasher;
-        _jwtProvider = jwtProvider;
-    }
-
-    public async Task<LoginResult> LoginAsync(string email, string password, CancellationToken ct = default)
+    public async Task<Result<string, Error>> LoginAsync(string email, string password, CancellationToken ct = default)
     {
         try
         {
-            var maybeUser = await _users.FindByEmailAsync(email, ct);
+            var maybeUser = await users.FindByEmailAsync(email, ct);
             if (maybeUser.HasNoValue || !maybeUser.Value.IsActive)
             {
-                return LoginResult.Failed;
+                return Result.Failure<string, Error>(Error.Of("Неверный email или пароль", ErrorGroup.Unauthorized));
             }
 
             var user = maybeUser.Value;
-            if (!_passwordHasher.Verify(password, user.PasswordHash))
+            if (!passwordHasher.Verify(password, user.PasswordHash))
             {
-                return LoginResult.Failed;
+                return Result.Failure<string, Error>(Error.Of("Неверный email или пароль", ErrorGroup.Unauthorized));
             }
 
-            var token = _jwtProvider.GenerateToken(user.Id, user.Email, user.Role);
-            return LoginResult.Ok(token);
+            var token = jwtProvider.GenerateToken(user.Id, user.Email, user.Role);
+            return Result.Success<string, Error>(token);
         }
         catch (Exception e)
         {
-            return LoginResult.Failure(e.Message);
+            return Result.Failure<string, Error>(Error.Of(e.Message, ErrorGroup.InternalError));
         }
     }
 }

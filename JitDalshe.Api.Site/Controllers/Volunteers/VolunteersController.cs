@@ -1,4 +1,5 @@
 using JitDalshe.Api.Attributes;
+using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Api.Models;
 using JitDalshe.Api.Site.Controllers.Volunteers.Requests;
 using JitDalshe.Application.Site.UseCases.Volunteers;
@@ -8,7 +9,7 @@ namespace JitDalshe.Api.Site.Controllers.Volunteers;
 
 [ApiController]
 [Route("/api-site/v1/[controller]")]
-public sealed class VolunteersController : ControllerBase
+public sealed class VolunteersController : AbstractController
 {
     [HttpPost]
     [ValidateRequest]

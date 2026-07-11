@@ -12,24 +12,17 @@ using JitDalshe.Domain.Entities.Events;
 namespace JitDalshe.Application.Admin.UseCases.Events.ListEvents;
 
 [UseCase]
-public sealed class ListEventsUseCase : IListEventsUseCase
+public sealed class ListEventsUseCase(IEventsRepository events) : IListEventsUseCase
 {
-    private readonly IEventsRepository _events;
-
-    public ListEventsUseCase(IEventsRepository events)
-    {
-        _events = events;
-    }
-
     public async Task<Result<PagedResult<EventDto>, Error>> ListAsync(int pageNumber, int pageSize, CancellationToken ct = default)
     {
         try
         {
             Expression<Func<Event, bool>>? filteringExpression = null; // На случай, если нужен будет фильтр
 
-            var totalCount = await _events.CountAsync(filteringExpression, ct);
+            var totalCount = await events.CountAsync(filteringExpression, ct);
             
-            var events = await _events.FindAllAsync(
+            var events1 = await events.FindAllAsync(
                 pageNumber : pageNumber,
                 pageSize: pageSize,
                 filteringExpression: filteringExpression,
@@ -37,7 +30,7 @@ public sealed class ListEventsUseCase : IListEventsUseCase
                 sortingOrder: SortingOrder.Descending,
                 ct: ct);
 
-            var dtos = events.Select(x => x.ToDto()).ToArray();
+            var dtos = events1.Select(x => x.ToDto()).ToArray();
             
             return Result.Success<PagedResult<EventDto>, Error>(
                 new PagedResult<EventDto>(

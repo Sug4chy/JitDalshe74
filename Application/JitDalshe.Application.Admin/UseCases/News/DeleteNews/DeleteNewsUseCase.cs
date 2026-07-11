@@ -7,26 +7,19 @@ using JitDalshe.Domain.ValueObjects;
 namespace JitDalshe.Application.Admin.UseCases.News.DeleteNews;
 
 [UseCase]
-internal sealed class DeleteNewsUseCase : IDeleteNewsUseCase
+internal sealed class DeleteNewsUseCase(INewsRepository newsRepository) : IDeleteNewsUseCase
 {
-    private readonly INewsRepository _newsRepository;
-
-    public DeleteNewsUseCase(INewsRepository newsRepository)
-    {
-        _newsRepository = newsRepository;
-    }
-
     public async Task<UnitResult<Error>> DeleteAsync(IdOf<Domain.Entities.News.News> id, CancellationToken ct = default)
     {
         try
         {
-            var maybeNews = await _newsRepository.FindByIdAsync(id, ct);
+            var maybeNews = await newsRepository.FindByIdAsync(id, ct);
             if (maybeNews.HasNoValue)
             {
                 return UnitResult.Failure(Error.Of($"News with id: {id} was not found.", ErrorGroup.NotFound));
             }
 
-            await _newsRepository.DeleteAsync(maybeNews.Value, ct);
+            await newsRepository.DeleteAsync(maybeNews.Value, ct);
 
             return UnitResult.Success<Error>();
         }

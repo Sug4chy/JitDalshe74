@@ -1,0 +1,61 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Forms
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Common
+@using JitDalshe.Ui.Admin.Services.AdminUserService
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
+@inject IAdminUserService AdminUserService
+@inject IToastService ToastService
+
+<Modal Id="@Id"
+       Title="Редактирование администратора"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Сохранить"
+       OnFooterButtonClick="@SaveChangesTypeAsync">
+
+    <InfoRow Label="Электронная почта" Value="@User.Email" />
+    <InfoRow Label="Роль" Value="@(User.Role == UserRole.SuperAdmin ? "Суперадмин" : "Администратор")" />
+    <InfoRow Label="Дата регистрации" Value="@User.CreatedAt.ToString("dd.MM.yyyy")" />
+
+    <hr />
+
+    <EditForm Model="@_formModel">
+        <CheckboxInput Label="Активен (разрешить доступ)" @bind-Value="_formModel.IsActive" />
+    </EditForm>
+</Modal>
+
+@code {
+    [Parameter] public required string Id { get; init; }
+    [Parameter] public required AdminUser User { get; init; }
+    [Parameter] public required EventCallback OnAdminEdited { get; init; }
+
+    private FormModel _formModel = new();
+
+    protected override void OnParametersSet()
+    {
+        _formModel.IsActive = User.IsActive;
+    }
+
+    private async Task SaveChangesTypeAsync()
+    {
+        if (_formModel.IsActive == User.IsActive)
+        {
+            await ModalService.HideModalAsync($"#{Id}");
+            return;
+        }
+
+        var success = await AdminUserService.ToggleStatusAsync(User.Id, _formModel.IsActive);
+        if (success)
+        {
+            ToastService.ShowSuccess(_formModel.IsActive ? "Администратор успешно активирован" : "Администратор успешно заблокирован");
+            await ModalService.HideModalAsync($"#{Id}");
+            await OnAdminEdited.InvokeAsync();
+        }
+    }
+
+    private sealed class FormModel
+    {
+        public bool IsActive { get; set; }
+    }
+}

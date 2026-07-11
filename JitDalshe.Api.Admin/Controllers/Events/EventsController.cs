@@ -3,6 +3,7 @@ using JitDalshe.Api.Admin.Controllers.Events.Requests;
 using JitDalshe.Api.Admin.Requests;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
+using JitDalshe.Api.Models;
 using JitDalshe.Application.Admin.UseCases.Events.CreateEvent;
 using JitDalshe.Application.Admin.UseCases.Events.DeleteEvent;
 using JitDalshe.Application.Admin.UseCases.Events.EditEvent;
@@ -11,12 +12,15 @@ using JitDalshe.Application.Admin.UseCases.Events.ReplaceEventImage;
 using JitDalshe.Application.UseCases.Events.GetEventImage;
 using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Admin.Controllers.Events;
 
 [ApiController]
+[Authorize]
 [Route("/api-admin/v1/[controller]")]
+[ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
 public sealed class EventsController : AbstractController
 {
     /// <summary>
@@ -25,7 +29,6 @@ public sealed class EventsController : AbstractController
     [HttpGet("{id:guid}/image")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetEventImage(
         [FromRoute] Guid id,
         [FromServices] IGetEventImageUseCase getEventImage,
@@ -44,7 +47,6 @@ public sealed class EventsController : AbstractController
     [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListEvents(
         [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListEventsUseCase listEvents,
@@ -63,7 +65,6 @@ public sealed class EventsController : AbstractController
     [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateEvent(
         [FromBody] CreateEventRequest request,
         [FromServices] ICreateEventUseCase createEvent,
@@ -93,7 +94,6 @@ public sealed class EventsController : AbstractController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditEvent(
         [FromRoute] Guid id,
         [FromBody] EditEventRequest request,
@@ -124,7 +124,6 @@ public sealed class EventsController : AbstractController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ReplaceEventImage(
         [FromRoute] Guid id,
         [FromBody] ReplaceEventImageRequest request,
@@ -147,7 +146,6 @@ public sealed class EventsController : AbstractController
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteEvent(
         [FromRoute] Guid id,
         [FromServices] IDeleteEventUseCase deleteEvent,

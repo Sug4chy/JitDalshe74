@@ -1,0 +1,70 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Forms
+@using JitDalshe.Ui.Admin.Components.Shared.Modals
+@using JitDalshe.Ui.Admin.Models.Forms
+@using JitDalshe.Ui.Admin.Services.AdminUserService
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
+@inject IAdminUserService AdminUserService
+@inject IToastService ToastService
+
+<Modal Id="@Id"
+       Static="true"
+       Title="Создание нового администратора"
+       OnClose="@CloseModalAsync"
+       Footer="Modal.FooterType.Button"
+       FooterButtonText="Сохранить"
+       OnFooterButtonClick="@SubmitCreateAdminAsync">
+
+    <EditForm EditContext="@_editContext">
+        <FluentValidationValidator @ref="_fluentValidationValidator"/>
+
+        <TextInput Label="Электронная почта" @bind-Value="_formModel.Email" />
+        <TextInput Label="Пароль" Type="password" @bind-Value="_formModel.Password" />
+    </EditForm>
+</Modal>
+
+@code {
+    private CreateAdminUserFormModel _formModel = null!;
+    private EditContext? _editContext;
+    private FluentValidationValidator? _fluentValidationValidator;
+
+    [Parameter] public required string Id { get; init; }
+    [Parameter] public required EventCallback AdminCreated { get; init; }
+
+    private void ClearFields(bool isInitializing)
+    {
+        _formModel = new CreateAdminUserFormModel();
+        _editContext = new EditContext(_formModel);
+        if (!isInitializing)
+        {
+            StateHasChanged();
+        }
+    }
+
+    private Task CloseModalAsync()
+    {
+        ClearFields(false);
+        return ModalService.HideModalAsync($"#{Id}");
+    }
+
+    private async Task SubmitCreateAdminAsync()
+    {
+        if (!await _fluentValidationValidator!.ValidateAsync())
+        {
+            return;
+        }
+
+        var success = await AdminUserService.CreateAsync(_formModel.Email, _formModel.Password);
+        if (success)
+        {
+            await CloseModalAsync();
+            ToastService.ShowSuccess("Новый администратор успешно зарегистрирован!");
+            await AdminCreated.InvokeAsync();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        ClearFields(true);
+    }
+}

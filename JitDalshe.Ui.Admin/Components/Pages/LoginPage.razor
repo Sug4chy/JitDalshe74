@@ -1,0 +1,50 @@
+@page "/login"
+@using JitDalshe.Ui.Admin.Api.Auth.Requests
+@using JitDalshe.Ui.Admin.Components.Shared.Forms
+@using JitDalshe.Ui.Admin.Models.Forms
+@using JitDalshe.Ui.Admin.Services.AuthService
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <h3 class="mb-3">Вход в панель</h3>
+
+            <EditForm EditContext="@_editContext">
+                <FluentValidationValidator @ref="_validator" />
+
+                <TextInput Label="Email" @bind-Value="_formModel.Email" />
+                <TextInput Label="Пароль" Type="password" @bind-Value="_formModel.Password" />
+
+                <button type="button" class="btn btn-primary" @onclick="SubmitLoginAsync" disabled="@_isSubmitting">
+                    @(_isSubmitting ? "Вход..." : "Войти")
+                </button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private readonly LoginFormModel _formModel = new();
+    private EditContext? _editContext;
+    private FluentValidationValidator? _validator;
+    private bool _isSubmitting;
+
+    protected override void OnInitialized() => _editContext = new EditContext(_formModel);
+
+    private async Task SubmitLoginAsync()
+    {
+        if (!await _validator!.ValidateAsync()) return;
+        
+        _isSubmitting = true;
+        var success = await AuthService.LoginAsync(new LoginRequest(_formModel.Email, _formModel.Password));
+        
+        if (success)
+        {
+            NavigationManager.NavigateTo("");
+        }
+
+        _isSubmitting = false;
+    }
+}

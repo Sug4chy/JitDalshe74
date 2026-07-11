@@ -51,7 +51,44 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddSwaggerGenWithControllerGroups<Program>();
 builder.Services.AddControllers();
 
-builder.Services.AddCors();
+var allowedOriginsSection = builder.Configuration.GetSection("Cors:AllowedOrigins");
+string[] allowedOrigins = Array.Empty<string>();
+
+if (allowedOriginsSection.Exists())
+{
+    var originsArray = allowedOriginsSection.Get<string[]>();
+    if (originsArray != null && originsArray.Length > 0)
+    {
+        allowedOrigins = originsArray;
+    }
+    else
+    {
+        var originsString = allowedOriginsSection.Get<string>();
+        if (!string.IsNullOrWhiteSpace(originsString))
+        {
+            allowedOrigins = originsString
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .ToArray();
+        }
+    }
+}
+
+bool isCorsEnabled = allowedOrigins.Length > 0;
+
+if (isCorsEnabled)
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("ConfiguredCorsPolicy", policy =>
+        {
+            policy.WithOrigins(allowedOrigins)
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+    });
+}
+
 
 builder.Services.AddExceptionHandling();
 
@@ -61,7 +98,11 @@ app.UseExceptionHandling();
 
 app.MapHealthChecks("/health");
 
-app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+if (isCorsEnabled)
+{
+    app.UseCors("ConfiguredCorsPolicy");
+}
+
 if (!app.Environment.IsProduction())
 {
     app.UseSwagger();

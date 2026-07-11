@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Ganss.Xss;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Attributes;
 using JitDalshe.Application.Errors;
@@ -8,15 +9,8 @@ using JitDalshe.Domain.ValueObjects;
 namespace JitDalshe.Application.Admin.UseCases.Events.EditEvent;
 
 [UseCase]
-internal sealed class EditEventUseCase : IEditEventUseCase
+internal sealed class EditEventUseCase(IEventsRepository events) : IEditEventUseCase
 {
-    private readonly IEventsRepository _events;
-
-    public EditEventUseCase(IEventsRepository events)
-    {
-        _events = events;
-    }
-
     public async Task<UnitResult<Error>> EditAsync(
         IdOf<Event> id,
         string title,
@@ -30,7 +24,7 @@ internal sealed class EditEventUseCase : IEditEventUseCase
     {
         try
         {
-            var maybeEvent = await _events.FindByIdAsync(id, ct);
+            var maybeEvent = await events.FindByIdAsync(id, ct);
             if (maybeEvent.HasNoValue)
             {
                 return UnitResult.Failure(Error.Of("Событие не найдено", ErrorGroup.NotFound));
@@ -38,10 +32,13 @@ internal sealed class EditEventUseCase : IEditEventUseCase
 
             var @event = maybeEvent.Value;
 
-            @event.UpdateEventDetails(title, shortDescription, fullText, date, time, location);
+            var sanitizer = new HtmlSanitizer();
+            var sanitizedFullText = sanitizer.Sanitize(fullText);
+            
+            @event.UpdateEventDetails(title, shortDescription, sanitizedFullText, date, time, location);
             @event.ChangeEventStatus(status);
 
-            await _events.EditAsync(@event, ct);
+            await events.EditAsync(@event, ct);
 
             return UnitResult.Success<Error>();
         }

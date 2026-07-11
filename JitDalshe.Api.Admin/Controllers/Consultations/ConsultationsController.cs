@@ -11,12 +11,15 @@ using JitDalshe.Application.Models;
 using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.Consultations;
 using JitDalshe.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Admin.Controllers.Consultations;
 
 [ApiController]
+[Authorize]
 [Route("/api-admin/v1/[controller]")]
+[ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
 public class ConsultationsController : AbstractController
 {
     /// <summary>
@@ -26,7 +29,6 @@ public class ConsultationsController : AbstractController
     [ValidateRequest]
     [ProducesResponseType(typeof(PagedResult<ConsultationRequestDto>),StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListConsultationRequests(
         [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListConsultationRequestsUseCase listRequests,
@@ -52,7 +54,6 @@ public class ConsultationsController : AbstractController
     [HttpPatch("{id:guid}/status")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditConsultationRequest(
         [FromRoute] Guid id, 
         [FromBody] ChangeConsultationRequestStatusRequest request,
@@ -68,7 +69,6 @@ public class ConsultationsController : AbstractController
     [HttpPatch("{id:guid}/comment")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateConsultationComment(
         [FromRoute] Guid id,
         [FromBody] UpdateConsultationCommentRequest request,

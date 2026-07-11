@@ -5,6 +5,7 @@ using JitDalshe.Domain.Entities.Events;
 using JitDalshe.Domain.Entities.News;
 using JitDalshe.Domain.Entities.Reviews;
 using JitDalshe.Domain.Entities.SupportGroups;
+using JitDalshe.Domain.Entities.Users;
 using JitDalshe.Domain.Entities.Volunteers;
 
 namespace JitDalshe.Application.Admin.Extensions;
@@ -101,5 +102,14 @@ public static class DomainToDtoMappingExtensions
             CommunicationMethods: request.CommunicationMethods,
             Date: DateOnly.FromDateTime(request.CreatedAt),
             Comment: request.Comment
+        );
+
+    public static AdminUserDto ToDto(this AdminUser user)
+        => new(
+            Id: user.Id,
+            Email: user.Email,
+            Role: user.Role,
+            IsActive: user.IsActive,
+            CreatedAt: DateOnly.FromDateTime(user.CreatedAt)
         );
 }

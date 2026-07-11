@@ -11,12 +11,15 @@ using JitDalshe.Application.Models;
 using JitDalshe.Domain.Common;
 using JitDalshe.Domain.Entities.Volunteers;
 using JitDalshe.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Admin.Controllers.Volunteers;
 
 [ApiController]
+[Authorize]
 [Route("/api-admin/v1/[controller]")]
+[ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
 public class VolunteersController : AbstractController
 {
     /// <summary>
@@ -26,7 +29,6 @@ public class VolunteersController : AbstractController
     [ValidateRequest]
     [ProducesResponseType(typeof(PagedResult<VolunteerRequestDto>),StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListVolunteerRequests(
         [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListVolunteerRequestsUseCase listRequests,
@@ -52,7 +54,6 @@ public class VolunteersController : AbstractController
     [HttpPatch("{id:guid}/status")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditVolunteerRequest(
         [FromRoute] Guid id, 
         [FromBody] ChangeVolunteerRequestStatusRequest request,
@@ -68,7 +69,6 @@ public class VolunteersController : AbstractController
     [HttpPatch("{id:guid}/comment")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateVolunteerComment(
         [FromRoute] Guid id,
         [FromBody] UpdateVolunteerCommentRequest request,

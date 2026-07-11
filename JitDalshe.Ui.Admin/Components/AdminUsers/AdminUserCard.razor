@@ -1,0 +1,40 @@
+@using JitDalshe.Ui.Admin.Components.Shared.Cards
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Models.Common
+@using JitDalshe.Ui.Admin.Services.AdminUserService
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IModalService ModalService
+@inject IAdminUserService AdminUserService
+@inject IToastService ToastService
+
+<Card HeaderText="@HeaderText"
+      Title="@User.Email"
+      Comment="@CommentText"
+      Buttons="Card.Button.Edit | Card.Button.Delete"
+      OnEditButtonClick="@ShowEditModalAsync"
+      OnDeleteButtonClick="@DeleteAdminAsync"
+/>
+
+<EditAdminUserModal Id="@EditModalId" User="@User" OnAdminEdited="@OnStatusChanged" />
+
+@code {
+    [Parameter] public required AdminUser User { get; init; }
+    [Parameter] public required EventCallback OnStatusChanged { get; init; }
+
+    private string HeaderText => $"{(User.Role == UserRole.SuperAdmin ? "Суперадмин" : "Администратор")} — {(User.IsActive ? "Активен" : "Заблокирован")}";
+    private string CommentText => $"Зарегистрирован: {User.CreatedAt.ToString("dd.MM.yyyy")}";
+    private string EditModalId => $"modal_edit_admin_user_{User.Id}";
+
+    private Task ShowEditModalAsync()
+        => ModalService.ShowModalAsync($"#{EditModalId}");
+    
+    private async Task DeleteAdminAsync()
+    {
+        var success = await AdminUserService.DeleteAsync(User.Id);
+        if (success)
+        {
+            ToastService.ShowSuccess("Администратор удален");
+            await OnStatusChanged.InvokeAsync();
+        }
+    }
+}

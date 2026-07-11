@@ -10,12 +10,15 @@ using JitDalshe.Application.Admin.UseCases.Reviews.ListReviews;
 using JitDalshe.Application.Models;
 using JitDalshe.Domain.Entities.Reviews;
 using JitDalshe.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Admin.Controllers.Reviews;
 
 [ApiController]
+[Authorize]
 [Route("/api-admin/v1/[controller]")]
+[ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
 public sealed class ReviewsController : AbstractController
 {
     /// <summary>
@@ -25,7 +28,6 @@ public sealed class ReviewsController : AbstractController
     [ValidateRequest]
     [ProducesResponseType(typeof(PagedResult<ReviewDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListReviews(
         [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListReviewsUseCase listReviews,
@@ -47,7 +49,6 @@ public sealed class ReviewsController : AbstractController
     [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ChangeReviewStatus(
         [FromRoute] Guid id,
         [FromBody] ChangeReviewStatusRequest request,
@@ -67,7 +68,6 @@ public sealed class ReviewsController : AbstractController
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteReview(
         [FromRoute] Guid id,
         [FromServices] IDeleteReviewUseCase deleteReview,

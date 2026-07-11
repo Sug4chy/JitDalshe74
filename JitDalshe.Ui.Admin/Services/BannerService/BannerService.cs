@@ -31,54 +31,23 @@ public sealed class BannerService : IBannerService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.GetPreviewBannersAsync();
-
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return response.Content!;
-                case HttpStatusCode.InternalServerError:
-                    _errorHandlers.HandleInternalServerError(response.Error!);
-                    return [];
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return response.Handle(_errorHandlers) ?? [];
         }, defaultValue: []);
 
     public Task<Banner[]> FindAllAsync()
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.ListBannersAsync();
-
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return response.Content!;
-                case HttpStatusCode.InternalServerError:
-                    _errorHandlers.HandleInternalServerError(response.Error!);
-                    return [];
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return response.Handle(_errorHandlers) ?? [];
         }, defaultValue: []);
 
     public Task CreateBannerAsync(CreateBannerRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.CreateBannerAsync(request);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers, HttpStatusCode.Created))
             {
-                case HttpStatusCode.Created:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.BadRequest:
-                    _errorHandlers.HandleBadRequest(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _errorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 
@@ -86,23 +55,9 @@ public sealed class BannerService : IBannerService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.EditBannerAsync(id, request);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers))
             {
-                case HttpStatusCode.OK:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.BadRequest:
-                    _errorHandlers.HandleBadRequest(response.Error!);
-                    break;
-                case HttpStatusCode.NotFound:
-                    _errorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _errorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 
@@ -110,23 +65,9 @@ public sealed class BannerService : IBannerService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.ReplaceBannerImageAsync(id, request);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers))
             {
-                case HttpStatusCode.OK:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.BadRequest:
-                    _errorHandlers.HandleBadRequest(response.Error!);
-                    break;
-                case HttpStatusCode.NotFound:
-                    _errorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _errorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 
@@ -134,45 +75,19 @@ public sealed class BannerService : IBannerService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.ReplaceBannerMobileImageAsync(id, request);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers))
             {
-                case HttpStatusCode.OK:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.BadRequest:
-                    _errorHandlers.HandleBadRequest(response.Error!);
-                    break;
-                case HttpStatusCode.NotFound:
-                    _errorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _errorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 
-    
     public Task DeleteBannerAsync(Guid id, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _bannersApi.DeleteBannerAsync(id);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers, HttpStatusCode.NoContent))
             {
-                case HttpStatusCode.NoContent:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.NotFound:
-                    _errorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _errorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 }

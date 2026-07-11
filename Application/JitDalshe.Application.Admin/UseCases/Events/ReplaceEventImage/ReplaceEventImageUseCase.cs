@@ -10,17 +10,9 @@ using JitDalshe.Domain.ValueObjects;
 namespace JitDalshe.Application.Admin.UseCases.Events.ReplaceEventImage;
 
 [UseCase]
-internal sealed class ReplaceEventImageUseCase : IReplaceEventImageUseCase
+internal sealed class ReplaceEventImageUseCase(IEventsRepository events, IImageStorage imageStorage)
+    : IReplaceEventImageUseCase
 {
-    private readonly IEventsRepository _events;
-    private readonly IImageStorage _imageStorage;
-
-    public ReplaceEventImageUseCase(IEventsRepository events, IImageStorage imageStorage)
-    {
-        _events = events;
-        _imageStorage = imageStorage;
-    }
-
     public async Task<UnitResult<Error>> ReplaceAsync(
         IdOf<Event> eventId,
         string imageBase64Url,
@@ -32,7 +24,7 @@ internal sealed class ReplaceEventImageUseCase : IReplaceEventImageUseCase
             string imageContentString = imageBase64Url.Split(',')[1];
             byte[] imageBytes = Convert.FromBase64String(imageContentString);
 
-            var maybeEvent = await _events.FindByIdAsync(eventId, ct);
+            var maybeEvent = await events.FindByIdAsync(eventId, ct);
             if (maybeEvent.HasNoValue)
             {
                 return UnitResult.Failure(Error.Of("Событие не найдено", ErrorGroup.NotFound));
@@ -40,9 +32,9 @@ internal sealed class ReplaceEventImageUseCase : IReplaceEventImageUseCase
 
             var @event = maybeEvent.Value;
 
-            await _imageStorage.RemoveImageAsync(@event.Image!.Id, ct);
+            await imageStorage.RemoveImageAsync(@event.Image!.Id, ct);
 
-            var newImageId = await _imageStorage.SaveImageAsync<EventImage>(imageBytes, imageContentType, ct);
+            var newImageId = await imageStorage.SaveImageAsync<EventImage>(imageBytes, imageContentType, ct);
             var newEventImage = EventImage.Create(
                 id: newImageId,
                 url: @event.Image!.Url,
@@ -50,7 +42,7 @@ internal sealed class ReplaceEventImageUseCase : IReplaceEventImageUseCase
                 eventId: @event.Id,
                 @event: @event);
 
-            await _events.ReplaceEventImageAsync(@event, newEventImage, ct);
+            await events.ReplaceEventImageAsync(@event, newEventImage, ct);
 
             return UnitResult.Success<Error>();
         }

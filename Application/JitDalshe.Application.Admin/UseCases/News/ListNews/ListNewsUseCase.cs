@@ -9,20 +9,13 @@ using JitDalshe.Application.Errors;
 namespace JitDalshe.Application.Admin.UseCases.News.ListNews;
 
 [UseCase]
-internal sealed class ListNewsUseCase : IListNewsUseCase
+internal sealed class ListNewsUseCase(INewsRepository newsRepository) : IListNewsUseCase
 {
-    private readonly INewsRepository _newsRepository;
-
-    public ListNewsUseCase(INewsRepository newsRepository)
-    {
-        _newsRepository = newsRepository;
-    }
-
     public async Task<Result<NewsDto[], Error>> ListAsync(CancellationToken ct = default)
     {
         try
         {
-            var news = await _newsRepository.FindAllAsync(
+            var news = await newsRepository.FindAllAsync(
                 orderByExpression: x => x.PublicationDate,
                 sortingOrder: SortingOrder.Descending,
                 ct: ct);

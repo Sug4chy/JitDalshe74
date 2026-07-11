@@ -10,7 +10,8 @@ public static class MiddlewareExtensions
     public static IServiceCollection AddExceptionHandling(this IServiceCollection services)
         => services.AddExceptionHandler<GlobalExceptionHandler>()
             .AddExceptionHandler<TaskCanceledExceptionHandler>()
-            .AddSingleton<ExceptionHandlingMiddleware>();
+            .AddSingleton<ExceptionHandlingMiddleware>()
+            .AddScoped<ActiveAdminUserMiddleware>();
 
     public static IApplicationBuilder UseExceptionHandling(this IApplicationBuilder app)
         => app.UseMiddleware<ExceptionHandlingMiddleware>();

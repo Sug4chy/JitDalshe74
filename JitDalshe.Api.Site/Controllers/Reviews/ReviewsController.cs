@@ -1,4 +1,5 @@
 using JitDalshe.Api.Attributes;
+using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Api.Models;
 using JitDalshe.Api.Site.Controllers.Reviews.Requests;
 using JitDalshe.Api.Site.Requests;
@@ -11,7 +12,7 @@ namespace JitDalshe.Api.Site.Controllers.Reviews;
 
 [ApiController]
 [Route("/api-site/v1/[controller]")]
-public sealed class ReviewsController : ControllerBase
+public sealed class ReviewsController : AbstractController
 {
     /// <summary>
     /// Получить отзывы по страницам (от новых к старым)

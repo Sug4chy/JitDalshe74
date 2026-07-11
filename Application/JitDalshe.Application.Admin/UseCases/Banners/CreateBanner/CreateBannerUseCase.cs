@@ -37,6 +37,11 @@ internal sealed class CreateBannerUseCase : ICreateBannerUseCase
     {
         try
         {
+            if (isClickable && !IsSafeUrl(redirectOnClickUrl))
+            {
+                return UnitResult.Failure(Error.Of("Недопустимый формат ссылки."));
+            }
+            
             if (displayOrder is not null)
             {
                 var displayingBanners = await _banners.FindDisplayingBannersAsync(ct);
@@ -89,5 +94,14 @@ internal sealed class CreateBannerUseCase : ICreateBannerUseCase
         {
             return UnitResult.Failure(Error.Of(ex.Message));
         }
+    }
+    
+    private static bool IsSafeUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return false;
+
+        return url.StartsWith("/") || 
+               url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || 
+               url.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
     }
 }

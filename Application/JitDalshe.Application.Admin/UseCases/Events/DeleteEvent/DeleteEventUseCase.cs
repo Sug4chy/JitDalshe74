@@ -10,30 +10,21 @@ using JitDalshe.Domain.ValueObjects;
 namespace JitDalshe.Application.Admin.UseCases.Events.DeleteEvent;
 
 [UseCase]
-internal sealed class DeleteEventUseCase : IDeleteEventUseCase
+internal sealed class DeleteEventUseCase(IEventsRepository events, IImageStorage imageStorage) : IDeleteEventUseCase
 {
-    private readonly IEventsRepository _events;
-    private readonly IImageStorage _imageStorage;
-
-    public DeleteEventUseCase(IEventsRepository events, IImageStorage imageStorage)
-    {
-        _events = events;
-        _imageStorage = imageStorage;
-    }
-
     public async Task<UnitResult<Error>> DeleteAsync(IdOf<Event> id, CancellationToken ct = default)
     {
         try
         {
-            var maybeEvent = await _events.FindByIdAsync(id, ct);
+            var maybeEvent = await events.FindByIdAsync(id, ct);
             if (maybeEvent.HasNoValue)
             {
                 return UnitResult.Failure(Error.Of("Событие не найдено", ErrorGroup.NotFound));
             }
 
             var @event = maybeEvent.Value;
-            await _imageStorage.RemoveImageAsync(@event.Image!.Id, ct);
-            await _events.RemoveAsync(@event, ct);
+            await imageStorage.RemoveImageAsync(@event.Image!.Id, ct);
+            await events.RemoveAsync(@event, ct);
 
             return UnitResult.Success<Error>();
         }

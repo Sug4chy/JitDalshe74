@@ -14,15 +14,9 @@ using JitDalshe.Domain.Entities.Consultations;
 namespace JitDalshe.Application.Admin.UseCases.Consultations.ListRequests;
 
 [UseCase]
-public sealed class ListConsultationRequestsUseCase : IListConsultationRequestsUseCase
+public sealed class ListConsultationRequestsUseCase(IConsultationRequestsRepository requests)
+    : IListConsultationRequestsUseCase
 {
-    private readonly IConsultationRequestsRepository _requests;
-
-    public ListConsultationRequestsUseCase(IConsultationRequestsRepository requests)
-    {
-        _requests = requests;
-    }
-
     public async Task<Result<PagedResult<ConsultationRequestDto>, Error>> ListAsync(
         int pageNumber, 
         int pageSize, 
@@ -43,7 +37,7 @@ public sealed class ListConsultationRequestsUseCase : IListConsultationRequestsU
                     (!endDate.HasValue || DateOnly.FromDateTime(x.CreatedAt.Date) <= endDate.Value);
             }
             
-            var requests = await _requests.FindAllAsync(
+            var requests1 = await requests.FindAllAsync(
                 pageNumber: pageNumber,
                 pageSize: pageSize,
                 filteringExpression: filteringExpression,
@@ -51,9 +45,9 @@ public sealed class ListConsultationRequestsUseCase : IListConsultationRequestsU
                 sortingOrder: SortingOrder.Descending,
                 ct: ct);
 
-            var totalCount = await _requests.CountAsync(filteringExpression, ct);
+            var totalCount = await requests.CountAsync(filteringExpression, ct);
 
-            var dtos = requests.Select(x => x.ToDto()).ToArray();
+            var dtos = requests1.Select(x => x.ToDto()).ToArray();
             
             var pagedResult = new PagedResult<ConsultationRequestDto>(
                 Items: dtos,

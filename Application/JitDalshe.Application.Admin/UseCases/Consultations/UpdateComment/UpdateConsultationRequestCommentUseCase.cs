@@ -9,15 +9,9 @@ namespace JitDalshe.Application.Admin.UseCases.Consultations.UpdateComment;
 
 
 [UseCase]
-public sealed class UpdateConsultationRequestCommentUseCase : IUpdateConsultationRequestCommentUseCase
+public sealed class UpdateConsultationRequestCommentUseCase(IConsultationRequestsRepository requests)
+    : IUpdateConsultationRequestCommentUseCase
 {
-    private readonly IConsultationRequestsRepository _requests;
-    
-    public UpdateConsultationRequestCommentUseCase(IConsultationRequestsRepository requests)
-    {
-        _requests = requests;
-    }
-
     public async Task<UnitResult<Error>> UpdateAsync(
         IdOf<ConsultationRequest> requestId,
         string? comment,
@@ -26,7 +20,7 @@ public sealed class UpdateConsultationRequestCommentUseCase : IUpdateConsultatio
     {
         try
         {
-            var maybeRequest = await _requests.FindByIdAsync(requestId, ct);
+            var maybeRequest = await requests.FindByIdAsync(requestId, ct);
             if (maybeRequest.HasNoValue)
             {
                 return UnitResult.Failure(Error.Of("Заявка не найдена", ErrorGroup.NotFound));
@@ -35,7 +29,7 @@ public sealed class UpdateConsultationRequestCommentUseCase : IUpdateConsultatio
             var request = maybeRequest.Value;
             request.UpdateComment(comment);
 
-            await _requests.EditAsync(request, ct);
+            await requests.EditAsync(request, ct);
 
             return UnitResult.Success<Error>();
         }

@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Ganss.Xss;
 using JitDalshe.Application.Abstractions.Repositories;
 using JitDalshe.Application.Admin.Dto;
 using JitDalshe.Application.Admin.Extensions;
@@ -10,15 +11,8 @@ using JitDalshe.Domain.ValueObjects;
 namespace JitDalshe.Application.Admin.UseCases.News.EditNews;
 
 [UseCase]
-internal sealed class EditNewsUseCase : IEditNewsUseCase
+internal sealed class EditNewsUseCase(INewsRepository newsRepository) : IEditNewsUseCase
 {
-    private readonly INewsRepository _newsRepository;
-
-    public EditNewsUseCase(INewsRepository newsRepository)
-    {
-        _newsRepository = newsRepository;
-    }
-
     public async Task<Result<NewsDto, Error>> EditAsync(
         IdOf<Domain.Entities.News.News> newsId, 
         string text, 
@@ -28,7 +22,7 @@ internal sealed class EditNewsUseCase : IEditNewsUseCase
     {
         try
         {
-            var maybeNews = await _newsRepository.FindByIdAsync(newsId, ct);
+            var maybeNews = await newsRepository.FindByIdAsync(newsId, ct);
             if (maybeNews.HasNoValue)
             {
                 return Result.Failure<NewsDto, Error>(
@@ -50,10 +44,13 @@ internal sealed class EditNewsUseCase : IEditNewsUseCase
                     newsId: news.Id,
                     newsImageId: primaryPhotoId);
             }
-
-            news.Text = text;
+            
+            var sanitizer = new HtmlSanitizer();
+            var sanitizedText = sanitizer.Sanitize(text);
+            
+            news.Text = sanitizedText;
             news.IsDisplaying = isDisplaying;
-            await _newsRepository.EditAsync(news, ct);
+            await newsRepository.EditAsync(news, ct);
 
             return Result.Success<NewsDto, Error>(news.ToDto());
         }

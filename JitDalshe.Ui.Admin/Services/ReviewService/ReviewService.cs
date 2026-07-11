@@ -35,17 +35,7 @@ public sealed class ReviewService : IReviewService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _reviewsApi.ListReviewsAsync(pageNumber, pageSize, status, ct);
-
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return response.Content!;
-                case HttpStatusCode.InternalServerError:
-                    _errorHandlers.HandleInternalServerError(response.Error!);
-                    return null;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return response.Handle(_errorHandlers);
         }, defaultValue: null);
 
     public Task<bool> ChangeStatusAsync(Guid id, ReviewStatus status, CancellationToken ct = default)
@@ -53,40 +43,16 @@ public sealed class ReviewService : IReviewService
         {
             var request = new ChangeReviewStatusRequest(status);
             var response = await _reviewsApi.ChangeReviewStatusAsync(id, request, ct);
-
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return true;
-                case HttpStatusCode.NotFound:
-                    _errorHandlers.HandleNotFound(response.Error!);
-                    return false;
-                case HttpStatusCode.InternalServerError:
-                    _errorHandlers.HandleInternalServerError(response.Error!);
-                    return false;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return response.Handle(_errorHandlers);
         }, defaultValue: false);
 
     public Task DeleteReviewAsync(Guid reviewId, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _reviewsApi.DeleteReviewAsync(reviewId);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers, HttpStatusCode.NoContent))
             {
-                case HttpStatusCode.NoContent:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.NotFound:
-                    _errorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _errorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 }

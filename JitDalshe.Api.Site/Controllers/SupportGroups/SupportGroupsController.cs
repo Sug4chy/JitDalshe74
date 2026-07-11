@@ -1,5 +1,6 @@
 using FluentValidation;
 using JitDalshe.Api.Attributes;
+using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Api.Models;
 using JitDalshe.Api.Site.Controllers.SupportGroups.Requests;
 using JitDalshe.Application.Site.UseCases.SupportGroups;
@@ -9,7 +10,7 @@ namespace JitDalshe.Api.Site.Controllers.SupportGroups;
 
 [ApiController]
 [Route("/api-site/v1/[controller]")]
-public sealed partial class SupportGroupsController : ControllerBase
+public sealed partial class SupportGroupsController : AbstractController
 {
     [HttpPost]
     [ValidateRequest]

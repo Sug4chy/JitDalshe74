@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using JitDalshe.Api.Attributes;
 using JitDalshe.Api.Controllers.Base;
+using JitDalshe.Api.Models;
 using JitDalshe.Api.Site.Requests;
 using JitDalshe.Application.Site.UseCases.Events.GetEvent;
 using JitDalshe.Application.Site.UseCases.Events.ListEvents;
@@ -23,7 +24,6 @@ public sealed class EventsController : AbstractController
     [Produces(MediaTypeNames.Application.Json)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListEvents(
         [FromQuery] ListWithPaginationRequest request,
         [FromServices] IListEventsUseCase listEvents,
@@ -42,7 +42,6 @@ public sealed class EventsController : AbstractController
     [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetEvent(
         [FromRoute] Guid id,
         [FromServices] IGetEventUseCase getEvent,
@@ -61,7 +60,6 @@ public sealed class EventsController : AbstractController
     [Produces(MediaTypeNames.Multipart.FormData)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetEventImage(
         [FromRoute] Guid id,
         [FromServices] IGetEventImageUseCase getEventImage,

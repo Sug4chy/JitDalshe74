@@ -1,0 +1,107 @@
+@page "/users"
+@using JitDalshe.Ui.Admin.Components.AdminUsers
+@using JitDalshe.Ui.Admin.Components.Shared.Controls
+@using JitDalshe.Ui.Admin.Components.Shared.States
+@using JitDalshe.Ui.Admin.Models
+@using JitDalshe.Ui.Admin.Services.AdminUserService
+@using JitDalshe.Ui.Admin.Services.AuthService
+@using JitDalshe.Ui.Admin.Services.ModalService
+@inject IAdminUserService AdminUserService
+@inject IAuthService AuthService
+@inject IModalService ModalService
+
+<PageTitle>Управление администраторами</PageTitle>
+
+@if (_isAuthorized)
+{
+    <div class="topbar-container">
+        <h1>Администраторы</h1>
+        <button class="btn btn-secondary btn-show-create-modal" @onclick="ShowCreateModalAsync">
+            + Добавить
+        </button>
+    </div>
+
+    @if (_isLoading)
+    {
+        <SpinnerLoader />
+    }
+    else if (_pagedResult is null || _pagedResult.Items.Length == 0)
+    {
+        <EmptyState Message="Администраторов не найдено" />
+    }
+    else
+    {
+        @foreach (var user in _pagedResult.Items)
+        {
+            <AdminUserCard User="@user" OnStatusChanged="LoadCurrentPage" />
+        }
+
+        <PaginationControls
+            CurrentPage="@_currentPage"
+            TotalPages="@_pagedResult.TotalPages"
+            OnPrevButtonClicked="@LoadPrevPage"
+            OnNextButtonClicked="@LoadNextPage" />
+    }
+    
+    <CreateAdminUserModal Id="@CreateModalId" AdminCreated="LoadCurrentPage" />
+}
+else if (!_isChecking)
+{
+    <div class="alert alert-danger m-5 text-center" role="alert">
+        У вас нет прав для просмотра этой страницы.
+    </div>
+}
+
+@code {
+    private PagedResult<AdminUser>? _pagedResult;
+    private int _currentPage = 1;
+    private const int PageSize = 10;
+    private bool _isLoading;
+    private bool _isChecking = true;
+    private bool _isAuthorized;
+    private const string CreateModalId = "modal_create_admin_user";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var role = await AuthService.GetCurrentUserRoleAsync();
+        _isAuthorized = string.Equals(role, "SuperAdmin", StringComparison.OrdinalIgnoreCase);
+        _isChecking = false;
+
+        if (_isAuthorized)
+        {
+            await LoadCurrentPage();
+        }
+    }
+
+    private async Task LoadCurrentPage()
+    {
+        _isLoading = true;
+        StateHasChanged();
+
+        _pagedResult = await AdminUserService.ListAsync(_currentPage, PageSize);
+
+        _isLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadPrevPage()
+    {
+        if (_pagedResult?.HasPreviousPage == true)
+        {
+            _currentPage--;
+            await LoadCurrentPage();
+        }
+    }
+
+    private async Task LoadNextPage()
+    {
+        if (_pagedResult?.HasNextPage == true)
+        {
+            _currentPage++;
+            await LoadCurrentPage();
+        }
+    }
+
+    private Task ShowCreateModalAsync()
+        => ModalService.ShowModalAsync($"#{CreateModalId}");
+}

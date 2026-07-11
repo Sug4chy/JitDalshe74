@@ -1,3 +1,6 @@
+using System.Net;
+using JitDalshe.Ui.Admin.Services.AdminUserService;
+using JitDalshe.Ui.Admin.Services.AuthService;
 using JitDalshe.Ui.Admin.Services.BannerService;
 using JitDalshe.Ui.Admin.Services.ConsultationService;
 using JitDalshe.Ui.Admin.Services.ErrorHandlers;
@@ -46,4 +49,10 @@ public static class DependencyInjection
     
     public static IServiceCollection AddVolunteerService(this IServiceCollection services)
         => services.AddScoped<IVolunteerService,  VolunteerService>();
+    
+    public static IServiceCollection AddAuthService(this IServiceCollection services)
+        => services.AddScoped<IAuthService, AuthService>().AddTransient<CookieHandler>();
+    
+    public static IServiceCollection AddAdminUserService(this IServiceCollection services)
+        => services.AddScoped<IAdminUserService, AdminUserService>();
 }

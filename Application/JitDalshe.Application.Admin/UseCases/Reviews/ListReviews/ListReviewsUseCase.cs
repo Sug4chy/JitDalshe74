@@ -12,15 +12,8 @@ using JitDalshe.Domain.Entities.Reviews;
 namespace JitDalshe.Application.Admin.UseCases.Reviews.ListReviews;
 
 [UseCase]
-internal sealed class ListReviewsUseCase : IListReviewsUseCase
+internal sealed class ListReviewsUseCase(IReviewsRepository reviews) : IListReviewsUseCase
 {
-    private readonly IReviewsRepository _reviews;
-
-    public ListReviewsUseCase(IReviewsRepository reviews)
-    {
-        _reviews = reviews;
-    }
-
     public async Task<Result<PagedResult<ReviewDto>, Error>> ListAsync(
         int pageNumber,
         int pageSize,
@@ -33,9 +26,9 @@ internal sealed class ListReviewsUseCase : IListReviewsUseCase
                 ? x => x.Status == status.Value
                 : null;
 
-            var totalCount = await _reviews.CountAsync(filteringExpression, ct);
+            var totalCount = await reviews.CountAsync(filteringExpression, ct);
 
-            var reviews = await _reviews.FindAllAsync(
+            var reviews1 = await reviews.FindAllAsync(
                 pageNumber: pageNumber,
                 pageSize: pageSize,
                 filteringExpression: filteringExpression,
@@ -43,7 +36,7 @@ internal sealed class ListReviewsUseCase : IListReviewsUseCase
                 sortingOrder: SortingOrder.Descending,
                 ct: ct);
 
-            var dtos = reviews.Select(x => x.ToDto()).ToArray();
+            var dtos = reviews1.Select(x => x.ToDto()).ToArray();
 
             return Result.Success<PagedResult<ReviewDto>, Error>(
                 new PagedResult<ReviewDto>(

@@ -12,12 +12,15 @@ using JitDalshe.Application.UseCases.Banners.GetBannerImage;
 using JitDalshe.Application.UseCases.Banners.GetDisplayingBanners;
 using JitDalshe.Domain.Entities.Banners;
 using JitDalshe.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JitDalshe.Api.Admin.Controllers.Banners;
 
 [ApiController]
+[Authorize]
 [Route("/api-admin/v1/[controller]")]
+[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 public sealed class BannersController : AbstractController
 {
     /// <summary>
@@ -25,7 +28,6 @@ public sealed class BannersController : AbstractController
     /// </summary>
     [HttpGet("preview")]
     [ProducesResponseType(typeof(DisplayingBannerModel[]), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetDisplayingBanners(
         [FromServices] IGetDisplayingBannersUseCase getDisplayingBanners,
         CancellationToken ct = default)
@@ -44,7 +46,6 @@ public sealed class BannersController : AbstractController
     [HttpGet("{bannerId:guid}/image")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetBannerImage(
         [FromRoute] Guid bannerId,
         [FromServices] IGetBannerImageUseCase getBannerImage,
@@ -63,7 +64,6 @@ public sealed class BannersController : AbstractController
     /// </summary>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListBanners(
         [FromServices] IListBannersUseCase listBanners,
         CancellationToken ct = default)
@@ -82,7 +82,6 @@ public sealed class BannersController : AbstractController
     [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateBanner(
         [FromBody] CreateBannerRequest request,
         [FromServices] ICreateBannerUseCase createBanner,
@@ -111,7 +110,6 @@ public sealed class BannersController : AbstractController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> EditBanner(
         [FromRoute] Guid id,
         [FromBody] EditBannerRequest request,
@@ -141,7 +139,6 @@ public sealed class BannersController : AbstractController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ReplaceBannerImage(
         [FromRoute] Guid id,
         [FromBody] ReplaceBannerImageRequest request,
@@ -166,7 +163,6 @@ public sealed class BannersController : AbstractController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ReplaceBannerMobileImage(
         [FromRoute] Guid id,
         [FromBody] ReplaceBannerImageRequest request,
@@ -190,7 +186,6 @@ public sealed class BannersController : AbstractController
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteBanner(
         [FromRoute] Guid id,
         [FromServices] IDeleteBannerUseCase deleteBanner,

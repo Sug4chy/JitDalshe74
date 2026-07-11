@@ -9,10 +9,12 @@ using JitDalshe.Infrastructure.Minio;
 using JitDalshe.Infrastructure.Persistence;
 using Minio;
 using System.Text;
+using JitDalshe.Api.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using JitDalshe.Infrastructure.Security;
+using JitDalshe.Infrastructure.Security.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,9 +51,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddSwaggerGenWithControllerGroups<Program>();
 builder.Services.AddControllers();
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 
-var jwtKey = builder.Configuration["Jwt:Key"]
-    ?? throw new InvalidOperationException("Jwt:Key is not configured");
+var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
+                  ?? throw new InvalidOperationException("Конфигурация JWT отсутствует в настройках.");
+
+if (string.IsNullOrEmpty(jwtSettings.Key))
+{
+    throw new InvalidOperationException("Jwt:Key не настроен.");
+}
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -62,12 +70,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+        };
+        
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                if (context.Request.Cookies.TryGetValue("authToken", out var token))
+                {
+                    context.Token = token;
+                }
+                return Task.CompletedTask;
+            }
         };
     });
-
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
@@ -75,7 +94,43 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
-builder.Services.AddCors();
+var allowedOriginsSection = builder.Configuration.GetSection("Cors:AllowedOrigins");
+string[] allowedOrigins = Array.Empty<string>();
+
+if (allowedOriginsSection.Exists())
+{
+    var originsArray = allowedOriginsSection.Get<string[]>();
+    if (originsArray != null && originsArray.Length > 0)
+    {
+        allowedOrigins = originsArray;
+    }
+    else
+    {
+        var originsString = allowedOriginsSection.Get<string>();
+        if (!string.IsNullOrWhiteSpace(originsString))
+        {
+            allowedOrigins = originsString
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .ToArray();
+        }
+    }
+}
+
+bool isCorsEnabled = allowedOrigins.Length > 0;
+
+if (isCorsEnabled)
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("ConfiguredCorsPolicy", policy =>
+        {
+            policy.WithOrigins(allowedOrigins)
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+    });
+}
 
 builder.Services.AddExceptionHandling();
 
@@ -87,9 +142,13 @@ app.MapHealthChecks("/health").AllowAnonymous();
 
 app.UseRouting();
 
-app.UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+if (isCorsEnabled)
+{
+    app.UseCors("ConfiguredCorsPolicy");
+}
 
 app.UseAuthentication();
+app.UseMiddleware<ActiveAdminUserMiddleware>();
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())

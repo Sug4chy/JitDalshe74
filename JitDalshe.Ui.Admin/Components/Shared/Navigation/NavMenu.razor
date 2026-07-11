@@ -1,3 +1,6 @@
+@using JitDalshe.Ui.Admin.Services.AuthService
+@inject IAuthService AuthService
+
 <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Жить дальше 74</a>
@@ -15,6 +18,11 @@
                 <NavItem Href="consultations" Text="Заявки на консультацию"/>
                 <NavItem Href="supportGroups" Text="Заявки на группу поддержки"/>
                 <NavItem Href="volunteers" Text="Заявки на волонтёрство"/>
+                
+                @if (_isSuperAdmin)
+                {
+                    <NavItem Href="users" Text="Администраторы"/>
+                }
             </ul>
         </div>
     </div>
@@ -22,6 +30,7 @@
 
 @code {
     private bool _collapseNavMenu = true;
+    private bool _isSuperAdmin;
     private string? NavBarCssClass => _collapseNavMenu ? null : "show";
     private string? NavButtonCssClass => _collapseNavMenu ? "collapsed" : null;
 
@@ -30,4 +39,9 @@
         _collapseNavMenu = !_collapseNavMenu;
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        var role = await AuthService.GetCurrentUserRoleAsync();
+        _isSuperAdmin = string.Equals(role, "SuperAdmin", StringComparison.OrdinalIgnoreCase);
+    }
 }

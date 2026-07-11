@@ -1,10 +1,53 @@
 @using JitDalshe.Ui.Admin.Components.Shared.Navigation
+@using JitDalshe.Ui.Admin.Services.AuthService
 @inherits LayoutComponentBase
-
-<NavMenu/>
-
-<main class="container">
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+@if (_isCheckingAuth)
+{
+    <SpinnerLoader />
+}
+else if (_isAuthenticated)
+{
+    <NavMenu />
+    <main class="container">
+        @Body
+    </main>
+}
+else if (_isLoginPage)
+{
     @Body
-</main>
+}
 
-<BlazoredToasts ShowProgressBar="true"/>
+else
+{
+    <SpinnerLoader />
+}
+
+<BlazoredToasts ShowProgressBar="true" />
+
+@code {
+    private bool _isCheckingAuth = true;
+    private bool _isAuthenticated;
+    private bool _isLoginPage;
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        var token = await AuthService.GetTokenAsync();
+        _isAuthenticated = !string.IsNullOrWhiteSpace(token);
+        
+        _isLoginPage = NavigationManager.ToBaseRelativePath(NavigationManager.Uri)
+            .StartsWith("login", StringComparison.OrdinalIgnoreCase);
+        
+        if (!_isAuthenticated && !_isLoginPage)
+        {
+            NavigationManager.NavigateTo("login");
+        }
+        else if (_isAuthenticated && _isLoginPage)
+        {
+            NavigationManager.NavigateTo("");
+        }
+
+        _isCheckingAuth = false;
+    }
+}

@@ -13,15 +13,8 @@ using JitDalshe.Domain.Entities.Volunteers;
 namespace JitDalshe.Application.Admin.UseCases.Volunteers.ListRequests;
 
 [UseCase]
-public sealed class ListVolunteerRequestsUseCase : IListVolunteerRequestsUseCase
+public sealed class ListVolunteerRequestsUseCase(IVolunteerRequestsRepository requests) : IListVolunteerRequestsUseCase
 {
-    private readonly IVolunteerRequestsRepository _requests;
-
-    public ListVolunteerRequestsUseCase(IVolunteerRequestsRepository requests)
-    {
-        _requests = requests;
-    }
-
     public async Task<Result<PagedResult<VolunteerRequestDto>, Error>> ListAsync(
         int pageNumber, 
         int pageSize, 
@@ -42,7 +35,7 @@ public sealed class ListVolunteerRequestsUseCase : IListVolunteerRequestsUseCase
                     (!endDate.HasValue || DateOnly.FromDateTime(x.CreatedAt.Date) <= endDate.Value);
             }
             
-            var requests = await _requests.FindAllAsync(
+            var requests1 = await requests.FindAllAsync(
                 pageNumber: pageNumber,
                 pageSize: pageSize,
                 filteringExpression: filteringExpression,
@@ -50,9 +43,9 @@ public sealed class ListVolunteerRequestsUseCase : IListVolunteerRequestsUseCase
                 sortingOrder: SortingOrder.Descending,
                 ct: ct);
 
-            var totalCount = await _requests.CountAsync(filteringExpression, ct);
+            var totalCount = await requests.CountAsync(filteringExpression, ct);
 
-            var dtos = requests.Select(x => x.ToDto()).ToArray();
+            var dtos = requests1.Select(x => x.ToDto()).ToArray();
             
             var pagedResult = new PagedResult<VolunteerRequestDto>(
                 Items: dtos,

@@ -11,18 +11,12 @@ using Exceptions = Minio.Exceptions;
 
 namespace JitDalshe.Infrastructure.Minio;
 
-public sealed class MinioImageStorage : IImageStorage
+public sealed class MinioImageStorage(IMinioClient minioClient) : IImageStorage
 {
     private const string EventImagesBucketName = "event-images";
     private const string BannerImagesBucketName = "banner-images";
-
-    private readonly IMinioClient _minioClient;
-
-    public MinioImageStorage(IMinioClient minioClient)
-    {
-        _minioClient = minioClient;
-    }
-
+    private const long MaxImageSize = 10 * 1024 * 1024;
+    
     public Task<Maybe<Stream>> GetImageByIdAsync<TImage>(IdOf<TImage> id, CancellationToken ct = default)
         where TImage : Entity<IdOf<TImage>>, IImage
         => id switch
@@ -43,14 +37,14 @@ public sealed class MinioImageStorage : IImageStorage
 
         try
         {
-            bool bucketExists = await _minioClient.BucketExistsAsync(new BucketExistsArgs()
+            bool bucketExists = await minioClient.BucketExistsAsync(new BucketExistsArgs()
                 .WithBucket(bucketName), ct);
             if (!bucketExists)
             {
                 return Maybe<Stream>.None;
             }
 
-            await _minioClient.GetObjectAsync(new GetObjectArgs()
+            await minioClient.GetObjectAsync(new GetObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(id.ToString())
                 .WithCallbackStream(stream =>
@@ -90,16 +84,26 @@ public sealed class MinioImageStorage : IImageStorage
         CancellationToken ct = default)
         where TImage : Entity<IdOf<TImage>>, IImage
     {
-        bool bucketExists = await _minioClient.BucketExistsAsync(new BucketExistsArgs()
+        if (imageContent.LongLength > MaxImageSize)
+        {
+            throw new ArgumentException("Превышен максимальный размер файла (10 МБ)");
+        }
+        
+        if (!IsValidImageSignature(imageContent))
+        {
+            throw new ArgumentException("Недопустимый формат изображения");
+        }
+        
+        bool bucketExists = await minioClient.BucketExistsAsync(new BucketExistsArgs()
             .WithBucket(bucketName), ct);
         if (!bucketExists)
         {
-            await _minioClient.MakeBucketAsync(new MakeBucketArgs()
+            await minioClient.MakeBucketAsync(new MakeBucketArgs()
                 .WithBucket(bucketName), ct);
         }
 
         var newImageId = IdOf<TImage>.New();
-        await _minioClient.PutObjectAsync(new PutObjectArgs()
+        await minioClient.PutObjectAsync(new PutObjectArgs()
             .WithBucket(bucketName)
             .WithObject(newImageId.ToString())
             .WithObjectSize(imageContent.LongLength)
@@ -124,7 +128,7 @@ public sealed class MinioImageStorage : IImageStorage
     {
         try
         {
-            await _minioClient.RemoveObjectAsync(new RemoveObjectArgs()
+            await minioClient.RemoveObjectAsync(new RemoveObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(id.ToString()), ct);
         }
@@ -132,5 +136,26 @@ public sealed class MinioImageStorage : IImageStorage
         {
             throw new ImageNotFoundException();
         }
+    }
+    
+    private static bool IsValidImageSignature(byte[] bytes)
+    {
+        if (bytes.Length < 4) return false;
+        
+        if (bytes[0] == 0xFF && bytes[1] == 0xD8 && bytes[2] == 0xFF)
+            return true;
+        
+        if (bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47)
+            return true;
+        
+        if (bytes[0] == 0x47 && bytes[1] == 0x49 && bytes[2] == 0x46 && bytes[3] == 0x38)
+            return true;
+        
+        if (bytes.Length >= 12 &&
+            bytes[0] == 0x52 && bytes[1] == 0x49 && bytes[2] == 0x46 && bytes[3] == 0x46 && 
+            bytes[8] == 0x57 && bytes[9] == 0x45 && bytes[10] == 0x42 && bytes[11] == 0x50) 
+            return true;
+
+        return false;
     }
 }

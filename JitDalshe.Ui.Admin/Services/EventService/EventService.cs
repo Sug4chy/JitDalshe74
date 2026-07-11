@@ -13,17 +13,17 @@ public sealed class EventService : IEventService
 {
     private readonly Runner _runner;
     private readonly IEventsApiClient _eventsApi;
-    private readonly CommonErrorHandlers _commonErrorHandlers;
+    private readonly IErrorHandlers _errorHandlers;
 
     public EventService(
         Runner runner, 
         IEventsApiClient eventsApi, 
         IToastService toastService, 
-        CommonErrorHandlers commonErrorHandlers)
+        IErrorHandlers errorHandlers)
     {
         _runner = runner;
         _eventsApi = eventsApi;
-        _commonErrorHandlers = commonErrorHandlers;
+        _errorHandlers = errorHandlers;
         _runner.ConfigureErrorCallback(toastService.ShowPermanentError);
     }
     
@@ -31,37 +31,16 @@ public sealed class EventService : IEventService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.ListEventsAsync(pageNumber, pageSize, ct);
-
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return response.Content;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    return null;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return response.Handle(_errorHandlers);
         }, defaultValue: null);
 
     public Task CreateEventAsync(CreateEventRequest request, Func<Task>? onSuccess = null)
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.CreateEventAsync(request);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers, HttpStatusCode.Created))
             {
-                case HttpStatusCode.Created:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.BadRequest:
-                    _commonErrorHandlers.HandleBadRequest(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 
@@ -69,23 +48,9 @@ public sealed class EventService : IEventService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.EditEventAsync(id, request);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers))
             {
-                case HttpStatusCode.OK:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.BadRequest:
-                    _commonErrorHandlers.HandleBadRequest(response.Error!);
-                    break;
-                case HttpStatusCode.NotFound:
-                    _commonErrorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 
@@ -93,23 +58,9 @@ public sealed class EventService : IEventService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.ReplaceEventImageAsync(eventId, request);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers))
             {
-                case HttpStatusCode.OK:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.BadRequest:
-                    _commonErrorHandlers.HandleBadRequest(response.Error!);
-                    break;
-                case HttpStatusCode.NotFound:
-                    _commonErrorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 
@@ -117,20 +68,9 @@ public sealed class EventService : IEventService
         => _runner.RunCatchingAsync(async () =>
         {
             var response = await _eventsApi.DeleteEventAsync(eventId);
-
-            switch (response.StatusCode)
+            if (response.Handle(_errorHandlers, HttpStatusCode.NoContent))
             {
-                case HttpStatusCode.NoContent:
-                    await (onSuccess?.Invoke() ?? Task.CompletedTask);
-                    break;
-                case HttpStatusCode.NotFound:
-                    _commonErrorHandlers.HandleNotFound(response.Error!);
-                    break;
-                case HttpStatusCode.InternalServerError:
-                    _commonErrorHandlers.HandleInternalServerError(response.Error!);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                await (onSuccess?.Invoke() ?? Task.CompletedTask);
             }
         });
 }

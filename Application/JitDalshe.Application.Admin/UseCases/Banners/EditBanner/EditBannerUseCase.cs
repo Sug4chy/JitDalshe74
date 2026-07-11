@@ -35,6 +35,11 @@ internal sealed class EditBannerUseCase : IEditBannerUseCase
                 return UnitResult.Failure(Error.Of("Баннер не найден", ErrorGroup.NotFound));
             }
 
+            if (isClickable && !IsSafeUrl(redirectOnClickUrl))
+            {
+                return UnitResult.Failure(Error.Of("Недопустимый формат ссылки. Ссылка должна начинаться с http://, https:// или /"));
+            }
+            
             var banner = maybeBanner.Value;
             banner.Title = title;
             banner.Description = description;
@@ -51,5 +56,14 @@ internal sealed class EditBannerUseCase : IEditBannerUseCase
         {
             return UnitResult.Failure(Error.Of(e.Message));
         }
+    }
+    
+    private static bool IsSafeUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return false;
+
+        return url.StartsWith("/") || 
+               url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || 
+               url.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
     }
 }

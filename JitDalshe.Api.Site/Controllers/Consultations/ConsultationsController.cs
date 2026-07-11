@@ -1,4 +1,5 @@
 using JitDalshe.Api.Attributes;
+using JitDalshe.Api.Controllers.Base;
 using JitDalshe.Api.Models;
 using JitDalshe.Api.Site.Controllers.Consultations.Requests;
 using JitDalshe.Application.Site.UseCases.Consultations;
@@ -8,13 +9,13 @@ namespace JitDalshe.Api.Site.Controllers.Consultations;
 
 [ApiController]
 [Route("/api-site/v1/[controller]")]
-public sealed class ConsultationsController : ControllerBase
+[ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
+public sealed class ConsultationsController : AbstractController
 {
     [HttpPost]
     [ValidateRequest]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiError), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiError), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> SignUpForConsultation(
         [FromBody] SignUpForConsultationRequest request,
         [FromServices] ISignUpForConsultationUseCase signUpForConsultation,

@@ -3,6 +3,7 @@
 <div class="form-group">
     <label for="@_id">@Label</label>
     <InputText id="@_id"
+               type="@Type" 
                class="@Style"
                Value="@Value"
                ValueExpression="@ValueExpression"
@@ -25,7 +26,8 @@
     [Parameter] public required string? Value { get; set; }
     [Parameter] public EventCallback<string?> ValueChanged { get; set; }
     [Parameter] public Expression<Func<string?>> ValueExpression { get; set; } = null!;
-
+    [Parameter] public string Type { get; set; } = "text"; 
+    
     private async Task ValueChangedAsync(string? newValue)
     {
         if (_value != newValue)

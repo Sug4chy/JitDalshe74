@@ -1,5 +1,6 @@
 using Autofac;
 using JitDalshe.Application.Abstractions.Security;
+using JitDalshe.Infrastructure.Security.Jwt;
 
 namespace JitDalshe.Infrastructure.Security;
 
